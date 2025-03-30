@@ -160,7 +160,7 @@ public class LibreLinkClientTests
     }
 
     [Test]
-    public void GetGraphAsync_NoAuth_ThrowsNotAuthenticatedException()
+    public void GraphAsync_NoAuth_ThrowsNotAuthenticatedException()
     {
         var tenantId = Guid.NewGuid();
         _libreLinkAuthenticator.Setup(a => a.IsAuthenticated).Returns(false);
@@ -169,7 +169,7 @@ public class LibreLinkClientTests
     }
 
     [Test]
-    public void GetGraphAsync_ExpiredAuth_ThrowsAuthenticationExpiredException()
+    public void GraphAsync_ExpiredAuth_ThrowsAuthenticationExpiredException()
     {
         var tenantId = Guid.NewGuid();
         var expiredTicket = new AuthTicket
