@@ -1,5 +1,5 @@
 # GlucoPilot.LibreLinkClient
-The C# client libary for accessing LibreLink data.
+The C# client library for accessing LibreLink data.
 
 ## Usage
 Register the client with:
@@ -44,4 +44,4 @@ await libreLinkClient.LoginAsync(authTicket);
 
 If the auth ticket used to authenticate has expired, a `LibreLinkAuthenticationExpiredException` will be thrown.
 
-> _Note: The auth ticket contains a long lived access token that enables users to access LibreLink data. This data should be treated a sensitive and stored as such._
+> _Note: The auth ticket contains a long-lived access token that enables users to access LibreLink data. This data should be treated a sensitive and stored as such._
