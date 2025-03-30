@@ -61,7 +61,7 @@ internal sealed class LibreLinkClient : ILibreLinkClient
     public async Task<GraphInformation?> GraphAsync(Guid patientId, CancellationToken cancellationToken = default)
     {
         ValidateAuth();
-        
+
         var request = new HttpRequestMessage(HttpMethod.Get, $"/llu/connections/{patientId}/graph");
         var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
