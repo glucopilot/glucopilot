@@ -1,0 +1,28 @@
+name: Build
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+  DOTNET_VERSION: 8.0.x
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore src/gluco-pilot.sln
+    - name: Build
+      run: dotnet build src/gluco-pilot.sln --no-restore
+    - name: Test
+      run: dotnet test src/gluco-pilot.sln --no-build --verbosity normal
