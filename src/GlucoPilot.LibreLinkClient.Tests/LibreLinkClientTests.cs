@@ -125,4 +125,37 @@ public class LibreLinkClientTests
         _libreLinkAuthenticator.Verify(a => a.LoginAsync(It.IsAny<AuthTicket>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }
+
+    [Test]
+    public async Task GraphAsync_ValidAuth_Returns_GraphInformation()
+    {
+        var patientId = Guid.NewGuid();
+        var graphInformation = new GraphInformation
+        {
+            Connection = new ConnectionData
+                { Id = Guid.NewGuid(), FirstName = "First", LastName = "Last", PatientId = Guid.NewGuid() },
+            GraphData = new List<GraphData>
+            {
+                new() { FactoryTimeStamp = DateTime.Now.ToString(), TimeStamp = DateTime.Now.AddHours(-1).ToString(), TrendArrow = 0, Value = 5.5 }
+            }
+        };
+        var graphResponse = new GraphResponse { Data = graphInformation };
+        var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(graphResponse))
+        };
+        _httpMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(responseMessage);
+        _libreLinkAuthenticator.Setup(a => a.IsAuthenticated).Returns(true);
+        var result = await _sut.GraphAsync(patientId);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Connection, Is.EqualTo(graphInformation.Connection));
+            Assert.That(result.GraphData, Is.EquivalentTo(graphInformation.GraphData));
+        });
+        _libreLinkAuthenticator.Verify(a => a.IsAuthenticated, Times.Once);
+    }
 }
