@@ -26,7 +26,7 @@ public sealed class LibreLinkAuthenticatorTests
 
         _sut = new LibreLinkAuthenticator(_httpClient);
     }
-    
+
     [TearDown]
     public void TearDown()
     {
@@ -37,7 +37,7 @@ public sealed class LibreLinkAuthenticatorTests
     public async Task LoginAsync_ValidCredentials_ReturnsAuthTicket()
     {
         var authTicket = new AuthTicket
-            { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
+        { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
         var loginResponse = new LibreLinkResponse<LoginResponse>
         {
             Data = new LoginResponse { AuthTicket = authTicket }
@@ -76,7 +76,7 @@ public sealed class LibreLinkAuthenticatorTests
     public void LoginAsync_ExpiredAuthTicket_ThrowsException()
     {
         var expiredTicket = new AuthTicket
-            { Token = "expired_token", Expires = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds() };
+        { Token = "expired_token", Expires = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds() };
 
         Assert.That(() => _sut.LoginAsync(expiredTicket), Throws.InstanceOf<LibreLinkAuthenticationExpiredException>());
     }
@@ -85,7 +85,7 @@ public sealed class LibreLinkAuthenticatorTests
     public async Task IsAuthenticated_ValidAuthTicket_ReturnsTrue()
     {
         var authTicket = new AuthTicket
-            { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
+        { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
         await _sut.LoginAsync(authTicket);
 
         var isAuthenticated = _sut.IsAuthenticated;

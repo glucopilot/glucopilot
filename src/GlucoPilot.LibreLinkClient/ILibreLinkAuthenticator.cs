@@ -9,7 +9,7 @@ internal interface ILibreLinkAuthenticator
     /// A user is not authenticated when the auth ticket is null or expired.
     /// </summary>
     bool IsAuthenticated { get; }
-    
+
     /// <summary>
     /// Log in to LibreLink.
     /// </summary>
@@ -18,7 +18,7 @@ internal interface ILibreLinkAuthenticator
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns></returns>
     Task<LoginResponse> LoginAsync(string username, string password, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Authenticate the client with an existing auth ticket.
     /// </summary>
