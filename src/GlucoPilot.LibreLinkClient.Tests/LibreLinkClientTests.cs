@@ -158,4 +158,24 @@ public class LibreLinkClientTests
         });
         _libreLinkAuthenticator.Verify(a => a.IsAuthenticated, Times.Once);
     }
+
+    [Test]
+    public void GetGraphAsync_NoAuth_ThrowsNotAuthenticatedException()
+    {
+        var tenantId = Guid.NewGuid();
+        _libreLinkAuthenticator.Setup(a => a.IsAuthenticated).Returns(false);
+
+        Assert.That(() => _sut.GraphAsync(tenantId), Throws.InstanceOf<LibreLinkNotAuthenticatedException>());
+    }
+
+    [Test]
+    public void GetGraphAsync_ExpiredAuth_ThrowsAuthenticationExpiredException()
+    {
+        var tenantId = Guid.NewGuid();
+        var expiredTicket = new AuthTicket
+        { Token = "expired_token", Expires = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds() };
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", expiredTicket.Token);
+
+        Assert.That(() => _sut.GraphAsync(tenantId), Throws.InstanceOf<LibreLinkAuthenticationExpiredException>());
+    }
 }
