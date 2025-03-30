@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.LibreLinkClient", "GlucoPilot.LibreLinkClient\GlucoPilot.LibreLinkClient.csproj", "{78AF6668-9587-4591-AACA-677BA4E6DD9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.LibreLinkClient.Tests", "GlucoPilot.LibreLinkClient.Tests\GlucoPilot.LibreLinkClient.Tests.csproj", "{A68273F4-3978-4033-8B90-FA40F6AE851D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78AF6668-9587-4591-AACA-677BA4E6DD9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78AF6668-9587-4591-AACA-677BA4E6DD9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78AF6668-9587-4591-AACA-677BA4E6DD9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78AF6668-9587-4591-AACA-677BA4E6DD9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A68273F4-3978-4033-8B90-FA40F6AE851D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A68273F4-3978-4033-8B90-FA40F6AE851D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A68273F4-3978-4033-8B90-FA40F6AE851D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A68273F4-3978-4033-8B90-FA40F6AE851D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
