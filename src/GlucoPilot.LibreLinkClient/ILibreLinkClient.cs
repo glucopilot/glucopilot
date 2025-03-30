@@ -11,7 +11,7 @@ public interface ILibreLinkClient
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>LibreLink connections.</returns>
     Task<IReadOnlyCollection<ConnectionData>> GetConnectionsAsync(CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Log in to LibreLink.
     /// </summary>
@@ -23,7 +23,7 @@ public interface ILibreLinkClient
     /// </exception>
     /// <returns>The successful auth ticket.</returns>
     Task<AuthTicket> LoginAsync(string username, string password, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Authenticate the client with an existing auth ticket.
     /// </summary>

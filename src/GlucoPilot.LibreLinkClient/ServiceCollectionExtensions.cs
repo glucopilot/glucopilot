@@ -34,6 +34,6 @@ public static class ServiceCollectionExtensions
                 client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
                 client.DefaultRequestHeaders.Add("version", LibreLinkOptions.LinkUpVersion);
                 client.DefaultRequestHeaders.Add("product", LibreLinkOptions.LinkUpProduct);
-            });;
+            }); ;
     }
 }

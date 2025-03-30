@@ -6,7 +6,7 @@ public sealed record LoginRedirect
 {
     [JsonPropertyName("redirect")]
     public bool Redirect { get; init; }
-    
+
     [JsonPropertyName("region")]
     public string? RegionCode { get; init; }
 

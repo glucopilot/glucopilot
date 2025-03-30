@@ -78,7 +78,7 @@ public class LibreLinkClientTests
     public void GetConnectionsAsync_ExpiredAuth_ThrowsAuthenticationExpiredException()
     {
         var expiredTicket = new AuthTicket
-            { Token = "expired_token", Expires = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds() };
+        { Token = "expired_token", Expires = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds() };
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", expiredTicket.Token);
 
         Assert.That(() => _sut.GetConnectionsAsync(), Throws.InstanceOf<LibreLinkAuthenticationExpiredException>());
@@ -88,7 +88,7 @@ public class LibreLinkClientTests
     public async Task LoginAsync_ValidCredentials_SetsAuthHeader()
     {
         var authTicket = new AuthTicket
-            { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
+        { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
         var loginResponse = new LoginResponse { AuthTicket = authTicket };
         _libreLinkAuthenticator.Setup(a =>
                 a.LoginAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -110,7 +110,7 @@ public class LibreLinkClientTests
     public async Task LoginAsync_ValidAuthTicket_SetsAuthHeader()
     {
         var authTicket = new AuthTicket
-            { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
+        { Token = "valid_token", Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() };
         _libreLinkAuthenticator.Setup(a => a.LoginAsync(It.IsAny<AuthTicket>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new LoginResponse { AuthTicket = authTicket });
 
