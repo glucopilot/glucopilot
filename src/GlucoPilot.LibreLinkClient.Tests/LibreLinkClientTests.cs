@@ -133,7 +133,7 @@ public class LibreLinkClientTests
         var graphInformation = new GraphInformation
         {
             Connection = new ConnectionData
-                { Id = Guid.NewGuid(), FirstName = "First", LastName = "Last", PatientId = Guid.NewGuid() },
+            { Id = Guid.NewGuid(), FirstName = "First", LastName = "Last", PatientId = Guid.NewGuid() },
             GraphData = new List<GraphData>
             {
                 new() { FactoryTimeStamp = DateTime.Now.ToString(), TimeStamp = DateTime.Now.AddHours(-1).ToString(), TrendArrow = 0, Value = 5.5 }
