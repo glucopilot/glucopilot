@@ -33,4 +33,12 @@ public interface ILibreLinkClient
     /// When the auth ticket is expired.
     /// </exception>
     Task LoginAsync(AuthTicket ticket, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get LibreLink graph information. This contains graph data and connection information.
+    /// </summary>
+    /// <param name="patientId">Patient Id to get graph information for.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns></returns>
+    Task<GraphInformation?> GraphAsync(Guid patientId, CancellationToken cancellationToken = default);
 }
