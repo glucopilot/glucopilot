@@ -12,6 +12,6 @@ namespace GlucoPilot.Identity
 
             return services;
         }
-        
+
     }
 }
