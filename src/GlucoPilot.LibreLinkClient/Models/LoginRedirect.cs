@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json.Serialization;
 
 namespace GlucoPilot.LibreLinkClient.Models;
