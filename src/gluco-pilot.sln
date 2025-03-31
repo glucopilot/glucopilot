@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.LibreLinkClient", "GlucoPilot.LibreLinkClient\GlucoPilot.LibreLinkClient.csproj", "{78AF6668-9587-4591-AACA-677BA4E6DD9B}"
 EndProject
@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Api", "GlucoPilot.Api\GlucoPilot.Api.csproj", "{50BF069C-EAC3-4B1D-A538-FF4D8DCCFB76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Api.Tests", "GlucoPilot.Api.Tests\GlucoPilot.Api.Tests.csproj", "{0238323C-BC54-44BB-B6E5-03908D8D83AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Data", "GlucoPilot.Data\GlucoPilot.Data.csproj", "{8F972A73-63E4-4BA2-BD71-478F657BF818}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Data.Migrations", "GlucoPilot.Data.Migrations\GlucoPilot.Data.Migrations.csproj", "{6A06F0B4-29B8-4357-91E1-35329B60BD63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Data.Tests", "GlucoPilot.Data.Tests\GlucoPilot.Data.Tests.csproj", "{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +39,18 @@ Global
 		{0238323C-BC54-44BB-B6E5-03908D8D83AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0238323C-BC54-44BB-B6E5-03908D8D83AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0238323C-BC54-44BB-B6E5-03908D8D83AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F972A73-63E4-4BA2-BD71-478F657BF818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F972A73-63E4-4BA2-BD71-478F657BF818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F972A73-63E4-4BA2-BD71-478F657BF818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F972A73-63E4-4BA2-BD71-478F657BF818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A06F0B4-29B8-4357-91E1-35329B60BD63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A06F0B4-29B8-4357-91E1-35329B60BD63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A06F0B4-29B8-4357-91E1-35329B60BD63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A06F0B4-29B8-4357-91E1-35329B60BD63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

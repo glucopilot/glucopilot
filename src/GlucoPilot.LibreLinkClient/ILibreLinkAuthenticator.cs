@@ -1,5 +1,7 @@
 using GlucoPilot.LibreLinkClient.Exceptions;
 using GlucoPilot.LibreLinkClient.Models;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GlucoPilot.LibreLinkClient;
 
