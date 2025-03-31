@@ -16,7 +16,7 @@ namespace GlucoPilot.Data
                 .AddDbContext<GlucoPilotDbContext>((provider, options) =>
                 {
                     var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-                    options.UseSqlServer(databaseOptions.ConnectionString, e => e.MigrationsAssembly("TapTapGlucose.Data.Migrations"));
+                    options.UseSqlServer(databaseOptions.ConnectionString, e => e.MigrationsAssembly("GlucoPilot.Data.Migrations"));
 
 #if DEBUG
                     options.ConfigureWarnings(
