@@ -23,7 +23,7 @@ public class DatabaseOptions
     /// </summary>
     [Required]
     public required string ConnectionString { get; init; }
-    
+
     /// <summary>
     /// Database provider - must match a key in the <see cref="DatabaseProviderKeys"/> class.
     /// </summary>

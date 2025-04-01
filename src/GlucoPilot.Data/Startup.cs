@@ -20,7 +20,7 @@ namespace GlucoPilot.Data
                 .AddDbContext<GlucoPilotDbContext>((provider, options) =>
                 {
                     var dbOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-                    
+
                     options.UseDatabase(dbOptions.DbProvider, dbOptions.ConnectionString);
 #if DEBUG
                     options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
