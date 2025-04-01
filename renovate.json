@@ -1,17 +1,15 @@
-[
-  {
-    "groupName": "all-updates",
-    "groupSlug": "all-updates",
-    "packageRules": [
-      {
-        "matchUpdateTypes": [ "minor", "patch", "pin", "digest" ],
-        "groupName": "all-updates"
-      }
-    ],
-    "prConcurrentLimit": 1,
-    "prHourlyLimit": 1,
-    "schedule": [
-      "before 7am every weekday"
-    ]
-  }
-]
+{
+  "groupName": "all-updates",
+  "groupSlug": "all-updates",
+  "packageRules": [
+    {
+      "matchUpdateTypes": [ "minor", "patch", "pin", "digest" ],
+      "groupName": "all-updates"
+    }
+  ],
+  "prConcurrentLimit": 1,
+  "prHourlyLimit": 1,
+  "schedule": [
+    "before 7am every weekday"
+  ]
+}
