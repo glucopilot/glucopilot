@@ -9,18 +9,18 @@ public sealed record RegisterRequest
     [Required]
     [EmailAddress]
     public required string Email { get; init; }
-    
+
     [Required]
     public required string Password { get; init; }
-    
+
     [Required]
     public required string ConfirmPassword { get; init; }
-    
+
     [Required]
     public bool AcceptedTerms { get; init; }
-    
+
     public Guid? PatientId { get; init; }
-    
+
     public sealed class Validator : AbstractValidator<RegisterRequest>
     {
         public Validator()
