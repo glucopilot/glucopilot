@@ -51,4 +51,4 @@ jobs:
     - name: Build
       run: dotnet build src/gluco-pilot.sln --no-restore
     - name: Test
-      run: dotnet test src/gluco-pilot.sln --no-build --verbosity normal
+      run: dotnet test src/gluco-pilot.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
