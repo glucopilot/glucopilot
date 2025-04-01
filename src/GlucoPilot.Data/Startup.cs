@@ -10,19 +10,35 @@ namespace GlucoPilot.Data
     {
         public static IServiceCollection AddData(this IServiceCollection services, Action<DatabaseOptions> configure)
         {
-            return services
+            services.AddOptions<DatabaseOptions>()
                 .Configure(configure)
-                .AddScoped<GlucoPilotDbInitialiser>()
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+
+            return services
                 .AddDbContext<GlucoPilotDbContext>((provider, options) =>
                 {
-                    var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-                    options.UseSqlServer(databaseOptions.ConnectionString, e => e.MigrationsAssembly("GlucoPilot.Data.Migrations"));
+                    var dbOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
 
+                    options.UseDatabase(dbOptions.DbProvider, dbOptions.ConnectionString);
 #if DEBUG
-                    options.ConfigureWarnings(
-                    warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+                    options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
 #endif
                 });
+        }
+
+        public static DbContextOptionsBuilder UseDatabase(this DbContextOptionsBuilder builder, string dbProvider,
+            string connectionString)
+        {
+            switch (dbProvider.ToLowerInvariant())
+            {
+                case DatabaseOptions.DatabaseProviderKeys.SqlServer:
+                    return builder.UseSqlServer(connectionString,
+                        e => e.MigrationsAssembly("GlucoPilot.Data.Migrators.MSSQL"));
+                default:
+                    throw new InvalidOperationException($"DB provider '{dbProvider}' is not supported.");
+            }
         }
     }
 }
