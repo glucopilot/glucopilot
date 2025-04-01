@@ -19,7 +19,7 @@ public static class Startup
         services.AddApiVersioning();
         services.AddProblemDetails();
         services.AddValidatorsFromAssemblyContaining(typeof(Startup));
-            
+
         services.AddOptionsWithValidateOnStart<IdentityOptions>()
             .ValidateOnStart();
 

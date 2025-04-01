@@ -13,12 +13,12 @@ public class User
     public Guid Id { get; set; } = Guid.NewGuid();
 
     public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
-    
+
     public DateTimeOffset? Updated { get; set; }
-    
+
     [MaxLength(320)]
     public required string Email { get; set; }
-    
+
     public required string PasswordHash { get; set; }
 
     public bool AcceptedTerms { get; set; }
