@@ -29,7 +29,7 @@ public class TokenServiceTests
     [Test]
     public void GenerateJwtToken_ValidUser_ReturnsToken()
     {
-        var user = new User { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
+        var user = new Patient { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
         var expectedClaimTypes = new[] { "nameid", "email" };
         var expectedClaimValues = new[] { user.Id.ToString(), user.Email };
 
@@ -61,7 +61,7 @@ public class TokenServiceTests
             TokenExpirationInMinutes = 30
         });
         var tokenService = new TokenService(_mockOptions.Object);
-        var user = new User { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
+        var user = new Patient { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
 
         Assert.That(() => tokenService.GenerateJwtToken(user), Throws.ArgumentException);
     }
