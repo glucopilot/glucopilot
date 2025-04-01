@@ -10,4 +10,8 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\GlucoPilot.Data\GlucoPilot.Data.csproj" />
+    </ItemGroup>
+
 </Project>
