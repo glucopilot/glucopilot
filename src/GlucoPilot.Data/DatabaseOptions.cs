@@ -10,7 +10,7 @@ public class DatabaseOptions
     /// <summary>
     /// Represents the keys for different database providers.
     /// </summary>
-    public class DatabaseProviderKeys
+    public static class DatabaseProviderKeys
     {
         /// <summary>
         /// Represents the key for MSSQL Server database provider.

@@ -28,4 +28,4 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.Run();
+await app.RunAsync();

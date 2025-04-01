@@ -18,7 +18,6 @@ public record LoginTerms
         [JsonPropertyName("status")]
         public int Status { get; init; }
 
-        // TODO maybe make a TOU enum
         [JsonPropertyName("type")]
         public required string Type { get; init; }
 
@@ -36,7 +35,6 @@ public record LoginTerms
             [JsonPropertyName("titleKey")]
             public required string TitleKey { get; init; }
 
-            // TODO maybe make a TOU enum
             [JsonPropertyName("type")]
             public required string Type { get; init; }
         }

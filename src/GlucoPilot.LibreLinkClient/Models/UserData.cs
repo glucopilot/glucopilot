@@ -17,9 +17,8 @@ public record UserData
     [JsonPropertyName("dateOfBirth")]
     public required long UnixDateOfBirth { get; init; }
 
-    // TODO confirm if this is actually a unix timestamp
     [JsonIgnore]
-    public DateTime DateOfBirth => DateTime.MinValue.AddMilliseconds(UnixDateOfBirth);
+    public DateTimeOffset DateOfBirth => DateTimeOffset.FromUnixTimeSeconds(UnixDateOfBirth);
 
     [JsonPropertyName("email")]
     public required string Email { get; init; }
