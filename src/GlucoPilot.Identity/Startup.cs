@@ -20,7 +20,9 @@ public static class Startup
         services.AddProblemDetails();
         services.AddValidatorsFromAssemblyContaining(typeof(Startup));
 
-        services.AddOptionsWithValidateOnStart<IdentityOptions>()
+        services.AddOptions<IdentityOptions>()
+            .Configure(configure)
+            .ValidateDataAnnotations()
             .ValidateOnStart();
 
         return services;
