@@ -12,16 +12,16 @@ namespace GlucoPilot.Identity.Services;
 internal sealed class TokenService
 {
     private readonly IdentityOptions _options;
-    
+
     public TokenService(IOptions<IdentityOptions> options)
     {
         _options = options.Value ?? throw new ArgumentNullException(nameof(options));
     }
-    
+
     public string GenerateJwtToken(User user)
     {
         ArgumentNullException.ThrowIfNull(user);
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_options.TokenSigningKey);
         var tokenDescriptor = new SecurityTokenDescriptor
