@@ -2,7 +2,7 @@ using GlucoPilot.Data.Entities;
 
 namespace GlucoPilot.Identity.Services;
 
-internal interface ITokenService
+public interface ITokenService
 {
     string GenerateJwtToken(User user);
 }
