@@ -51,7 +51,7 @@ public sealed class UserService : IUserService
         }
 
         User user;
-        if (request.PatientId is  null)
+        if (request.PatientId is null)
         {
             var patient = new Patient
             {
@@ -60,7 +60,7 @@ public sealed class UserService : IUserService
                 AcceptedTerms = request.AcceptedTerms,
             };
             user = patient;
-            
+
             await _dbContext.Patients.AddAsync(patient, cancellationToken).ConfigureAwait(false);
         }
         else
@@ -68,7 +68,7 @@ public sealed class UserService : IUserService
             var patient = await _dbContext.Patients
                 .FirstOrDefaultAsync(x => x.Id == request.PatientId.Value, cancellationToken)
                 .ConfigureAwait(false);
-            
+
             if (patient is null)
             {
                 throw new NotFoundException("Patient_Not_Found");
@@ -81,10 +81,10 @@ public sealed class UserService : IUserService
                 Patients = [patient],
             };
             user = careGiver;
-            
+
             await _dbContext.Users.AddAsync(careGiver, cancellationToken).ConfigureAwait(false);
         }
-        
+
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return new RegisterResponse
