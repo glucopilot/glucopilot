@@ -44,7 +44,7 @@ public abstract class User
     /// Whether the user has accepted the terms of service.
     /// </summary>
     public bool AcceptedTerms { get; set; }
-    
+
     /// <summary>
     /// A collection of patients that this user has access to.
     /// </summary>
