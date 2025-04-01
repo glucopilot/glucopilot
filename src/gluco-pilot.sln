@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Data.Migrations"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Data.Tests", "GlucoPilot.Data.Tests\GlucoPilot.Data.Tests.csproj", "{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Identity", "GlucoPilot.Identity\GlucoPilot.Identity.csproj", "{780A4E31-5F3C-4EA2-8BAC-9B656B8B5B80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC8B8A2D-6FD5-4F3A-8759-C4B84875DB53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{780A4E31-5F3C-4EA2-8BAC-9B656B8B5B80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{780A4E31-5F3C-4EA2-8BAC-9B656B8B5B80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{780A4E31-5F3C-4EA2-8BAC-9B656B8B5B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{780A4E31-5F3C-4EA2-8BAC-9B656B8B5B80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
