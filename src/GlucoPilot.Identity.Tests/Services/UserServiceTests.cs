@@ -43,10 +43,21 @@ internal sealed class UserServiceTests
     }
 
     [Test]
+    public void Constructor_Should_Throw_ArgumentNullExceptions()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => new UserService(null!, _tokenService.Object), Throws.ArgumentNullException);
+            Assert.That(() => new UserService(_dbContext, null!), Throws.ArgumentNullException);
+        });
+    }
+
+    [Test]
     public async Task LoginAsync_WithValidPatientCredentials_ReturnsLoginResponse()
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
-        var user = new Patient { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        var user = new Patient
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Patients.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -60,7 +71,8 @@ internal sealed class UserServiceTests
     public async Task LoginAsync_WithValidCareGiverCredentials_ReturnsLoginResponse()
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
-        var user = new CareGiver { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        var user = new CareGiver
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -74,7 +86,8 @@ internal sealed class UserServiceTests
     public async Task LoginAsync_WithInvalidPatientCredentials_ThrowsUnauthorizedException()
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
-        var user = new Patient { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        var user = new Patient
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Patients.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -85,7 +98,8 @@ internal sealed class UserServiceTests
     public async Task LoginAsync_WithInvalidCareGiverCredentials_ThrowsUnauthorizedException()
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
-        var user = new CareGiver { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        var user = new CareGiver
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -95,7 +109,13 @@ internal sealed class UserServiceTests
     [Test]
     public async Task RegisterAsync_WithNewPatient_ReturnsRegisterResponse()
     {
-        var request = new RegisterRequest { Email = "newuser@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true };
+        var request = new RegisterRequest
+        {
+            Email = "newuser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true
+        };
 
         var result = await _sut.RegisterAsync(request);
 
@@ -106,11 +126,19 @@ internal sealed class UserServiceTests
     [Test]
     public async Task RegisterAsync_WithNewCareGiver_ReturnsRegisterResponse()
     {
-        var patient = new Patient() { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        var patient = new Patient()
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(patient);
         await _dbContext.SaveChangesAsync();
 
-        var request = new RegisterRequest { Email = "newuser@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true, PatientId = patient.Id };
+        var request = new RegisterRequest
+        {
+            Email = "newuser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true,
+            PatientId = patient.Id
+        };
 
         var result = await _sut.RegisterAsync(request);
 
@@ -121,8 +149,15 @@ internal sealed class UserServiceTests
     [Test]
     public async Task RegisterAsync_WithExistingUser_ThrowsConflictException()
     {
-        var request = new RegisterRequest { Email = "existinguser@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true };
-        var user = new CareGiver { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        var request = new RegisterRequest
+        {
+            Email = "existinguser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true
+        };
+        var user = new CareGiver
+        { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -132,7 +167,14 @@ internal sealed class UserServiceTests
     [Test]
     public void RegisterAsync_WithNonExistentPatientId_ThrowsNotFoundException()
     {
-        var request = new RegisterRequest { Email = "caregiver@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true, PatientId = Guid.NewGuid() };
+        var request = new RegisterRequest
+        {
+            Email = "caregiver@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true,
+            PatientId = Guid.NewGuid()
+        };
 
         Assert.That(() => _sut.RegisterAsync(request), Throws.InstanceOf<NotFoundException>());
     }

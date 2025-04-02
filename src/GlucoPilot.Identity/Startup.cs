@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
+using GlucoPilot.Identity.Authentication;
+using GlucoPilot.Identity.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GlucoPilot.Identity;
@@ -25,7 +28,21 @@ public static class Startup
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        return services;
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserService, UserService>();
+
+        return services
+            .AddIdentityAuthentication(configure);
     }
 
+    /// <summary>
+    /// Registers identity middleware in the application pipeline.
+    /// </summary>
+    /// <param name="app">Application builder to register identity middleware to.</param>
+    /// <returns>Application builder with registered identity middlewares.</returns>
+    public static IApplicationBuilder UseIdentity(this IApplicationBuilder app)
+    {
+        return app
+            .UseIdentityAuthentication();
+    }
 }
