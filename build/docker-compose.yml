@@ -4,8 +4,8 @@ services:
     container_name: glucopilot-mssql-db
     restart: always
     environment:
-      MSSQL_SA_PASSWORD: "SuperSecretPassword123!"
-      SA_PASSWORD: "SuperSecurePassword123!"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      SA_PASSWORD: ${SA_PASSWORD}
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
@@ -20,9 +20,9 @@ services:
     depends_on:
       - mssql-db
     environment:
-      Data__ConnectionString: "Server=mssql-db;Database=GlucoPilot;User Id=sa;Password=SuperSecurePassword123!;TrustServerCertificate=True"
+      Data__ConnectionString: "Server=mssql-db;Database=GlucoPilot;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True"
       Identity__TokenExpirationInMinutes: "60"
-      Identity__TokenSigningKey: "YourSuperSecretSigningKey"
+      Identity__TokenSigningKey: ${IDENTITY_TOKEN_SIGNING_KEY}
     ports:
       - "5400:5400"
       - "5401:5401"
