@@ -404,3 +404,6 @@ FodyWeavers.xsd
 
 # macOS
 .DS_Store
+
+#Docker
+.env

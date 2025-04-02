@@ -16,7 +16,7 @@ namespace GlucoPilot.Data
                 .ValidateOnStart();
 
 
-            return services
+            services
                 .AddDbContext<GlucoPilotDbContext>((provider, options) =>
                 {
                     var dbOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
@@ -26,6 +26,10 @@ namespace GlucoPilot.Data
                     options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
 #endif
                 });
+
+            services.AddHealthChecks().AddDbContextCheck<GlucoPilotDbContext>("GlucoPilot-Database");
+
+            return services;
         }
 
         public static DbContextOptionsBuilder UseDatabase(this DbContextOptionsBuilder builder, string dbProvider,

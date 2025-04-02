@@ -28,4 +28,6 @@ app.UseHttpsRedirection();
 
 app.UseIdentity();
 
+app.UseHealthChecks("/health");
+
 await app.RunAsync();
