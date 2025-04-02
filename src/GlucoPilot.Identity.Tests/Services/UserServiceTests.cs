@@ -91,7 +91,7 @@ internal sealed class UserServiceTests
 
         Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
     }
-    
+
     [Test]
     public async Task RegisterAsync_WithNewPatient_ReturnsRegisterResponse()
     {
@@ -102,15 +102,15 @@ internal sealed class UserServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Email, Is.EqualTo(request.Email));
     }
-    
+
     [Test]
     public async Task RegisterAsync_WithNewCareGiver_ReturnsRegisterResponse()
     {
         var patient = new Patient() { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(patient);
         await _dbContext.SaveChangesAsync();
-        
-        var request = new RegisterRequest { Email = "newuser@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true, PatientId = patient.Id};
+
+        var request = new RegisterRequest { Email = "newuser@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true, PatientId = patient.Id };
 
         var result = await _sut.RegisterAsync(request);
 
