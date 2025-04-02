@@ -1,0 +1,32 @@
+services:
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: glucopilot-mssql-db
+    restart: always
+    environment:
+      MSSQL_SA_PASSWORD: "SuperSecretPassword123!"
+      SA_PASSWORD: "SuperSecurePassword123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - glucopilot-sql-data:/var/opt/mssql
+
+  glucopilot-api:
+    container_name: glucopilot-api
+    build:
+      context: ../src
+      dockerfile: ./GlucoPilot.Api/Dockerfile
+    depends_on:
+      - mssql-db
+    environment:
+      Data__ConnectionString: "Server=mssql-db;Database=GlucoPilot;User Id=sa;Password=SuperSecurePassword123!;TrustServerCertificate=True"
+      Identity__TokenExpirationInMinutes: "60"
+      Identity__TokenSigningKey: "YourSuperSecretSigningKey"
+    ports:
+      - "5400:5400"
+      - "5401:5401"
+
+volumes:
+  glucopilot-sql-data:
+    external: false
