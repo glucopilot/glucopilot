@@ -6,8 +6,11 @@ env:
   DOTNET_VERSION: 9.0.x
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   scan-lint:
