@@ -30,7 +30,7 @@ public static class Startup
 
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
-        
+
         return services
             .AddIdentityAuthentication(configure);
     }
@@ -44,5 +44,5 @@ public static class Startup
     {
         return app
             .UseIdentityAuthentication();
-    }   
+    }
 }

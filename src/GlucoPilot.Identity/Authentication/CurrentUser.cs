@@ -8,7 +8,7 @@ namespace GlucoPilot.Identity.Authentication;
 internal sealed class CurrentUser : ICurrentUser, ICurrentUserInitializer
 {
     private ClaimsPrincipal? _user = null;
-    
+
     public Guid? GetUserId() => _user?.GetUserId() ?? null;
 
     public string? GetUserEmail() => _user?.GetEmail() ?? null;

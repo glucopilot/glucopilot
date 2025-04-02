@@ -57,7 +57,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Patients.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -72,7 +72,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -87,7 +87,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new Patient
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Patients.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -99,7 +99,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new CareGiver
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -111,7 +111,10 @@ internal sealed class UserServiceTests
     {
         var request = new RegisterRequest
         {
-            Email = "newuser@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true
+            Email = "newuser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true
         };
 
         var result = await _sut.RegisterAsync(request);
@@ -124,13 +127,16 @@ internal sealed class UserServiceTests
     public async Task RegisterAsync_WithNewCareGiver_ReturnsRegisterResponse()
     {
         var patient = new Patient()
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(patient);
         await _dbContext.SaveChangesAsync();
 
         var request = new RegisterRequest
         {
-            Email = "newuser@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true,
+            Email = "newuser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true,
             PatientId = patient.Id
         };
 
@@ -145,11 +151,13 @@ internal sealed class UserServiceTests
     {
         var request = new RegisterRequest
         {
-            Email = "existinguser@example.com", Password = "password", ConfirmPassword = "password",
+            Email = "existinguser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
             AcceptedTerms = true
         };
         var user = new CareGiver
-            { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -161,7 +169,10 @@ internal sealed class UserServiceTests
     {
         var request = new RegisterRequest
         {
-            Email = "caregiver@example.com", Password = "password", ConfirmPassword = "password", AcceptedTerms = true,
+            Email = "caregiver@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true,
             PatientId = Guid.NewGuid()
         };
 

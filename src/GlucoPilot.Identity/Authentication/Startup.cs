@@ -20,7 +20,7 @@ internal static class Startup
         var identityOptions = new IdentityOptions();
         configure?.Invoke(identityOptions);
         var key = Encoding.ASCII.GetBytes(identityOptions.TokenSigningKey);
-        
+
         services
             .AddScoped<CurrentUserMiddleware>()
             .AddScoped<ICurrentUser, CurrentUser>()

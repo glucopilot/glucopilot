@@ -9,8 +9,8 @@ public interface ICurrentUser
     Guid? GetUserId();
 
     string? GetUserEmail();
-    
+
     bool IsAuthenticated();
-    
+
     IEnumerable<Claim> GetClaimsIdentity();
 }

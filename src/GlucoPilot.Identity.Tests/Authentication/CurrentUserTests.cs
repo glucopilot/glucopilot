@@ -8,7 +8,7 @@ namespace GlucoPilot.Identity.Tests.Authentication;
 [TestFixture]
 internal sealed class CurrentUserTests
 {
-        [Test]
+    [Test]
     public void GetUserId_WithAuthenticatedUser_ReturnsUserId()
     {
         var userId = Guid.NewGuid();
