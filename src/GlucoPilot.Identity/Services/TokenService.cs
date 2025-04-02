@@ -9,13 +9,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace GlucoPilot.Identity.Services;
 
-internal sealed class TokenService
+internal sealed class TokenService : ITokenService
 {
     private readonly IdentityOptions _options;
 
     public TokenService(IOptions<IdentityOptions> options)
     {
-        _options = options.Value ?? throw new ArgumentNullException(nameof(options));
+        _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
     }
 
     public string GenerateJwtToken(User user)

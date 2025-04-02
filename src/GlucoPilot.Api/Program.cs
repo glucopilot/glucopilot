@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GlucoPilot.Data;
 using GlucoPilot.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +27,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseIdentity();
 
 await app.RunAsync();
+
+
+[ExcludeFromCodeCoverage]
+public abstract partial class Program
+{
+}

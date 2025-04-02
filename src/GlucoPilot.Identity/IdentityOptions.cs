@@ -4,9 +4,7 @@ namespace GlucoPilot.Identity;
 
 public sealed class IdentityOptions
 {
-    [Required]
-    public required string TokenSigningKey { get; init; }
+    [Required] public string TokenSigningKey { get; init; } = "";
 
-    [Required]
-    public required int TokenExpirationInMinutes { get; init; }
+    [Required] public int TokenExpirationInMinutes { get; init; } = 60;
 }

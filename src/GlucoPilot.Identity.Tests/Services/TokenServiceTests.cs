@@ -27,6 +27,18 @@ internal sealed class TokenServiceTests
     }
 
     [Test]
+    public void Constructor_Should_Throw_ArgumentNullExceptions()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => new TokenService(null!), Throws.ArgumentNullException);
+            var options = new Mock<IOptions<IdentityOptions>>();
+            options.Setup(o => o.Value).Returns((IdentityOptions)null);
+            Assert.That(() => new TokenService(options.Object), Throws.ArgumentNullException);
+        });
+    }
+
+    [Test]
     public void GenerateJwtToken_ValidUser_ReturnsToken()
     {
         var user = new Patient { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
