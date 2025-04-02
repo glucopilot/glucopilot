@@ -3,6 +3,9 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
+RUN chown -R appuser:appgroup /app
+
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BuildConfiguration=Release
 WORKDIR /src
@@ -19,4 +22,7 @@ RUN dotnet publish "GlucoPilot.Api.csproj" -c $BuildConfiguration -o /app/publis
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+USER appuser
+
 ENTRYPOINT ["dotnet", "GlucoPilot.Api.dll"]
