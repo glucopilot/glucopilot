@@ -14,5 +14,5 @@ internal static class ClaimsPrincipalExtensions
     private static string? FindFirstValue(this ClaimsPrincipal principal, string claimType) =>
         principal is null
             ? throw new ArgumentNullException(nameof(principal))
-            : principal?.FindFirst(claimType)?.Value;
+            : principal.FindFirst(claimType)?.Value;
 }
