@@ -54,4 +54,4 @@ jobs:
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
     - name: Generate Coverage Report
-      run: reportgenerator -reports:**/TestResults/**/*.xml -targetdir:CoverageReport -reporttypes:opencover
+      run: reportgenerator -reports:**/TestResults/**/*.xml -targetdir:CoverageReport -reporttypes:cobertura
