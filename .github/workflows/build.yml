@@ -43,17 +43,21 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Set up SonarScanner
+      run: >
+        dotnet tool install --global dotnet-sonarscanner
+
+        dotnet sonarscanner begin
+        /k:"glucopilot_GlucoPilot"
+        /o:"glucopilot"
+        /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        /dsonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+
     - name: Restore dependencies
       run: dotnet restore src/gluco-pilot.sln
     - name: Build
-      run: dotnet build src/gluco-pilot.sln --no-restore
+      run: dotnet build src/gluco-pilot.sln -c Release --no-restore
     - name: Test
-      run: dotnet test src/gluco-pilot.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
-    - name: SonarQubeScan
-      uses: SonarSource/sonarqube-scan-action@v4
-      env: 
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.projectKey=glucopilot_GlucoPilot
-          -Dsonar.organization=glucopilot
+      run: dotnet test src/gluco-pilot.sln -c Release --no-build --logger "trx;LogFilePrefix=UnitTestResults" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+    - name: Upload sonar results
+      run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
