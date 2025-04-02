@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApiVersioning();
 
+builder.Services.AddHealthChecks().AddDatabaseHealthChecks();
 builder.Services.AddData(builder.Configuration.GetSection("Data").Bind);
 builder.Services.AddIdentity(builder.Configuration.GetSection("Identity").Bind);
 
@@ -27,5 +28,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseIdentity();
+
+app.UseHealthChecks("/health");
 
 await app.RunAsync();
