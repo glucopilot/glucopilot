@@ -9,7 +9,7 @@ using Moq;
 namespace GlucoPilot.Identity.Tests.Services;
 
 [TestFixture]
-public class TokenServiceTests
+internal sealed class TokenServiceTests
 {
     private Mock<IOptions<IdentityOptions>> _mockOptions;
     private TokenService _tokenService;
