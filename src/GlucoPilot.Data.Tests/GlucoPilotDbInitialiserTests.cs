@@ -1,6 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 
 namespace GlucoPilot.Data.Tests
