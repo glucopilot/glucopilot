@@ -15,7 +15,7 @@ internal sealed class ApiExceptionTests
         Assert.That(exception.Message, Is.EqualTo(message));
         Assert.That(exception.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
     }
-    
+
     [Test]
     public void ForbiddenException_Should_Set_Properties_Correctly()
     {
@@ -25,7 +25,7 @@ internal sealed class ApiExceptionTests
         Assert.That(exception.Message, Is.EqualTo(message));
         Assert.That(exception.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
     }
-    
+
     [Test]
     public void NotFoundException_Should_Set_Properties_Correctly()
     {
@@ -35,7 +35,7 @@ internal sealed class ApiExceptionTests
         Assert.That(exception.Message, Is.EqualTo(message));
         Assert.That(exception.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
-    
+
     [Test]
     public void UnauthorizedException_Should_Set_Properties_Correctly()
     {
