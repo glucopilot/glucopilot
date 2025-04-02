@@ -47,7 +47,7 @@ jobs:
       run: >
         dotnet tool install --global dotnet-sonarscanner
 
-        dotnet sonarscanner begin /k:"glucopilot_GlucoPilot" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+        dotnet sonarscanner begin /k:"glucopilot_GlucoPilot" /o:"glucopilot" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
     - name: Restore dependencies
       run: dotnet restore src/gluco-pilot.sln
