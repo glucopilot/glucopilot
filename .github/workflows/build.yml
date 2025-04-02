@@ -35,26 +35,8 @@ jobs:
         commit_message: Run code generators and linters
         branch: ${{ github.event.pull_request.head.ref }}
 
-  sonarqube:
-     name: SonarQube
-     runs-on: ubuntu-latest
-     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  
-      - name: SonarQubeScan
-        uses: SonarSource/sonarqube-scan-action@v4
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=glucopilot_GlucoPilot
-            -Dsonar.organization=glucopilot
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -67,3 +49,11 @@ jobs:
       run: dotnet build src/gluco-pilot.sln --no-restore
     - name: Test
       run: dotnet test src/gluco-pilot.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
+    - name: SonarQubeScan
+      uses: SonarSource/sonarqube-scan-action@v4
+      env: 
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.projectKey=glucopilot_GlucoPilot
+          -Dsonar.organization=glucopilot
