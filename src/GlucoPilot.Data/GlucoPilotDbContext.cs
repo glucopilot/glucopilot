@@ -12,6 +12,6 @@ public class GlucoPilotDbContext : DbContext
 
     public GlucoPilotDbContext(DbContextOptions<GlucoPilotDbContext> options) : base(options)
     {
-        DatabaseFacade = new DatabaseFacadeWrapper(Database);
+        DatabaseFacade = new DatabaseFacade(Database);
     }
 }

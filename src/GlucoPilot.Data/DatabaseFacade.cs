@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace GlucoPilot.Data
 {
-    public sealed class DatabaseFacadeWrapper : IDatabaseFacade
+    public sealed class DatabaseFacade : IDatabaseFacade
     {
-        private readonly DatabaseFacade _databaseFacade;
+        private readonly Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade _databaseFacade;
 
-        public DatabaseFacadeWrapper(DatabaseFacade databaseFacade)
+        public DatabaseFacade(Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade databaseFacade)
         {
             _databaseFacade = databaseFacade;
         }
