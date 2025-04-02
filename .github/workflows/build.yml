@@ -49,7 +49,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=glucopilot_GlucoPilot
-            -Dsonar.organization=GlucoPilot
+            -Dsonar.organization=glucopilot
 
   build:
 
