@@ -29,9 +29,9 @@ internal sealed class UserServiceTests
             .Options;
         _dbContext = new GlucoPilotDbContext(options);
         _dbContext.Database.EnsureCreated();
-        
+
         _tokenService = new Mock<ITokenService>();
-        
+
         _sut = new UserService(_dbContext, _tokenService.Object);
     }
 
@@ -41,7 +41,7 @@ internal sealed class UserServiceTests
         _connection.Dispose();
         _dbContext.Dispose();
     }
-    
+
     [Test]
     public async Task LoginAsync_WithValidPatientCredentials_ReturnsLoginResponse()
     {
@@ -55,7 +55,7 @@ internal sealed class UserServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Token, Is.Not.Empty);
     }
-    
+
     [Test]
     public async Task LoginAsync_WithValidCareGiverCredentials_ReturnsLoginResponse()
     {
@@ -69,7 +69,7 @@ internal sealed class UserServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Token, Is.Not.Empty);
     }
-    
+
     [Test]
     public async Task LoginAsync_WithInvalidPatientCredentials_ThrowsUnauthorizedException()
     {
