@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+      <IsPackable>false</IsPackable>
+      <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,11 +12,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3" />
 	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 	<PackageReference Include="Moq" Version="4.20.72" />
 	<PackageReference Include="NUnit" Version="4.3.2" />
 	<PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
 	<PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GlucoPilot.Data\GlucoPilot.Data.csproj" />
   </ItemGroup>
 
 </Project>
