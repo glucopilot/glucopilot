@@ -9,7 +9,7 @@ internal sealed class GlucoPilotDbContextTests
 {
     private SqliteConnection _connection;
     private GlucoPilotDbContext _dbContext;
-    
+
     [Test]
     public void Context_Can_Be_Created()
     {
@@ -21,7 +21,7 @@ internal sealed class GlucoPilotDbContextTests
         _dbContext = new GlucoPilotDbContext(options);
         _dbContext.Database.EnsureCreated();
     }
-    
+
     [TearDown]
     public void TearDown()
     {
