@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace GlucoPilot.Identity.Endpoints;
 
+[ExcludeFromCodeCoverage]
 internal static class IdentityEndpoints
 {
     internal static IEndpointRouteBuilder MapIdentityEndpointsInternal(this IEndpointRouteBuilder endpoints)
