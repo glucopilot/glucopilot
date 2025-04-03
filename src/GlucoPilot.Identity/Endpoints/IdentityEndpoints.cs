@@ -15,6 +15,9 @@ internal static class IdentityEndpoints
         group.MapPost("/login", Login.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .AllowAnonymous();
+        group.MapPost("/register", Register.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .AllowAnonymous();
 
         return endpoints;
     }
