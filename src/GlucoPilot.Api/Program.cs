@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApiVersioning();
 
+builder.Services.AddHealthChecks();
 builder.Services.AddData(builder.Configuration.GetSection("Data").Bind)
     .AddDataHealthChecks();
 builder.Services.AddIdentity(builder.Configuration.GetSection("Identity").Bind);
