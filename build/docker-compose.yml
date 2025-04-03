@@ -24,8 +24,8 @@ services:
       Identity__TokenExpirationInMinutes: "60"
       Identity__TokenSigningKey: ${IDENTITY_TOKEN_SIGNING_KEY}
     ports:
-      - "5400:5400"
-      - "5401:5401"
+      - "8080:8080"
+      - "8081:8081"
 
 volumes:
   glucopilot-sql-data:
