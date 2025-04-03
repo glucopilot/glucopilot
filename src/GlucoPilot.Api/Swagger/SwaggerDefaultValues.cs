@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -14,6 +15,7 @@ namespace GlucoPilot.Api.Swagger;
 /// </summary>
 /// <remarks>This <see cref="IOperationFilter"/> is only required due to bugs in the <see cref="SwaggerGenerator"/>.
 /// Once they are fixed and published, this class can be removed.</remarks>
+[ExcludeFromCodeCoverage]
 public class SwaggerDefaultValues : IOperationFilter
 {
     /// <inheritdoc />
@@ -32,7 +34,7 @@ public class SwaggerDefaultValues : IOperationFilter
 
             foreach (var contentType in response.Content.Keys)
             {
-                if (!responseType.ApiResponseFormats.Any(x => x.MediaType == contentType))
+                if (responseType.ApiResponseFormats.All(x => x.MediaType != contentType))
                 {
                     response.Content.Remove(contentType);
                 }
