@@ -33,7 +33,7 @@ When calling the register endpoint, a patient is distinguished by having now `Pa
 If the `PatientId` is set, the user will be registered as a `CareGiver` with basic access to the patient until authorized to access specific patient data.
 
 ### User Login
-`api/v1/identity/register`
+`api/v1/identity/login`
 
 The user can log in using the `LoginRequest` endpoint. The user must provide their email and password. If the credentials are valid, a JWT token will be returned.
 
