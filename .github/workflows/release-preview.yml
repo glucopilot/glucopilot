@@ -22,15 +22,17 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Set VERSION variable from tag
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+        run: >
+          $VERSION = $env:GITHUB_REF -replace 'refs/tags/v', ''
+          Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$VERSION"
       - name: Build
-        run: dotnet build src/gluco-pilot.sln --configuration Release /p:Version=${VERSION}
+        run: dotnet build src/gluco-pilot.sln --configuration Release /p:Version=$env:VERSION}
       - name: Publish
-        run: dotnet publish src/gluco-pilot.sln --configuration Release --runtime win-x86 --output ./publish /p:Version=${VERSION}
+        run: dotnet publish src/gluco-pilot.sln --configuration Release --runtime win-x86 --output ./publish /p:Version=$env:VERSION}
       - name: Test
-        run: dotnet test src/gluco-pilot.sln --configuration Release /p:Version=${VERSION} --no-build
+        run: dotnet test src/gluco-pilot.sln --configuration Release /p:Version=$env:VERSION} --no-build
       - name: Pack
-        run: dotnet pack src/gluco-pilot.sln --configuration Release /p:Version=${VERSION} --output .
+        run: dotnet pack src/gluco-pilot.sln --configuration Release /p:Version=$env:VERSION} --output .
       - name: Push
         run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_APIKEY }}
       - name: Deploy
