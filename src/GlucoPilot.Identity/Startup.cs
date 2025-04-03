@@ -2,8 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using GlucoPilot.Identity.Authentication;
+using GlucoPilot.Identity.Endpoints;
 using GlucoPilot.Identity.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GlucoPilot.Identity;
@@ -33,6 +35,16 @@ public static class Startup
 
         return services
             .AddIdentityAuthentication(configure);
+    }
+    
+    /// <summary>
+    /// Maps identity endpoints to the application.
+    /// </summary>
+    /// <param name="endpoints">Endpoint route builder to map identity endpoints.</param>
+    /// <returns>Endpoint route builder with identity endpoints mapped.</returns>
+    public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder endpoints)
+    {
+        return endpoints.MapIdentityEndpointsInternal();
     }
 
     /// <summary>

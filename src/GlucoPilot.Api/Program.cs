@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApiVersioning();
@@ -30,5 +29,7 @@ app.UseHttpsRedirection();
 app.UseIdentity();
 
 app.UseHealthChecks("/health");
+
+app.MapIdentityEndpoints();
 
 await app.RunAsync();
