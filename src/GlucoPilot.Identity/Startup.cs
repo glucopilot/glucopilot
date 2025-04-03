@@ -36,7 +36,7 @@ public static class Startup
         return services
             .AddIdentityAuthentication(configure);
     }
-    
+
     /// <summary>
     /// Maps identity endpoints to the application.
     /// </summary>
