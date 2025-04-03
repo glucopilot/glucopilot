@@ -46,7 +46,7 @@ namespace GlucoPilot.Identity.Tests.Endpoints.Register
         }
 
         [Test]
-        public async Task HandleAsync_WithInvalidRequest_ReturnsOkResult()
+        public async Task HandleAsync_WithInvalidRequest_ReturnsValidationProblem()
         {
             var request = new RegisterRequest
             {
