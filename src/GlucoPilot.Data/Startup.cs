@@ -27,9 +27,12 @@ namespace GlucoPilot.Data
 #endif
                 });
 
-            services.AddHealthChecks().AddDbContextCheck<GlucoPilotDbContext>("GlucoPilot-Database");
-
             return services;
+        }
+
+        public static IServiceCollection AddDataHealthChecks(this IServiceCollection services)
+        {
+            return services.AddDataHealthChecks();
         }
 
         public static DbContextOptionsBuilder UseDatabase(this DbContextOptionsBuilder builder, string dbProvider,
