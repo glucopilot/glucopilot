@@ -25,7 +25,7 @@ public class MealIngredient
     /// <summary>
     /// The quantity of the ingredient in the meal.
     /// </summary>
-    [Range(0, int.MaxValue, ErrorMessage = "Quantity must 0 or more.")]
+    [Range(0, int.MaxValue)]
     public required int Quantity { get; set; }
 
 }
