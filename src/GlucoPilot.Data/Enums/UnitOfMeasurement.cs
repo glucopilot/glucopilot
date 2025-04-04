@@ -2,10 +2,11 @@
 
 public enum UnitOfMeasurement
 {
-    unit = 0,
-    grams = 1,
-    hectograms = 2,
-    kg = 3,
-    ml = 4,
-    l = 5,
+    Unit = 0,
+    Grams = 1,
+    Hectograms = 2,
+    Kilograms = 3,
+    Millilitres = 4,
+    Hectolitres = 5,
+    Liters = 6,
 }
