@@ -27,7 +27,7 @@ app.MapIdentityEndpoints();
 There are two ways to register a user:
 
 #### As a Patient
-When calling the register endpoint, a patient is distinguished by having now `PatientId` set in the `RegisterRequest`.
+When calling the register endpoint, a patient is distinguished by having no `PatientId` set in the `RegisterRequest`.
 
 #### As a Care Giver
 If the `PatientId` is set, the user will be registered as a `CareGiver` with basic access to the patient until authorized to access specific patient data.
