@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GlucoPilot.Data.Entities;
 
-[Table("meal_ingredient")]
+[Table("meals_ingredients")]
 public class MealIngredient
 {
     /// <summary>
