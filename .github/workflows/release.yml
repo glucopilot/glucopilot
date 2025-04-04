@@ -22,7 +22,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Set VERSION variable from tag
-        run: >
+        run: |
           $VERSION = $env:GITHUB_REF -replace 'refs/tags/v', ''
           Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$VERSION"
       - name: Build
