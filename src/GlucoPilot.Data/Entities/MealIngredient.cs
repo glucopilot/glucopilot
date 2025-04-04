@@ -21,5 +21,5 @@ public class MealIngredient
     /// The list of ingredients the meal ingredient is associated with.
     /// </summary>
     public List<Ingredient> Ingredients { get; set; } = [];
-    
+
 }
