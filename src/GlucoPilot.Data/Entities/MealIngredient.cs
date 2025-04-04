@@ -16,7 +16,7 @@ public class MealIngredient
     /// the unique identifier for the meal.
     /// </summary>
     public required Guid MealId { get; set; }
-    
+
     /// <summary>
     /// The meals the meal ingredient is associated with.
     /// </summary>
