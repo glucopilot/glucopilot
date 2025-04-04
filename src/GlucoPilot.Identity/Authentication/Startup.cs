@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using GlucoPilot.AspNetCore.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,7 +14,8 @@ namespace GlucoPilot.Identity.Authentication;
 [ExcludeFromCodeCoverage]
 internal static class Startup
 {
-    internal static IServiceCollection AddIdentityAuthentication(this IServiceCollection services, Action<IdentityOptions> configure)
+    internal static IServiceCollection AddIdentityAuthentication(this IServiceCollection services,
+        Action<IdentityOptions> configure)
     {
         var identityOptions = new IdentityOptions();
         configure?.Invoke(identityOptions);
@@ -24,7 +24,8 @@ internal static class Startup
         services
             .AddScoped<CurrentUserMiddleware>()
             .AddScoped<ICurrentUser, CurrentUser>()
-            .AddScoped<ICurrentUserInitializer>(provider => (ICurrentUserInitializer)provider.GetRequiredService<ICurrentUser>());
+            .AddScoped<ICurrentUserInitializer>(provider =>
+                (ICurrentUserInitializer)provider.GetRequiredService<ICurrentUser>());
         services
             .AddAuthentication(auth =>
             {
@@ -33,7 +34,11 @@ internal static class Startup
             })
             .AddJwtBearer(bearer =>
             {
+#if DEBUG
                 bearer.RequireHttpsMetadata = false;
+#else
+                bearer.RequireHttpsMetadata = true;
+#endif
                 bearer.SaveToken = true;
                 bearer.TokenValidationParameters = new TokenValidationParameters
                 {

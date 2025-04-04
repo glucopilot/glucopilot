@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using GlucoPilot.Api.Middleware;
 using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
 using GlucoPilot.Identity;
@@ -40,6 +41,8 @@ app.UseHttpsRedirection();
 app.UseIdentity();
 
 app.UseHealthChecks("/health");
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapIdentityEndpoints();
 
