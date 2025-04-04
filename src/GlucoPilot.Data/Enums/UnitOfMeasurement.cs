@@ -8,5 +8,5 @@ public enum UnitOfMeasurement
     Kilograms = 3,
     Millilitres = 4,
     Hectolitres = 5,
-    Liters = 6,
+    Litres = 6,
 }
