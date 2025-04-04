@@ -18,17 +18,17 @@ internal sealed class ExceptionMiddlewareTests
     private Mock<ILogger<ExceptionMiddleware>> _logger;
 
     private ExceptionMiddleware _sut;
-    
+
     [SetUp]
     public void SetUp()
     {
         _httpContext = new DefaultHttpContext();
         _currentUser = new Mock<ICurrentUser>();
         _logger = new Mock<ILogger<ExceptionMiddleware>>();
-        
+
         _sut = new ExceptionMiddleware(_currentUser.Object, _logger.Object);
     }
-    
+
     [Test]
     public async Task InvokeAsync_WithConflictException_ReturnsConflictStatusCode()
     {
