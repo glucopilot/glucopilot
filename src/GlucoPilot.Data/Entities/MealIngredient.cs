@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GlucoPilot.Data.Entities;
@@ -13,13 +13,19 @@ public class MealIngredient
     public required Guid MealIngredientId { get; set; }
 
     /// <summary>
-    /// The list of meals the meal ingredient is associated with.
+    /// The meals the meal ingredient is associated with.
     /// </summary>
-    public List<Meal> Meals { get; set; } = [];
+    public virtual required Meal Meal { get; set; }
 
     /// <summary>
-    /// The list of ingredients the meal ingredient is associated with.
+    /// The ingredients the meal ingredient is associated with.
     /// </summary>
-    public List<Ingredient> Ingredients { get; set; } = [];
-    
+    public virtual required Ingredient Ingredient { get; set; }
+
+    /// <summary>
+    /// The quantity of the ingredient in the meal.
+    /// </summary>
+    [Range(0, int.MaxValue, ErrorMessage = "Quantity must 0 or more.")]
+    public required int Quantity { get; set; }
+
 }

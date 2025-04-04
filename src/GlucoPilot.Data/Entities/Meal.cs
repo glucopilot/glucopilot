@@ -26,7 +26,7 @@ public class Meal
     public required DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// The list of ingredients in the meal.
+    /// The list of ingredients associated with the meal.
     /// </summary>
-    public List<Ingredient> Ingredients { get; set; } = [];
+    public virtual ICollection<MealIngredient> MealIngredients { get; set; } = [];
 }

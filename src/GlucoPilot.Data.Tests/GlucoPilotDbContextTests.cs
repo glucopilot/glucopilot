@@ -67,13 +67,31 @@ internal sealed class GlucoPilotDbContextTests
         {
             Id = Guid.NewGuid(),
             Created = DateTimeOffset.UtcNow,
-            Name = "Sugar",
-            Carbs = 100,
-            Protein = 0,
-            Fat = 0,
-            Calories = 400,
+            Name = "Ingredient 1",
+            Carbs = 10,
+            Protein = 5,
+            Fat = 2,
+            Calories = 100,
             Uom = UnitOfMeasurement.Grams,
         };
+        var meal = new Meal
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            Name = "Test Meal",
+        };
+        var mealIngredient = new List<MealIngredient>
+        {
+            new MealIngredient
+            {
+                MealIngredientId = Guid.NewGuid(),
+                Quantity = 1,
+                Ingredient = ingredient,
+                Meal = meal,
+            }
+        };
+        meal.MealIngredients = mealIngredient;
+        ingredient.Meals = mealIngredient;
 
         _dbContext.Ingredients.Add(ingredient);
         _dbContext.SaveChanges();
@@ -82,108 +100,92 @@ internal sealed class GlucoPilotDbContextTests
         Assert.Multiple(() =>
         {
             Assert.That(retrievedIngredient, Is.Not.Null);
-            Assert.That(ingredient.Name, Is.EqualTo(retrievedIngredient.Name));
-            Assert.That(ingredient.Carbs, Is.EqualTo(retrievedIngredient.Carbs));
-            Assert.That(ingredient.Protein, Is.EqualTo(retrievedIngredient.Protein));
-            Assert.That(ingredient.Fat, Is.EqualTo(retrievedIngredient.Fat));
-            Assert.That(ingredient.Calories, Is.EqualTo(retrievedIngredient.Calories));
-            Assert.That(ingredient.Uom, Is.EqualTo(retrievedIngredient.Uom));
+            Assert.That(ingredient, Is.EqualTo(retrievedIngredient));
         });
     }
 
     [Test]
     public void Can_Add_And_Retrieve_Meal()
     {
-        var ingredient1 = new Ingredient
+        var ingredient = new Ingredient
         {
             Id = Guid.NewGuid(),
             Created = DateTimeOffset.UtcNow,
-            Name = "Sugar",
-            Carbs = 100,
-            Protein = 0,
-            Fat = 0,
-            Calories = 400,
+            Name = "Ingredient 1",
+            Carbs = 10,
+            Protein = 5,
+            Fat = 2,
+            Calories = 100,
             Uom = UnitOfMeasurement.Grams,
         };
-
-        var ingredient2 = new Ingredient
-        {
-            Id = Guid.NewGuid(),
-            Created = DateTimeOffset.UtcNow,
-            Name = "Flour",
-            Carbs = 75,
-            Protein = 10,
-            Fat = 1,
-            Calories = 300,
-            Uom = UnitOfMeasurement.Grams,
-        };
-
-        var ingredients = new List<Ingredient> { ingredient1, ingredient2 };
-
         var meal = new Meal
         {
             Id = Guid.NewGuid(),
-            Name = "Pancakes",
             Created = DateTimeOffset.UtcNow,
-            Ingredients = ingredients,
+            Name = "Test Meal",
         };
+        var mealIngredient = new List<MealIngredient>
+        {
+            new MealIngredient
+            {
+                MealIngredientId = Guid.NewGuid(),
+                Quantity = 1,
+                Ingredient = ingredient,
+                Meal = meal,
+            }
+        };
+        meal.MealIngredients = mealIngredient;
+        ingredient.Meals = mealIngredient;
 
         _dbContext.Meals.Add(meal);
         _dbContext.SaveChanges();
 
         var retrievedMeal = _dbContext.Meals
-            .Include(m => m.Ingredients)
+            .Include(m => m.MealIngredients)
             .FirstOrDefault(m => m.Id == meal.Id);
 
         Assert.Multiple(() =>
         {
             Assert.That(retrievedMeal, Is.Not.Null);
-            Assert.That(retrievedMeal.Ingredients.Count, Is.EqualTo(2));
-            Assert.That(retrievedMeal.Ingredients, Is.EquivalentTo(ingredients));
+            Assert.That(retrievedMeal, Is.EqualTo(meal));
         });
     }
 
     [Test]
     public void Can_Add_And_Retrieve_Meal_Ingredient()
     {
-        var meals = new List<Meal>
-                    {
-                        new Meal
-                        {
-                            Id = Guid.NewGuid(),
-                            Created = DateTimeOffset.UtcNow,
-                            Ingredients = new List<Ingredient>(),
-                            Name = "Test Meal"
-                        }
-                    };
-        var ingredients = new List<Ingredient>
-                    {
-                        new Ingredient
-                        {
-                            Id = Guid.NewGuid(),
-                            Created = DateTimeOffset.UtcNow,
-                            Name = "Test Ingredient",
-                            Carbs = 10,
-                            Protein = 5,
-                            Fat = 2,
-                            Calories = 100,
-                            Uom = UnitOfMeasurement.Grams
-                        }
-                    };
+        var meal = new Meal
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            Name = "Test Meal"
+        };
+        var ingredient = new Ingredient
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            Name = "Test Ingredient",
+            Carbs = 10,
+            Protein = 5,
+            Fat = 2,
+            Calories = 100,
+            Uom = UnitOfMeasurement.Grams
+        };
         var mealIngredient = new MealIngredient
         {
             MealIngredientId = Guid.NewGuid(),
-            Meals = meals,
-            Ingredients = ingredients,
+            Meal = meal,
+            Ingredient = ingredient,
+            Quantity = 1,
         };
 
         _dbContext.MealIngredients.Add(mealIngredient);
         _dbContext.SaveChanges();
 
         Assert.That(_dbContext.MealIngredients.Count(), Is.EqualTo(1));
-        var retrievedMealIngredient = _dbContext.MealIngredients.Include(mi => mi.Meals).Include(mi => mi.Ingredients).First();
+        var retrievedMealIngredient = _dbContext.MealIngredients.Include(mi => mi.Meal).Include(mi => mi.Ingredient).First();
         Assert.That(mealIngredient, Is.Not.Null);
-        Assert.That(mealIngredient.Meals, Is.EquivalentTo(meals));
-        Assert.That(mealIngredient.Ingredients, Is.EquivalentTo(ingredients));
+        Assert.That(mealIngredient.Meal, Is.EqualTo(meal));
+        Assert.That(mealIngredient.Ingredient, Is.EqualTo(ingredient));
     }
 }

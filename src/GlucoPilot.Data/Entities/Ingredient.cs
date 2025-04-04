@@ -1,5 +1,6 @@
 ﻿using GlucoPilot.Data.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -49,4 +50,9 @@ public class Ingredient
     /// The unit of measurement of the ingredient that the nutritional values are based on.
     /// </summary>
     public required UnitOfMeasurement Uom { get; set; }
+
+    /// <summary>
+    /// The list of ingredients associated with this ingredient.
+    /// </summary>
+    public virtual ICollection<MealIngredient> Meals { get; set; } = [];
 }
