@@ -45,7 +45,7 @@ internal sealed class GlucoPilotDbContextTests
             Id = Guid.NewGuid(),
             Created = DateTimeOffset.UtcNow,
             GlucoseLevel = 120.5,
-            Direction = ReadingDirection.Steady
+            Direction = ReadingDirection.Steady,
         };
 
         _dbContext.Readings.Add(reading);
@@ -72,7 +72,7 @@ internal sealed class GlucoPilotDbContextTests
             Protein = 0,
             Fat = 0,
             Calories = 400,
-            Uom = UnitOfMeasurement.grams
+            Uom = UnitOfMeasurement.Grams,
         };
 
         _dbContext.Ingredients.Add(ingredient);
@@ -103,7 +103,7 @@ internal sealed class GlucoPilotDbContextTests
             Protein = 0,
             Fat = 0,
             Calories = 400,
-            Uom = UnitOfMeasurement.grams
+            Uom = UnitOfMeasurement.Grams,
         };
 
         var ingredient2 = new Ingredient
@@ -115,7 +115,7 @@ internal sealed class GlucoPilotDbContextTests
             Protein = 10,
             Fat = 1,
             Calories = 300,
-            Uom = UnitOfMeasurement.grams
+            Uom = UnitOfMeasurement.Grams,
         };
 
         var ingredients = new List<Ingredient> { ingredient1, ingredient2 };
