@@ -16,6 +16,11 @@ public class Meal
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
+    /// The name of the meal.
+    /// </summary>
+    public required string Name { get; set; } = string.Empty;
+
+    /// <summary>
     /// The date and time the meal was created.
     /// </summary>
     public required DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;

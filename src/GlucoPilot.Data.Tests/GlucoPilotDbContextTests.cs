@@ -123,8 +123,9 @@ internal sealed class GlucoPilotDbContextTests
         var meal = new Meal
         {
             Id = Guid.NewGuid(),
+            Name = "Pancakes",
             Created = DateTimeOffset.UtcNow,
-            Ingredients = ingredients
+            Ingredients = ingredients,
         };
 
         _dbContext.Meals.Add(meal);
@@ -140,5 +141,49 @@ internal sealed class GlucoPilotDbContextTests
             Assert.That(retrievedMeal.Ingredients.Count, Is.EqualTo(2));
             Assert.That(retrievedMeal.Ingredients, Is.EquivalentTo(ingredients));
         });
+    }
+
+    [Test]
+    public void Can_Add_And_Retrieve_Meal_Ingredient()
+    {
+        var meals = new List<Meal>
+                    {
+                        new Meal
+                        {
+                            Id = Guid.NewGuid(),
+                            Created = DateTimeOffset.UtcNow,
+                            Ingredients = new List<Ingredient>(),
+                            Name = "Test Meal"
+                        }
+                    };
+        var ingredients = new List<Ingredient>
+                    {
+                        new Ingredient
+                        {
+                            Id = Guid.NewGuid(),
+                            Created = DateTimeOffset.UtcNow,
+                            Name = "Test Ingredient",
+                            Carbs = 10,
+                            Protein = 5,
+                            Fat = 2,
+                            Calories = 100,
+                            Uom = UnitOfMeasurement.Grams
+                        }
+                    };
+        var mealIngredient = new MealIngredient
+        {
+            MealIngredientId = Guid.NewGuid(),
+            Meals = meals,
+            Ingredients = ingredients,
+        };
+
+        _dbContext.MealIngredients.Add(mealIngredient);
+        _dbContext.SaveChanges();
+
+        Assert.That(_dbContext.MealIngredients.Count(), Is.EqualTo(1));
+        var retrievedMealIngredient = _dbContext.MealIngredients.Include(mi => mi.Meals).Include(mi => mi.Ingredients).First();
+        Assert.That(mealIngredient, Is.Not.Null);
+        Assert.That(mealIngredient.Meals, Is.EquivalentTo(meals));
+        Assert.That(mealIngredient.Ingredients, Is.EquivalentTo(ingredients));
     }
 }
