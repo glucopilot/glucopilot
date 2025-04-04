@@ -46,7 +46,7 @@ public class Ingredient
     public int Calories { get; set; } = 0;
 
     /// <summary>
-    /// The unit of measurement of he ingredient that the nutritional values are based on.
+    /// The unit of measurement of the ingredient that the nutritional values are based on.
     /// </summary>
     public required UnitOfMeasurement Uom { get; set; }
 }
