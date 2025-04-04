@@ -84,7 +84,9 @@ internal sealed class GlucoPilotDbContextTests
         {
             new MealIngredient
             {
-                MealIngredientId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
+                MealId = meal.Id,
+                IngredientId = ingredient.Id,
                 Quantity = 1,
                 Ingredient = ingredient,
                 Meal = meal,
@@ -128,7 +130,9 @@ internal sealed class GlucoPilotDbContextTests
         {
             new MealIngredient
             {
-                MealIngredientId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
+                MealId = meal.Id,
+                IngredientId = ingredient.Id,
                 Quantity = 1,
                 Ingredient = ingredient,
                 Meal = meal,
@@ -173,7 +177,9 @@ internal sealed class GlucoPilotDbContextTests
         };
         var mealIngredient = new MealIngredient
         {
-            MealIngredientId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
+            IngredientId = ingredient.Id,
+            MealId = meal.Id,
             Meal = meal,
             Ingredient = ingredient,
             Quantity = 1,
