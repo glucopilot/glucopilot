@@ -28,13 +28,13 @@ jobs:
       - name: Build
         run: dotnet build src/gluco-pilot.sln --configuration Release /p:Version=$env:VERSION
       - name: Publish
-        run: dotnet publish src/gluco-pilot.sln --configuration Release --runtime win-x86 --output ./publish /p:Version=$env:VERSION
+        run: dotnet publish src/gluco-pilot.sln --configuration Release --runtime win-x86 /p:Version=$env:VERSION
       - name: Test
         run: dotnet test src/gluco-pilot.sln --configuration Release /p:Version=$env:VERSION --no-build
       - name: Pack
         run: dotnet pack src/gluco-pilot.sln --configuration Release /p:Version=$env:VERSION --output .
       - name: Push
-        run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_APIKEY }}
+        run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_APIKEY }}
       - name: Deploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
         with:
@@ -42,3 +42,4 @@ jobs:
           server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
           server-username: ${{ secrets.SERVER_USERNAME }}
           server-password: ${{ secrets.SERVER_PASSWORD }}
+          source-path: src\GlucoPilot.Api\bin\Release\net9.0\publish\
