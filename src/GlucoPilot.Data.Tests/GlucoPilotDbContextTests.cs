@@ -262,7 +262,7 @@ internal sealed class GlucoPilotDbContextTests
     }
 
     [Test]
-    public void Can_Add_And_Retrieve_Treatment([Values]TreatmentType type)
+    public void Can_Add_And_Retrieve_Treatment([Values] TreatmentType type)
     {
         var reading = new Reading
         {
