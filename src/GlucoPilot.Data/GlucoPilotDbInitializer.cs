@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace GlucoPilot.Data
 {
-    public sealed class GlucoPilotDbInitialiser
+    public sealed class GlucoPilotDbInitializer
     {
         private readonly GlucoPilotDbContext _db;
 
-        public GlucoPilotDbInitialiser(GlucoPilotDbContext db)
+        public GlucoPilotDbInitializer(GlucoPilotDbContext db)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }

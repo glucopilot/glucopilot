@@ -1,8 +1,11 @@
 using System;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Models;
 using GlucoPilot.Identity.Services;
 using Microsoft.Data.Sqlite;
@@ -14,32 +17,17 @@ namespace GlucoPilot.Identity.Tests.Services;
 [TestFixture]
 internal sealed class UserServiceTests
 {
-    private SqliteConnection _connection;
-    private GlucoPilotDbContext _dbContext;
+    private Mock<IRepository<User>> _userRepository;
     private Mock<ITokenService> _tokenService;
     private UserService _sut;
 
     [SetUp]
     public void Setup()
     {
-        _connection = new SqliteConnection("DataSource=:memory:");
-        _connection.Open();
-        var options = new DbContextOptionsBuilder<GlucoPilotDbContext>()
-            .UseSqlite(_connection)
-            .Options;
-        _dbContext = new GlucoPilotDbContext(options);
-        _dbContext.Database.EnsureCreated();
-
+        _userRepository = new Mock<IRepository<User>>();
         _tokenService = new Mock<ITokenService>();
 
-        _sut = new UserService(_dbContext, _tokenService.Object);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _connection.Dispose();
-        _dbContext.Dispose();
+        _sut = new UserService(_userRepository.Object, _tokenService.Object);
     }
 
     [Test]
@@ -48,7 +36,7 @@ internal sealed class UserServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(() => new UserService(null!, _tokenService.Object), Throws.ArgumentNullException);
-            Assert.That(() => new UserService(_dbContext, null!), Throws.ArgumentNullException);
+            Assert.That(() => new UserService(_userRepository.Object, null!), Throws.ArgumentNullException);
         });
     }
 
@@ -57,9 +45,10 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
-        _dbContext.Patients.Add(user);
-        await _dbContext.SaveChangesAsync();
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
         var result = await _sut.LoginAsync(request);
 
@@ -72,9 +61,9 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
         var result = await _sut.LoginAsync(request);
 
@@ -87,9 +76,9 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new Patient
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
-        _dbContext.Patients.Add(user);
-        await _dbContext.SaveChangesAsync();
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
         Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
     }
@@ -99,9 +88,9 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new CareGiver
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
         Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
     }
@@ -127,10 +116,11 @@ internal sealed class UserServiceTests
     public async Task RegisterAsync_WithNewCareGiver_ReturnsRegisterResponse()
     {
         var patient = new Patient()
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
-        _dbContext.Users.Add(patient);
-        await _dbContext.SaveChangesAsync();
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(patient);
+        
         var request = new RegisterRequest
         {
             Email = "newuser@example.com",
@@ -147,7 +137,7 @@ internal sealed class UserServiceTests
     }
 
     [Test]
-    public async Task RegisterAsync_WithExistingUser_ThrowsConflictException()
+    public void RegisterAsync_WithExistingUser_ThrowsConflictException()
     {
         var request = new RegisterRequest
         {
@@ -157,9 +147,9 @@ internal sealed class UserServiceTests
             AcceptedTerms = true
         };
         var user = new CareGiver
-        { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
+            { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        _userRepository.Setup(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
         Assert.That(() => _sut.RegisterAsync(request), Throws.InstanceOf<ConflictException>());
     }
