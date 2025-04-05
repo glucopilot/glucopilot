@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GlucoPilot.Data.Entities;
 
+/// <summary>
+/// A reading is a glucose measurement taken by sensor used by the user.
+/// </summary>
 [Table("readings")]
 public class Reading
 {
@@ -14,6 +17,11 @@ public class Reading
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// The id of the user who created the reading.
+    /// </summary>
+    public required Guid UserId { get; set; }
 
     /// <summary>
     /// The date and time the reading was taken.

@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using FluentValidation;
 using GlucoPilot.Api.Middleware;
 using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
@@ -25,6 +26,8 @@ builder.Services.AddApiVersioning(options =>
     .EnableApiVersionBinding();
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
+
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 
 builder.Services.AddHealthChecks().AddDatabaseHealthChecks();
 builder.Services.AddData(builder.Configuration.GetSection("Data").Bind);
