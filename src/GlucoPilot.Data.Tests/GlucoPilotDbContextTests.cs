@@ -3,6 +3,7 @@ using GlucoPilot.Data.Enums;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using System.Security.Cryptography;
 
 namespace GlucoPilot.Data.Tests;
 
@@ -193,5 +194,116 @@ internal sealed class GlucoPilotDbContextTests
         Assert.That(mealIngredient, Is.Not.Null);
         Assert.That(mealIngredient.Meal, Is.EqualTo(meal));
         Assert.That(mealIngredient.Ingredient, Is.EqualTo(ingredient));
+    }
+
+    [Test]
+    public void Can_Add_And_Retrieve_Insulin()
+    {
+        var insulin = new Insulin
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            Name = "Test Insulin",
+            Type = InsulinType.Bolus,
+            Duration = 4.0,
+            Scale = 1.0,
+            PeakTime = 2.0
+        };
+        _dbContext.Insulins.Add(insulin);
+        _dbContext.SaveChanges();
+        var retrievedInsulin = _dbContext.Insulins.Find(insulin.Id);
+        Assert.Multiple(() =>
+        {
+            Assert.That(retrievedInsulin, Is.Not.Null);
+            Assert.That(insulin, Is.EqualTo(retrievedInsulin));
+        });
+    }
+
+    [Test]
+    public void Can_Add_And_Retrieve_Injection()
+    {
+        var insulin = new Insulin
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            Name = "Test Insulin",
+            Type = InsulinType.Bolus,
+            Duration = 4.0,
+            Scale = 1.0,
+            PeakTime = 2.0
+        };
+        var injection = new Injection
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            InsulinId = insulin.Id,
+            Units = 10.0,
+            Insulin = insulin
+        };
+        _dbContext.Injections.Add(injection);
+        _dbContext.SaveChanges();
+        var retrievedInjection = _dbContext.Injections.Include(i => i.Insulin).First();
+        Assert.Multiple(() =>
+        {
+            Assert.That(retrievedInjection, Is.Not.Null);
+            Assert.That(retrievedInjection, Is.EqualTo(injection));
+        });
+    }
+
+    [Test]
+    public void Can_Add_And_Retrieve_Treatment()
+    {
+        var reading = new Reading
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            GlucoseLevel = 120.5,
+            Direction = ReadingDirection.Steady,
+        };
+        var meal = new Meal
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            Name = "Test Meal",
+        };
+        var insulin = new Insulin
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            Name = "Test Insulin",
+            Type = InsulinType.Bolus,
+            Duration = 4.0,
+            Scale = 1.0,
+            PeakTime = 2.0
+        };
+        var injection = new Injection
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            InsulinId = insulin.Id,
+            Units = 10.0,
+        };
+        var treatment = new Treatment
+        {
+            Id = Guid.NewGuid(),
+            Created = DateTimeOffset.UtcNow,
+            ReadingId = reading.Id,
+            MealId = meal.Id,
+            InjectionId = injection.Id,
+            Reading = reading,
+            Meal = meal,
+            Injection = injection
+        };
+
+        _dbContext.Insulins.Add(insulin);
+        _dbContext.Treatments.Add(treatment);
+        _dbContext.SaveChanges();
+
+        var retrievedTreatment = _dbContext.Treatments.Include(t => t.Reading).Include(t => t.Meal).Include(t => t.Injection).First();
+        Assert.Multiple(() =>
+        {
+            Assert.That(retrievedTreatment, Is.Not.Null);
+            Assert.That(retrievedTreatment, Is.EqualTo(treatment));
+        });
     }
 }
