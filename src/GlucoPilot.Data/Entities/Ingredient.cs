@@ -6,6 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GlucoPilot.Data.Entities;
 
+/// <summary>
+/// Ingredient represents a single food item that can be used in a meal.
+/// </summary>
 [Table("ingredients")]
 public class Ingredient
 {
@@ -15,6 +18,11 @@ public class Ingredient
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// The unique identifier for the user who created the ingredient.
+    /// </summary>
+    public required Guid UserId { get; set; }
 
     /// <summary>
     /// The date and time the ingredient was created.

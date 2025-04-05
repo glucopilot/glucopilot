@@ -5,6 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GlucoPilot.Data.Entities;
 
+/// <summary>
+/// Insulin is the type of insulin used by the user. Different insulins work in different ways.
+/// Duration, scale and peak time represent this profile.
+/// </summary>
 [Table("insulin")]
 public class Insulin
 {
@@ -14,6 +18,11 @@ public class Insulin
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// The id of the user who created the insulin.
+    /// </summary>
+    public Guid? UserId { get; set; } = null;
 
     /// <summary>
     /// The date and time the insulin was created.

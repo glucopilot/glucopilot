@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GlucoPilot.Data.Entities;
 
+/// <summary>
+/// A meal is a collection of ingredients that are consumed together.
+/// </summary>
 [Table("meals")]
 public class Meal
 {
@@ -14,6 +17,11 @@ public class Meal
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// The id of the user who created the meal.
+    /// </summary>
+    public required Guid UserId { get; set; }
 
     /// <summary>
     /// The name of the meal.

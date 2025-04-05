@@ -12,6 +12,7 @@ internal sealed class GlucoPilotDbContextTests
 {
     private SqliteConnection _connection;
     private GlucoPilotDbContext _dbContext;
+    private readonly Guid _userId = Guid.NewGuid();
 
     [SetUp]
     public void SetUp()
@@ -44,6 +45,7 @@ internal sealed class GlucoPilotDbContextTests
         var reading = new Reading
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             GlucoseLevel = 120.5,
             Direction = ReadingDirection.Steady,
@@ -67,6 +69,7 @@ internal sealed class GlucoPilotDbContextTests
         var ingredient = new Ingredient
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Ingredient 1",
             Carbs = 10,
@@ -78,6 +81,7 @@ internal sealed class GlucoPilotDbContextTests
         var meal = new Meal
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Test Meal",
         };
@@ -113,6 +117,7 @@ internal sealed class GlucoPilotDbContextTests
         var ingredient = new Ingredient
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Ingredient 1",
             Carbs = 10,
@@ -124,6 +129,7 @@ internal sealed class GlucoPilotDbContextTests
         var meal = new Meal
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Test Meal",
         };
@@ -162,12 +168,14 @@ internal sealed class GlucoPilotDbContextTests
         var meal = new Meal
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Test Meal"
         };
         var ingredient = new Ingredient
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Test Ingredient",
             Carbs = 10,
@@ -202,6 +210,7 @@ internal sealed class GlucoPilotDbContextTests
         var insulin = new Insulin
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Test Insulin",
             Type = InsulinType.Bolus,
@@ -225,6 +234,7 @@ internal sealed class GlucoPilotDbContextTests
         var insulin = new Insulin
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Test Insulin",
             Type = InsulinType.Bolus,
@@ -235,6 +245,7 @@ internal sealed class GlucoPilotDbContextTests
         var injection = new Injection
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             InsulinId = insulin.Id,
             Units = 10.0,
@@ -251,11 +262,12 @@ internal sealed class GlucoPilotDbContextTests
     }
 
     [Test]
-    public void Can_Add_And_Retrieve_Treatment()
+    public void Can_Add_And_Retrieve_Treatment([Values]TreatmentType type)
     {
         var reading = new Reading
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             GlucoseLevel = 120.5,
             Direction = ReadingDirection.Steady,
@@ -263,6 +275,7 @@ internal sealed class GlucoPilotDbContextTests
         var meal = new Meal
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             Name = "Test Meal",
         };
@@ -279,6 +292,7 @@ internal sealed class GlucoPilotDbContextTests
         var injection = new Injection
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             InsulinId = insulin.Id,
             Units = 10.0,
@@ -286,13 +300,14 @@ internal sealed class GlucoPilotDbContextTests
         var treatment = new Treatment
         {
             Id = Guid.NewGuid(),
+            UserId = _userId,
             Created = DateTimeOffset.UtcNow,
             ReadingId = reading.Id,
-            MealId = meal.Id,
-            InjectionId = injection.Id,
+            MealId = (type == TreatmentType.Meal || type == TreatmentType.Correction) ? meal.Id : null,
+            InjectionId = (type == TreatmentType.Meal || type == TreatmentType.Injection) ? injection.Id : null,
             Reading = reading,
-            Meal = meal,
-            Injection = injection
+            Meal = (type == TreatmentType.Meal || type == TreatmentType.Correction) ? meal : null,
+            Injection = (type == TreatmentType.Meal || type == TreatmentType.Injection) ? injection : null,
         };
 
         _dbContext.Insulins.Add(insulin);
@@ -304,6 +319,7 @@ internal sealed class GlucoPilotDbContextTests
         {
             Assert.That(retrievedTreatment, Is.Not.Null);
             Assert.That(retrievedTreatment, Is.EqualTo(treatment));
+            Assert.That(retrievedTreatment.Type, Is.EqualTo(type));
         });
     }
 }
