@@ -294,7 +294,7 @@ internal sealed class GlucoPilotDbContextTests
             Meal = meal,
             Injection = injection
         };
-        
+
         _dbContext.Insulins.Add(insulin);
         _dbContext.Treatments.Add(treatment);
         _dbContext.SaveChanges();
