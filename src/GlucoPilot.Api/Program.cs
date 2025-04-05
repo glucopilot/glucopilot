@@ -30,6 +30,8 @@ builder.Services.AddHealthChecks().AddDatabaseHealthChecks();
 builder.Services.AddData(builder.Configuration.GetSection("Data").Bind);
 builder.Services.AddIdentity(builder.Configuration.GetSection("Identity").Bind);
 
+builder.Services.AddTransient<ExceptionMiddleware>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
