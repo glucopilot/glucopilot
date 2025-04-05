@@ -11,6 +11,9 @@ public class GlucoPilotDbContext : DbContext
     public DbSet<Ingredient> Ingredients { get; set; }
     public DbSet<Meal> Meals { get; set; }
     public DbSet<MealIngredient> MealIngredients { get; set; }
+    public DbSet<Insulin> Insulins { get; set; }
+    public DbSet<Injection> Injections { get; set; }
+    public DbSet<Treatment> Treatments { get; set; }
 
     public GlucoPilotDbContext(DbContextOptions<GlucoPilotDbContext> options) : base(options)
     {
