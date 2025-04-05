@@ -39,7 +39,7 @@ internal static class List
             .OrderByDescending(r => r.Created.UtcDateTime)
             .ToList();
 
-        var response = readings.Select(r => new ReadingsResponse
+        var response = filteredReadings.Select(r => new ReadingsResponse
         {
             UserId = r.UserId,
             Id = r.Id,
