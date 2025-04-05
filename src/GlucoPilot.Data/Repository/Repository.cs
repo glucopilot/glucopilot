@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GlucoPilot.Data.Repository;
 
+[ExcludeFromCodeCoverage] // Maybe one day but EF is a bit of a pain...
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
     private readonly GlucoPilotDbContext _glucoPilotDbContext;
