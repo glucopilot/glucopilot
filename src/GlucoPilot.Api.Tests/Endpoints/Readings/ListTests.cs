@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 namespace GlucoPilot.Api.Tests.Endpoints.Readings;
 
 [TestFixture]
-internal sealed class ListTests : DatabaseTests
+internal sealed class ListTests
 {
     private readonly Guid UserId = Guid.NewGuid();
 
