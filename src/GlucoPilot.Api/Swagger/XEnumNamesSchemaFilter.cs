@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -6,6 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace GlucoPilot.Api.Swagger;
 
+[ExcludeFromCodeCoverage]
 public sealed class XEnumNamesSchemaFilter : ISchemaFilter
 {
     private const string Name = "x-enumNames";
