@@ -65,10 +65,7 @@ internal static class Startup
                     OnForbidden = _ => throw new ForbiddenException("You are not authorized to access this resource."),
                 };
             });
-        services.AddAuthorization(_ =>
-        {
-            // Configure authorization policies here when needed.
-        });
+        services.AddAuthorizationBuilder();
 
         return services;
     }
@@ -77,6 +74,7 @@ internal static class Startup
     {
         return app
             .UseAuthentication()
+            .UseAuthorization()
             .UseMiddleware<CurrentUserMiddleware>();
     }
 }

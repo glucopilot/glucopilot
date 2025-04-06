@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Asp.Versioning;
 using FluentValidation;
 using GlucoPilot.Api.Endpoints;
@@ -9,6 +10,7 @@ using GlucoPilot.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,18 @@ builder.Services.AddApiVersioning(options =>
     })
     .EnableApiVersionBinding();
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
-builder.Services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Scheme = "bearer"
+    });
+    opt.OperationFilter<SecurityRequirementsOperationFilter>();
+    opt.SchemaFilter<XEnumNamesSchemaFilter>();
+});
 
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 
@@ -38,10 +51,14 @@ builder.Services.AddTransient<ExceptionMiddleware>();
 
 builder.Services.AddScoped<GlucoPilotDbInitializer>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -51,7 +68,6 @@ app.UseIdentity();
 
 app.UseHealthChecks("/health");
 
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapIdentityEndpoints();
 app.MapGlucoPilotEndpoints();
