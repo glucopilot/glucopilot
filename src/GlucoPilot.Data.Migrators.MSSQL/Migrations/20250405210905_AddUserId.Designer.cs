@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(GlucoPilotDbContext))]
-    [Migration("20250406123152_UserIdFK")]
-    partial class UserIdFK
+    [Migration("20250405210905_AddUserId")]
+    partial class AddUserId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
