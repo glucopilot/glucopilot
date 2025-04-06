@@ -20,7 +20,7 @@ public class Injection
     /// <summary>
     /// The id of the user who created the injection.
     /// </summary>
-    public required Guid UserId { get; set; }
+    public Guid UserId { get; set; }
 
     /// <summary>
     /// The user who created the injection.
