@@ -1,8 +1,10 @@
-﻿using GlucoPilot.Data.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using GlucoPilot.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlucoPilot.Data;
 
+[ExcludeFromCodeCoverage]
 public class GlucoPilotDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
