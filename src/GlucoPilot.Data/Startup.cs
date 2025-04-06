@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GlucoPilot.Data.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -16,7 +17,6 @@ public static class Startup
             .Configure(configure)
             .ValidateDataAnnotations()
             .ValidateOnStart();
-
 
         return services
             .AddDbContext<GlucoPilotDbContext>((provider, options) =>

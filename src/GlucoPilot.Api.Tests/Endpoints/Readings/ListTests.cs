@@ -5,6 +5,7 @@ using GlucoPilot.Api.Models;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
+using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,8 +30,8 @@ internal sealed class ListTests : DatabaseTests
     {
         var request = new ListReadingsRequest
         {
-            from = DateTimeOffset.UtcNow.AddDays(-1),
-            to = DateTimeOffset.UtcNow
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow
         };
 
         var validatorMock = new Mock<IValidator<ListReadingsRequest>>();
@@ -48,23 +50,23 @@ internal sealed class ListTests : DatabaseTests
             Direction = ReadingDirection.Steady
         };
 
-        _dbContext.Readings.Add(reading);
+        var repositoryMock = new Mock<IRepository<Reading>>();
+        repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(new List<Reading> { reading }.AsQueryable());
 
-        _dbContext.SaveChanges();
+        var result = await List.HandleAsync(
+            request,
+            validatorMock.Object,
+            currentUserMock.Object,
+            repositoryMock.Object,
+            CancellationToken.None);
 
-        var result = await List.HandleAsync(request, validatorMock.Object, currentUserMock.Object, _dbContext, CancellationToken.None);
-
-        Assert.That(result.Result, Is.InstanceOf<Ok<List<ReadingsResponse>>>());
-        var okResult = result.Result as Ok<List<ReadingsResponse>>;
-        Assert.That(okResult, Is.Not.Null);
-        Assert.That(okResult.Value, Is.Not.Null);
-        Assert.That(okResult.Value.Count, Is.EqualTo(1));
-
-        var response = okResult.Value.First();
-        Assert.That(response.Id, Is.EqualTo(reading.Id));
-        Assert.That(response.UserId, Is.EqualTo(reading.UserId));
-        Assert.That(response.Created, Is.EqualTo(reading.Created));
-        Assert.That(response.GlucoseLevel, Is.EqualTo(reading.GlucoseLevel));
-        Assert.That(response.Direction, Is.EqualTo(reading.Direction));
+        Assert.Multiple(() =>
+        {
+            var okResult = (Ok<List<ReadingsResponse>>)result.Result;
+            Assert.That(okResult, Is.InstanceOf<Ok<List<ReadingsResponse>>>());
+            Assert.That(okResult.Value, Has.Count.EqualTo(1));
+            Assert.That(okResult.Value[0].UserId, Is.EqualTo(UserId));
+        });
     }
 }

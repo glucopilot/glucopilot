@@ -2,6 +2,7 @@
 using GlucoPilot.Api.Models;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -21,7 +22,7 @@ internal static class List
         [FromQuery] ListReadingsRequest request,
         [FromServices] IValidator<ListReadingsRequest> validator,
         [FromServices] ICurrentUser currentUser,
-        [FromServices] GlucoPilotDbContext db,
+        [FromServices] IRepository<Reading> repository,
         CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
@@ -30,16 +31,11 @@ internal static class List
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        var readings = await db.Readings
-            .Where(r => r.UserId == currentUser.GetUserId())
-            .ToListAsync(cancellationToken);
-
-        var filteredReadings = readings
-            .Where(r => r.Created >= request.from && r.Created <= request.to)
-            .OrderByDescending(r => r.Created.UtcDateTime)
+        var readings = repository.Find(r => r.UserId == currentUser.GetUserId() && r.Created >= request.From && r.Created <= request.To)
+            .OrderByDescending(r => r.Created)
             .ToList();
 
-        var response = filteredReadings.Select(r => new ReadingsResponse
+        var response = readings.Select(r => new ReadingsResponse
         {
             UserId = r.UserId,
             Id = r.Id,

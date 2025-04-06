@@ -7,18 +7,18 @@ namespace GlucoPilot.Api.Models
     public sealed record ListReadingsRequest
     {
         [Required]
-        public DateTimeOffset from { get; set; }
+        public DateTimeOffset From { get; set; }
 
         [Required]
-        public DateTimeOffset? to { get; set; }
+        public DateTimeOffset? To { get; set; }
     }
 
     public sealed class Validator : AbstractValidator<ListReadingsRequest>
     {
         public Validator()
         {
-            RuleFor(x => x.from).LessThan(x => x.to);
-            RuleFor(x => x.to).LessThanOrEqualTo(DateTimeOffset.UtcNow);
+            RuleFor(x => x.From).LessThan(x => x.To);
+            RuleFor(x => x.To).LessThanOrEqualTo(DateTimeOffset.UtcNow);
         }
     }
 }
