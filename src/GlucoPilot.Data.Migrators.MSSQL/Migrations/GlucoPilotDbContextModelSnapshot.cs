@@ -276,7 +276,7 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
             modelBuilder.Entity("GlucoPilot.Data.Entities.Ingredient", b =>
                 {
                     b.HasOne("GlucoPilot.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Ingredients")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -293,7 +293,7 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                         .IsRequired();
 
                     b.HasOne("GlucoPilot.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Injections")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -306,7 +306,7 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
             modelBuilder.Entity("GlucoPilot.Data.Entities.Insulin", b =>
                 {
                     b.HasOne("GlucoPilot.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Insulins")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -315,7 +315,7 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
             modelBuilder.Entity("GlucoPilot.Data.Entities.Meal", b =>
                 {
                     b.HasOne("GlucoPilot.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Meals")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -334,7 +334,7 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                     b.HasOne("GlucoPilot.Data.Entities.Meal", "Meal")
                         .WithMany("MealIngredients")
                         .HasForeignKey("MealId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Ingredient");
@@ -345,7 +345,7 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
             modelBuilder.Entity("GlucoPilot.Data.Entities.Reading", b =>
                 {
                     b.HasOne("GlucoPilot.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Readings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -368,7 +368,7 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                         .HasForeignKey("ReadingId");
 
                     b.HasOne("GlucoPilot.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Treatments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -426,7 +426,19 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
 
             modelBuilder.Entity("GlucoPilot.Data.Entities.User", b =>
                 {
+                    b.Navigation("Ingredients");
+
+                    b.Navigation("Injections");
+
+                    b.Navigation("Insulins");
+
+                    b.Navigation("Meals");
+
                     b.Navigation("Patients");
+
+                    b.Navigation("Readings");
+
+                    b.Navigation("Treatments");
                 });
 #pragma warning restore 612, 618
         }

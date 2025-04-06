@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace GlucoPilot.Data.Entities;
 
@@ -41,5 +42,6 @@ public class Meal
     /// <summary>
     /// The list of ingredients associated with the meal.
     /// </summary>
+    [DeleteBehavior(DeleteBehavior.NoAction)]
     public virtual ICollection<MealIngredient> MealIngredients { get; set; } = [];
 }
