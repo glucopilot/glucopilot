@@ -56,12 +56,15 @@ internal partial class ExceptionMiddleware : IMiddleware
                     break;
                 case NotFoundException:
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    messages.Add(e.Message);
                     break;
                 case UnauthorizedException:
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    messages.Add(e.Message);
                     break;
                 case ForbiddenException:
                     context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    messages.Add(e.Message);
                     break;
                 default:
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;

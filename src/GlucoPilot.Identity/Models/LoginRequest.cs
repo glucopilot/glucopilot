@@ -11,8 +11,8 @@ public sealed record LoginRequest
     {
         public Validator()
         {
-            RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            RuleFor(x => x.Password).NotEmpty();
+            RuleFor(x => x.Email).NotEmpty().WithMessage("EMAIL_REQUIRED").EmailAddress().WithMessage("EMAIL_INVALID");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("PASSWORD_REQUIRED");
         }
     }
 }
