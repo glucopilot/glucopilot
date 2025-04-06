@@ -20,7 +20,12 @@ public class Injection
     /// <summary>
     /// The id of the user who created the injection.
     /// </summary>
-    public virtual required Guid UserId { get; set; }
+    public required Guid UserId { get; set; }
+    
+    /// <summary>
+    /// The user who created the injection.
+    /// </summary>
+    public virtual User? User { get; set; }
 
     /// <summary>
     /// The date and time when the injection was created.

@@ -21,7 +21,12 @@ public class Reading
     /// <summary>
     /// The id of the user who created the reading.
     /// </summary>
-    public virtual Guid UserId { get; set; }
+    public Guid UserId { get; set; }
+    
+    /// <summary>
+    /// The user who created the reading.
+    /// </summary>
+    public virtual User? User { get; set; }
 
     /// <summary>
     /// The date and time the reading was taken.

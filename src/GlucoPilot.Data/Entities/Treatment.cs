@@ -22,7 +22,12 @@ public class Treatment
     /// <summary>
     /// The id of the user who created the treatment.
     /// </summary>
-    public virtual Guid UserId { get; set; }
+    public Guid UserId { get; set; }
+    
+    /// <summary>
+    /// The user who created the treatment.
+    /// </summary>
+    public virtual User? User { get; set; }
 
     /// <summary>
     /// The date and time when the treatment was created.

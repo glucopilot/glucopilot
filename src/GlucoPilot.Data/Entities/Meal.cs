@@ -21,7 +21,12 @@ public class Meal
     /// <summary>
     /// The id of the user who created the meal.
     /// </summary>
-    public virtual Guid UserId { get; set; }
+    public Guid UserId { get; set; }
+    
+    /// <summary>
+    /// The user who created the meal.
+    /// </summary>
+    public virtual User? User { get; set; }
 
     /// <summary>
     /// The name of the meal.

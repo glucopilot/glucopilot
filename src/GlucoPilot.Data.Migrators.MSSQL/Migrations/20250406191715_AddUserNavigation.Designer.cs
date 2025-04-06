@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(GlucoPilotDbContext))]
-    [Migration("20250405210905_AddUserId")]
-    partial class AddUserId
+    [Migration("20250406191715_AddUserNavigation")]
+    partial class AddUserNavigation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,8 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("ingredients");
                 });
 
@@ -80,6 +82,8 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("InsulinId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("injections");
                 });
@@ -113,6 +117,8 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("insulin");
                 });
 
@@ -132,6 +138,8 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("meals");
                 });
@@ -179,6 +187,8 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("readings");
                 });
 
@@ -209,6 +219,8 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                     b.HasIndex("MealId");
 
                     b.HasIndex("ReadingId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("treatments");
                 });
@@ -264,6 +276,17 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                     b.HasDiscriminator().HasValue("Patient");
                 });
 
+            modelBuilder.Entity("GlucoPilot.Data.Entities.Ingredient", b =>
+                {
+                    b.HasOne("GlucoPilot.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GlucoPilot.Data.Entities.Injection", b =>
                 {
                     b.HasOne("GlucoPilot.Data.Entities.Insulin", "Insulin")
@@ -272,7 +295,35 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GlucoPilot.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Insulin");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GlucoPilot.Data.Entities.Insulin", b =>
+                {
+                    b.HasOne("GlucoPilot.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GlucoPilot.Data.Entities.Meal", b =>
+                {
+                    b.HasOne("GlucoPilot.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GlucoPilot.Data.Entities.MealIngredient", b =>
@@ -294,6 +345,17 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                     b.Navigation("Meal");
                 });
 
+            modelBuilder.Entity("GlucoPilot.Data.Entities.Reading", b =>
+                {
+                    b.HasOne("GlucoPilot.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GlucoPilot.Data.Entities.Treatment", b =>
                 {
                     b.HasOne("GlucoPilot.Data.Entities.Injection", "Injection")
@@ -308,11 +370,19 @@ namespace GlucoPilot.Data.Migrators.MSSQL.Migrations
                         .WithMany()
                         .HasForeignKey("ReadingId");
 
+                    b.HasOne("GlucoPilot.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Injection");
 
                     b.Navigation("Meal");
 
                     b.Navigation("Reading");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GlucoPilot.Data.Entities.Patient", b =>

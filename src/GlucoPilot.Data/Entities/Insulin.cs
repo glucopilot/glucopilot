@@ -22,7 +22,12 @@ public class Insulin
     /// <summary>
     /// The id of the user who created the insulin.
     /// </summary>
-    public virtual Guid? UserId { get; set; } = null;
+    public Guid? UserId { get; set; } = null;
+    
+    /// <summary>
+    /// The user who created the insulin.
+    /// </summary>
+    public virtual User? User { get; set; }
 
     /// <summary>
     /// The date and time the insulin was created.

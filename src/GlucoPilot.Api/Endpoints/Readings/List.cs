@@ -19,7 +19,7 @@ namespace GlucoPilot.Api.Endpoints.Readings;
 internal static class List
 {
     internal static async Task<Results<Ok<List<ReadingsResponse>>, ValidationProblem>> HandleAsync(
-        [FromQuery] ListReadingsRequest request,
+        [AsParameters] ListReadingsRequest request,
         [FromServices] IValidator<ListReadingsRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Reading> repository,
