@@ -36,6 +36,7 @@ builder.Services.AddSwaggerGen(opt =>
         Scheme = "bearer"
     });
     opt.OperationFilter<SecurityRequirementsOperationFilter>();
+    opt.SchemaFilter<XEnumNamesSchemaFilter>();
 });
 
 builder.Services.AddHealthChecks().AddDatabaseHealthChecks();
