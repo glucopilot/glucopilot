@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using FluentValidation;
+using GlucoPilot.Api.Endpoints;
 using GlucoPilot.Api.Middleware;
 using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
@@ -53,6 +54,7 @@ app.UseHealthChecks("/health");
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapIdentityEndpoints();
+app.MapGlucoPilotEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {

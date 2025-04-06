@@ -22,7 +22,7 @@ public class Ingredient
     /// <summary>
     /// The unique identifier for the user who created the ingredient.
     /// </summary>
-    public required Guid UserId { get; set; }
+    public virtual Guid UserId { get; set; }
 
     /// <summary>
     /// The date and time the ingredient was created.

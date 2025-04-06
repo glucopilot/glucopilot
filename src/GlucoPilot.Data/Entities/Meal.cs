@@ -21,7 +21,7 @@ public class Meal
     /// <summary>
     /// The id of the user who created the meal.
     /// </summary>
-    public required Guid UserId { get; set; }
+    public virtual Guid UserId { get; set; }
 
     /// <summary>
     /// The name of the meal.

@@ -31,19 +31,18 @@ internal static class List
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        var readings = repository.Find(r => r.UserId == currentUser.GetUserId() && r.Created >= request.From && r.Created <= request.To)
+        var readings = repository.Find(r => r.UserId == currentUser.GetUserId() && r.Created >= request.From && r.Created <= request.To, new FindOptions { IsAsNoTracking = true })
             .OrderByDescending(r => r.Created)
+            .Select(r => new ReadingsResponse
+            {
+                UserId = r.UserId,
+                Id = r.Id,
+                Created = r.Created,
+                GlucoseLevel = r.GlucoseLevel,
+                Direction = r.Direction
+            })
             .ToList();
 
-        var response = readings.Select(r => new ReadingsResponse
-        {
-            UserId = r.UserId,
-            Id = r.Id,
-            Created = r.Created,
-            GlucoseLevel = r.GlucoseLevel,
-            Direction = r.Direction
-        }).ToList();
-
-        return TypedResults.Ok(response);
+        return TypedResults.Ok(readings);
     }
 }
