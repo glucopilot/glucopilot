@@ -2,31 +2,29 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.AspNetCore.Exceptions;
-using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Models;
-using Microsoft.EntityFrameworkCore;
 using static BCrypt.Net.BCrypt;
 
 namespace GlucoPilot.Identity.Services;
 
 public sealed class UserService : IUserService
 {
-    private readonly GlucoPilotDbContext _dbContext;
+    private readonly IRepository<User> _repository;
     private readonly ITokenService _tokenService;
 
-    public UserService(GlucoPilotDbContext dbContext, ITokenService tokenService)
+    public UserService(IRepository<User> repository, ITokenService tokenService)
     {
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken)
-            .ConfigureAwait(false) ?? await _dbContext.Patients
-            .FirstOrDefaultAsync(p => p.Email == request.Email, cancellationToken)
-            .ConfigureAwait(false);
+        var user = await _repository.FindOneAsync(u => u.Email == request.Email,
+            new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true },
+            cancellationToken: cancellationToken).ConfigureAwait(false);
 
         if (user is null || !Verify(request.Password, user.PasswordHash))
         {
@@ -44,8 +42,7 @@ public sealed class UserService : IUserService
     public async Task<RegisterResponse> RegisterAsync(RegisterRequest request,
         CancellationToken cancellationToken = default)
     {
-        if (await _dbContext.Users.AnyAsync(x => x.Email == request.Email, cancellationToken).ConfigureAwait(false) ||
-            await _dbContext.Patients.AnyAsync(x => x.Email == request.Email, cancellationToken).ConfigureAwait(false))
+        if (await _repository.AnyAsync(x => x.Email == request.Email, cancellationToken).ConfigureAwait(false))
         {
             throw new ConflictException("User_Already_Exists");
         }
@@ -61,31 +58,30 @@ public sealed class UserService : IUserService
             };
             user = patient;
 
-            await _dbContext.Patients.AddAsync(patient, cancellationToken).ConfigureAwait(false);
+            await _repository.AddAsync(patient, cancellationToken).ConfigureAwait(false);
         }
         else
         {
-            var patient = await _dbContext.Patients
-                .FirstOrDefaultAsync(x => x.Id == request.PatientId.Value, cancellationToken)
+            var patient = await _repository.FindOneAsync(x => x.Id == request.PatientId.Value,
+                    new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true }, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (patient is null)
+            if (patient is not Patient patientEntity)
             {
                 throw new NotFoundException("Patient_Not_Found");
             }
+
             var careGiver = new CareGiver
             {
                 Email = request.Email,
                 PasswordHash = HashPassword(request.Password),
                 AcceptedTerms = request.AcceptedTerms,
-                Patients = [patient],
+                Patients = [patientEntity],
             };
             user = careGiver;
 
-            await _dbContext.Users.AddAsync(careGiver, cancellationToken).ConfigureAwait(false);
+            await _repository.AddAsync(careGiver, cancellationToken).ConfigureAwait(false);
         }
-
-        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return new RegisterResponse
         {
