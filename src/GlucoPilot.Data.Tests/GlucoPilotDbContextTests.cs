@@ -15,13 +15,13 @@ internal sealed class GlucoPilotDbContextTests
     // foreign key constraints and the way the database is set up. Rather than limiting our
     // feature set, we will do some data integration tests in the pipeline against a real
     // MSSQL database.
-    
+
     [Test]
     public void Placeholder()
     {
         Assert.Pass();
     }
-    
+
     /*private SqliteConnection _connection;
     private GlucoPilotDbContext _dbContext;
     private readonly Guid _userId = Guid.NewGuid();
