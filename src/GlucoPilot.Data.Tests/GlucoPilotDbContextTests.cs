@@ -322,4 +322,40 @@ internal sealed class GlucoPilotDbContextTests
             Assert.That(retrievedTreatment.Type, Is.EqualTo(type));
         });
     }
+
+    [Test]
+    public void Throws_Error_When_Treatment_Type_Is_Invalid()
+    {
+        var reading = new Reading
+        {
+            Id = Guid.NewGuid(),
+            UserId = _userId,
+            Created = DateTimeOffset.UtcNow,
+            GlucoseLevel = 120.5,
+            Direction = ReadingDirection.Steady,
+        };
+        var treatment = new Treatment
+        {
+            Id = Guid.NewGuid(),
+            UserId = _userId,
+            Created = DateTimeOffset.UtcNow,
+            ReadingId = reading.Id,
+            MealId = null,
+            InjectionId = null,
+            Reading = reading,
+            Meal = null,
+            Injection = null,
+        };
+
+        _dbContext.Treatments.Add(treatment);
+        _dbContext.SaveChanges();
+
+        var retrievedTreatment = _dbContext.Treatments.Include(t => t.Reading).Include(t => t.Meal).Include(t => t.Injection).First();
+        Assert.Multiple(() =>
+        {
+            Assert.That(retrievedTreatment, Is.Not.Null);
+            Assert.That(retrievedTreatment, Is.EqualTo(treatment));
+            Assert.Throws<InvalidOperationException>(() => { var type = retrievedTreatment.Type; });
+        });
+    }
 }
