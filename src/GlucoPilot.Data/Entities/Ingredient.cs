@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
 /// <summary>
 /// Ingredient represents a single food item that can be used in a meal.
 /// </summary>
+[ExcludeFromCodeCoverage]
 [Table("ingredients")]
 public class Ingredient
 {

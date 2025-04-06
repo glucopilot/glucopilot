@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace GlucoPilot.Data.Entities;
@@ -9,6 +10,7 @@ namespace GlucoPilot.Data.Entities;
 /// <summary>
 /// A meal is a collection of ingredients that are consumed together.
 /// </summary>
+[ExcludeFromCodeCoverage]
 [Table("meals")]
 public class Meal
 {

@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
@@ -9,6 +10,7 @@ namespace GlucoPilot.Data.Entities;
 /// A treatment represents a medical intervention related to diabetes management.
 /// This can be eating a meal, a correction of insulin or carbs or an injection.
 /// </summary>
+[ExcludeFromCodeCoverage]
 [Table("treatments")]
 public class Treatment
 {

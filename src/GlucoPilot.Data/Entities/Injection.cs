@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
 /// <summary>
 /// Injection is a dose of insulin given to the user.
 /// </summary>
+[ExcludeFromCodeCoverage]
 [Table("injections")]
 public class Injection
 {

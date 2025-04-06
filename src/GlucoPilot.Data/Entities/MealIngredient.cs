@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
+[ExcludeFromCodeCoverage]
 [Table("meals_ingredients")]
 public class MealIngredient
 {

@@ -1,14 +1,11 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Models;
-using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

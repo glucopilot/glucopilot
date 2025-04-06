@@ -2,12 +2,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
 /// <summary>
 /// A reading is a glucose measurement taken by sensor used by the user.
 /// </summary>
+[ExcludeFromCodeCoverage]
 [Table("readings")]
 public class Reading
 {

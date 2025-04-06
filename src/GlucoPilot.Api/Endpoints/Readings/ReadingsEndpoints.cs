@@ -8,11 +8,12 @@ namespace GlucoPilot.Api.Endpoints.Readings
     {
         internal static IEndpointRouteBuilder MapReadingsEndpoints(this IEndpointRouteBuilder endpoints)
         {
-            var group = endpoints.MapGroup("readings")
+            var group = endpoints.MapGroup("api/v{version:apiVersion}/readings")
                 .WithTags("Readings");
 
-            group.MapGet("/list", List.HandleAsync)
-                .HasApiVersion(1.0);
+            group.MapGet("/", List.HandleAsync)
+                .HasApiVersion(1.0)
+                .RequireAuthorization();
 
             return endpoints;
         }

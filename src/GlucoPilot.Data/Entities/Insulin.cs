@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
@@ -9,6 +10,7 @@ namespace GlucoPilot.Data.Entities;
 /// Insulin is the type of insulin used by the user. Different insulins work in different ways.
 /// Duration, scale and peak time represent this profile.
 /// </summary>
+[ExcludeFromCodeCoverage]
 [Table("insulin")]
 public class Insulin
 {
