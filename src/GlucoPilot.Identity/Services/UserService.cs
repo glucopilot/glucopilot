@@ -28,7 +28,7 @@ public sealed class UserService : IUserService
 
         if (user is null || !Verify(request.Password, user.PasswordHash))
         {
-            throw new UnauthorizedException("Username_Or_Password_Is_Incorrect");
+            throw new UnauthorizedException("EMAIL_OR_PASSWORD_INCORRECT");
         }
 
         var token = _tokenService.GenerateJwtToken(user);
@@ -44,7 +44,7 @@ public sealed class UserService : IUserService
     {
         if (await _repository.AnyAsync(x => x.Email == request.Email, cancellationToken).ConfigureAwait(false))
         {
-            throw new ConflictException("User_Already_Exists");
+            throw new ConflictException("USER_ALREADY_EXISTS");
         }
 
         User user;
@@ -68,7 +68,7 @@ public sealed class UserService : IUserService
 
             if (patient is not Patient patientEntity)
             {
-                throw new NotFoundException("Patient_Not_Found");
+                throw new NotFoundException("PATIENT_NOT_FOUND");
             }
 
             var careGiver = new CareGiver

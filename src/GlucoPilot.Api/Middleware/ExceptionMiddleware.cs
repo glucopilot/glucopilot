@@ -76,7 +76,7 @@ internal partial class ExceptionMiddleware : IMiddleware
                 Source = e.TargetSite?.DeclaringType?.FullName,
                 Message = e.Message,
                 ErrorId = errorId,
-                SupportMessage = "Please provide this error ID to support for further analysis.",
+                SupportMessage = "SUPPORT_MESSAGE",
                 StatusCode = context.Response.StatusCode,
                 Messages = messages,
             };

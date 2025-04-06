@@ -24,7 +24,7 @@ public sealed record RegisterRequest
             RuleFor(x => x.Password).NotEmpty().WithMessage("PASSWORD_REQUIRED").MinimumLength(6)
                 .WithMessage("PASSWORD_MIN_LENGTH");
             RuleFor(x => x.ConfirmPassword).NotEmpty().WithMessage("CONFIRM_PASSWORD_REQUIRED").Equal(x => x.Password)
-                .WithMessage("PASSWORD_CONFIRM_NOT_MATCH");
+                .WithMessage("CONFIRM_PASSWORD_NOT_MATCH");
             RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("TERMS_NOT_ACCEPTED");
         }
     }
