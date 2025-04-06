@@ -23,7 +23,7 @@ public class Treatment
     /// The id of the user who created the treatment.
     /// </summary>
     public Guid UserId { get; set; }
-    
+
     /// <summary>
     /// The user who created the treatment.
     /// </summary>

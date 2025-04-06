@@ -21,7 +21,7 @@ public class Injection
     /// The id of the user who created the injection.
     /// </summary>
     public required Guid UserId { get; set; }
-    
+
     /// <summary>
     /// The user who created the injection.
     /// </summary>

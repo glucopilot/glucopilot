@@ -22,7 +22,7 @@ public class Meal
     /// The id of the user who created the meal.
     /// </summary>
     public Guid UserId { get; set; }
-    
+
     /// <summary>
     /// The user who created the meal.
     /// </summary>

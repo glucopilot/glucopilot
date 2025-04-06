@@ -23,7 +23,7 @@ public class Ingredient
     /// The unique identifier for the user who created the ingredient.
     /// </summary>
     public Guid UserId { get; set; }
-    
+
     /// <summary>
     /// The user who created the ingredient.
     /// </summary>

@@ -23,7 +23,7 @@ public class Insulin
     /// The id of the user who created the insulin.
     /// </summary>
     public Guid? UserId { get; set; } = null;
-    
+
     /// <summary>
     /// The user who created the insulin.
     /// </summary>
