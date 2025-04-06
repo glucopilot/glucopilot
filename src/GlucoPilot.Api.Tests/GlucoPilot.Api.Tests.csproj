@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GlucoPilot.Api\GlucoPilot.Api.csproj" />
+    <ProjectReference Include="..\GlucoPilot.Data.Tests\GlucoPilot.Data.Tests.csproj" />
   </ItemGroup>
 
 </Project>

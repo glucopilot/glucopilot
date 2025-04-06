@@ -1,9 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
+/// <summary>
+/// Injection is a dose of insulin given to the user.
+/// </summary>
+[ExcludeFromCodeCoverage]
 [Table("injections")]
 public class Injection
 {
@@ -13,6 +18,16 @@ public class Injection
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// The id of the user who created the injection.
+    /// </summary>
+    public Guid UserId { get; set; }
+
+    /// <summary>
+    /// The user who created the injection.
+    /// </summary>
+    public virtual User? User { get; set; }
 
     /// <summary>
     /// The date and time when the injection was created.

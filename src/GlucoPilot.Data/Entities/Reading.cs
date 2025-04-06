@@ -2,9 +2,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.Data.Entities;
 
+/// <summary>
+/// A reading is a glucose measurement taken by sensor used by the user.
+/// </summary>
+[ExcludeFromCodeCoverage]
 [Table("readings")]
 public class Reading
 {
@@ -14,6 +19,16 @@ public class Reading
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// The id of the user who created the reading.
+    /// </summary>
+    public Guid UserId { get; set; }
+
+    /// <summary>
+    /// The user who created the reading.
+    /// </summary>
+    public virtual User? User { get; set; }
 
     /// <summary>
     /// The date and time the reading was taken.

@@ -1,4 +1,6 @@
 using Asp.Versioning;
+using FluentValidation;
+using GlucoPilot.Api.Endpoints;
 using GlucoPilot.Api.Middleware;
 using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
@@ -26,6 +28,8 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
 
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
+
 builder.Services.AddHealthChecks().AddDatabaseHealthChecks();
 builder.Services.AddData(builder.Configuration.GetSection("Data").Bind);
 builder.Services.AddIdentity(builder.Configuration.GetSection("Identity").Bind);
@@ -50,6 +54,7 @@ app.UseHealthChecks("/health");
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapIdentityEndpoints();
+app.MapGlucoPilotEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
