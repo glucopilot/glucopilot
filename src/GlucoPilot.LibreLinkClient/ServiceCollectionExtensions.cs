@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GlucoPilot.LibreLinkClient;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     public static IHttpClientBuilder AddLibreLinkClient(
