@@ -33,7 +33,7 @@ internal static class List
 
         var meals = repository.Find(m => m.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true })
             .OrderByDescending(m => m.Created)
-            .Skip((request.Page) * request.PageSize)
+            .Skip(request.Page * request.PageSize)
             .Take(request.PageSize)
             .Select(m => new MealResponse
             {
