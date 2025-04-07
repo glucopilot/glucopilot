@@ -18,7 +18,7 @@ internal partial class MailService : IMailService
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-    
+
     public async Task SendAsync(MailRequest request, CancellationToken cancellationToken = default)
     {
         try

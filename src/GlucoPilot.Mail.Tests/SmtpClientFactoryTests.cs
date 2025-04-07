@@ -6,13 +6,13 @@ namespace GlucoPilot.Mail.Tests;
 internal sealed class SmtpClientFactoryTests
 {
     private SmtpClientFactory _sut;
-    
+
     [SetUp]
     public void Setup()
     {
         _sut = new SmtpClientFactory();
     }
-    
+
     [Test]
     public void Create_ReturnsSmtpClient()
     {
