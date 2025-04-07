@@ -14,9 +14,9 @@ namespace GlucoPilot.Api.Models
         public DateTimeOffset? To { get; set; }
     }
 
-    public sealed class Validator : AbstractValidator<ListReadingsRequest>
+    public sealed class ListReadingValidator : AbstractValidator<ListReadingsRequest>
     {
-        public Validator()
+        public ListReadingValidator()
         {
             RuleFor(x => x.From).LessThan(x => x.To);
             RuleFor(x => x.To).LessThanOrEqualTo(DateTimeOffset.UtcNow);
