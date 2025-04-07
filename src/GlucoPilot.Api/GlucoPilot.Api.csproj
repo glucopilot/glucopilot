@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GlucoPilot.Data.Migrators.MSSQL\GlucoPilot.Data.Migrators.MSSQL.csproj" />
     <ProjectReference Include="..\GlucoPilot.Identity\GlucoPilot.Identity.csproj" />
+    <ProjectReference Include="..\GlucoPilot.Mail\GlucoPilot.Mail.csproj" />
   </ItemGroup>
 
 </Project>
