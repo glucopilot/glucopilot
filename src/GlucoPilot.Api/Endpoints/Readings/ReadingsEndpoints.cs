@@ -17,6 +17,10 @@ namespace GlucoPilot.Api.Endpoints.Readings
                 .HasApiVersion(1.0)
                 .RequireAuthorization();
 
+            group.MapPost("/", NewReading.HandleAsync)
+                .HasApiVersion(1.0)
+                .RequireAuthorization();
+
             return endpoints;
         }
     }
