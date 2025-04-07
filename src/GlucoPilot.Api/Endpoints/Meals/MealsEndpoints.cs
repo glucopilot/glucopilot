@@ -12,7 +12,7 @@ public static class MealsEndpoints
     {
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/meals")
             .WithTags("Meals");
-        
+
         group.MapGet("/", List.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();

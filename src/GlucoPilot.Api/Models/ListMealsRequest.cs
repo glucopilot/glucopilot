@@ -12,7 +12,7 @@ public sealed record ListMealsRequest
     [Required]
     public int PageSize { get; set; }
 
-    public sealed class ListMealsValidator: AbstractValidator<ListMealsRequest>
+    public sealed class ListMealsValidator : AbstractValidator<ListMealsRequest>
     {
         public ListMealsValidator(IOptions<ApiSettings> apiSettings)
         {
