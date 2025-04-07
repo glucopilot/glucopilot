@@ -18,7 +18,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Readings;
 [TestFixture]
 public class NewReadingTests
 {
-    private readonly Guid _userId = Guid.NewGuid();
+    private static readonly Guid _userId = Guid.NewGuid();
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IValidator<NewReadingRequest>> _validatorMock;
     Mock<IRepository<Reading>> _repositoryMock;
