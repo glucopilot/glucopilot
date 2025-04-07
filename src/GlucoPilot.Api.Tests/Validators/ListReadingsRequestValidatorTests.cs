@@ -8,7 +8,7 @@ namespace GlucoPilot.Api.Tests.Models
     [TestFixture]
     public class ListReadingsRequestValidatorTests
     {
-        private Validator _validator;
+        private ListReadingValidator _validator;
 
         [Test]
         public void Should_Have_Error_When_From_Is_Greater_Than_To()
@@ -19,7 +19,7 @@ namespace GlucoPilot.Api.Tests.Models
                 To = DateTimeOffset.UtcNow
             };
 
-            _validator = new Validator();
+            _validator = new ListReadingValidator();
 
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.From);
@@ -34,7 +34,7 @@ namespace GlucoPilot.Api.Tests.Models
                 To = DateTimeOffset.UtcNow.AddDays(1)
             };
 
-            _validator = new Validator();
+            _validator = new ListReadingValidator();
 
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.To);
@@ -49,7 +49,7 @@ namespace GlucoPilot.Api.Tests.Models
                 To = DateTimeOffset.UtcNow
             };
 
-            _validator = new Validator();
+            _validator = new ListReadingValidator();
 
             var result = _validator.TestValidate(model);
             Assert.Multiple(() =>
