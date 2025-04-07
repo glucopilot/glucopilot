@@ -101,7 +101,7 @@ internal sealed class ListTests
             Direction = ReadingDirection.Steady
         };
 
-        
+
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>()))
             .Returns(new List<Reading> { reading }.AsQueryable());
 
