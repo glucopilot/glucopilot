@@ -21,8 +21,8 @@ public static class ServiceCollectionExtensions
                 client.BaseAddress = new Uri(options.ApiUri);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
-                client.DefaultRequestHeaders.Add("version", LibreLinkOptions.LinkUpVersion);
-                client.DefaultRequestHeaders.Add("product", LibreLinkOptions.LinkUpProduct);
+                client.DefaultRequestHeaders.Add("version", options.Version);
+                client.DefaultRequestHeaders.Add("product", options.Product);
             });
         configureAuthClient?.Invoke(authClient);
 
@@ -35,8 +35,8 @@ public static class ServiceCollectionExtensions
                 client.BaseAddress = new Uri(options.ApiUri);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
-                client.DefaultRequestHeaders.Add("version", LibreLinkOptions.LinkUpVersion);
-                client.DefaultRequestHeaders.Add("product", LibreLinkOptions.LinkUpProduct);
+                client.DefaultRequestHeaders.Add("version", options.Version);
+                client.DefaultRequestHeaders.Add("product", options.Product);
             });
     }
 }
