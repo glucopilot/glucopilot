@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GlucoPilot.Mail.Tests" />
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="MailKit" Version="4.11.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.3" />
+      <PackageReference Include="MimeKit" Version="4.11.0" />
+    </ItemGroup>
+
+</Project>
