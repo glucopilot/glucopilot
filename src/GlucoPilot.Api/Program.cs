@@ -8,6 +8,7 @@ using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity;
+using GlucoPilot.Mail;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,6 +56,8 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("Api"))
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddMail(builder.Configuration.GetSection("Mail").Bind);
 
 var app = builder.Build();
 
