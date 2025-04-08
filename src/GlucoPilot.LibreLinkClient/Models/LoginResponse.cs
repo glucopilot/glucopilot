@@ -11,5 +11,5 @@ public sealed record LoginResponse
     public LoginTerms.LoginTermsStep? Step { get; init; }
 
     [JsonPropertyName("user")]
-    public required UserData UserData { get; init; }
+    public UserData? UserData { get; init; }
 }
