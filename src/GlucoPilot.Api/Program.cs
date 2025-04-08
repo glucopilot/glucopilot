@@ -3,6 +3,7 @@ using Asp.Versioning;
 using FluentValidation;
 using GlucoPilot.Api.Endpoints;
 using GlucoPilot.Api.Middleware;
+using GlucoPilot.Api.Models;
 using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Repository;
@@ -51,6 +52,7 @@ builder.Services.AddIdentity(builder.Configuration.GetSection("Identity").Bind);
 builder.Services.AddTransient<ExceptionMiddleware>();
 
 builder.Services.AddScoped<GlucoPilotDbInitializer>();
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("Api"));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));

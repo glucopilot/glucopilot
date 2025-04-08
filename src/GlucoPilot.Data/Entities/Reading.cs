@@ -36,7 +36,7 @@ public class Reading
     public required DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// The value of the glucose reading. Stored in gl/dl. Divide by 18 to get mmol/L.
+    /// The value of the glucose reading. Stored in mg/dL. Divide by 18 to get mmol/L.
     /// </summary>
     public required double GlucoseLevel { get; set; }
 
