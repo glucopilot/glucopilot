@@ -5,11 +5,11 @@ namespace GlucoPilot.LibreLinkClient.Models;
 public sealed record LoginResponse
 {
     [JsonPropertyName("authTicket")]
-    public AuthTicket AuthTicket { get; init; }
+    public required AuthTicket AuthTicket { get; init; }
 
     [JsonPropertyName("step")]
     public LoginTerms.LoginTermsStep? Step { get; init; }
 
     [JsonPropertyName("user")]
-    public UserData UserData { get; init; }
+    public UserData? UserData { get; init; }
 }
