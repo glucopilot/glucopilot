@@ -4,16 +4,16 @@ namespace GlucoPilot.LibreLinkClient.Models
 {
     public sealed record GraphData
     {
-        [JsonPropertyName("factoryTimeStamp")]
-        public string? FactoryTimeStamp { get; init; }
+        [JsonPropertyName("FactoryTimestamp")]
+        public required string FactoryTimeStamp { get; init; }
 
-        [JsonPropertyName("timeStamp")]
-        public string? TimeStamp { get; init; }
+        [JsonPropertyName("Timestamp")]
+        public required string TimeStamp { get; init; }
 
-        [JsonPropertyName("value")]
+        [JsonPropertyName("Value")]
         public double Value { get; init; }
 
-        [JsonPropertyName("trendArrow")]
+        [JsonPropertyName("TrendArrow")]
         public int TrendArrow { get; init; }
     }
 }

@@ -7,7 +7,9 @@ using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity;
+using GlucoPilot.LibreLinkClient;
 using GlucoPilot.Mail;
+using GlucoPilot.Sync.LibreLink;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,7 +57,11 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+builder.Services.AddLibreLinkClient(builder.Configuration.GetSection("LibreLink").Bind);
+
 builder.Services.AddMail(builder.Configuration.GetSection("Mail").Bind);
+
+builder.Services.AddHostedService<SyncService>();
 
 var app = builder.Build();
 
