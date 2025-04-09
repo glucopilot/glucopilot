@@ -23,14 +23,14 @@ internal static class List
         CancellationToken cancellationToken)
     {
         var patient = patientRepository.FindOne(p => p.Id == currentUser.GetUserId());
-        if (patient is null)
+        if (patient is null || patient.AuthTicket is null)
         {
             return TypedResults.NotFound();
         }
 
         var authTicket = new LibreAuthTicket
         {
-            Token = patient.AuthTicket!.Token,
+            Token = patient.AuthTicket.Token,
             Expires = patient.AuthTicket.Expires
         };
         try
