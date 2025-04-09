@@ -6,3 +6,6 @@ GlucoPilot
 
 ## GlucoPilot.LibreLinkClient
 [See docs](./src/GlucoPilot.LibreLinkClient/README.md).
+
+## GlucoPilot.Mail
+[See docs](./src/GlucoPilot.Mail/README.md).
