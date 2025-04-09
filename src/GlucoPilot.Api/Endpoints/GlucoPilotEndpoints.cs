@@ -2,6 +2,7 @@
 using GlucoPilot.Api.Endpoints.Readings;
 using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
+using GlucoPilot.Api.Endpoints.LibreLink;
 
 namespace GlucoPilot.Api.Endpoints;
 
@@ -12,6 +13,7 @@ public static class GlucoPilotEndpoints
     {
         endpoints.MapReadingsEndpoints();
         endpoints.MapMealsEndpoints();
+        endpoints.MapLibreLinkEndpoints();
 
         return endpoints;
     }
