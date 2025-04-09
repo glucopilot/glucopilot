@@ -2,13 +2,11 @@
 using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Readings;
 using GlucoPilot.Api.Models;
-using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -111,5 +109,22 @@ internal sealed class ListTests
         var validationProblem = result.Result as ValidationProblem;
         Assert.That(validationProblem, Is.Not.Null);
         Assert.That(validationProblem!.ProblemDetails.Errors, Contains.Key(nameof(ListReadingsRequest.To)));
+    }
+
+    [Test]
+    public async Task HandleAsync_ReturnsUnauthorized_WhenUserIdIsNull()
+    {
+        var request = new ListReadingsRequest
+        {
+            From = DateTimeOffset.UtcNow,
+            To = DateTimeOffset.UtcNow.AddDays(1)
+        };
+        _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
+
+        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        Assert.That(result.Result, Is.TypeOf<UnauthorizedHttpResult>());
     }
 }

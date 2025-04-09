@@ -3,6 +3,7 @@ using Asp.Versioning;
 using FluentValidation;
 using GlucoPilot.Api.Endpoints;
 using GlucoPilot.Api.Middleware;
+using GlucoPilot.Api.Models;
 using GlucoPilot.Api.Swagger;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Repository;
@@ -13,7 +14,9 @@ using GlucoPilot.Sync.LibreLink;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +56,7 @@ builder.Services.AddIdentity(builder.Configuration.GetSection("Identity").Bind);
 builder.Services.AddTransient<ExceptionMiddleware>();
 
 builder.Services.AddScoped<GlucoPilotDbInitializer>();
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("Api"));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -62,6 +66,16 @@ builder.Services.AddLibreLinkClient(builder.Configuration.GetSection("LibreLink"
 builder.Services.AddMail(builder.Configuration.GetSection("Mail").Bind);
 
 builder.Services.AddHostedService<SyncService>();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddSerilog(dispose: true);
+});
 
 var app = builder.Build();
 
@@ -76,7 +90,6 @@ app.UseHttpsRedirection();
 app.UseIdentity();
 
 app.UseHealthChecks("/health");
-
 
 app.MapIdentityEndpoints();
 app.MapGlucoPilotEndpoints();

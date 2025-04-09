@@ -1,4 +1,5 @@
-﻿using GlucoPilot.Api.Endpoints.Readings;
+﻿using GlucoPilot.Api.Endpoints.Meals;
+using GlucoPilot.Api.Endpoints.Readings;
 using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
 
@@ -10,6 +11,7 @@ public static class GlucoPilotEndpoints
     internal static IEndpointRouteBuilder MapGlucoPilotEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapReadingsEndpoints();
+        endpoints.MapMealsEndpoints();
 
         return endpoints;
     }
