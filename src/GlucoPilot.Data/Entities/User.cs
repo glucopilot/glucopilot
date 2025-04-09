@@ -44,12 +44,12 @@ public abstract class User
     /// Whether the user has accepted the terms of service.
     /// </summary>
     public bool AcceptedTerms { get; set; }
-    
+
     /// <summary>
     /// Token used for email verification.
     /// </summary>
     public string? EmailVerificationToken { get; set; }
-    
+
     /// <summary>
     /// Whether the user has verified their email address.
     /// </summary>

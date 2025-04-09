@@ -38,7 +38,7 @@ internal sealed class UserServiceTests
         {
             RequireEmailVerification = false,
         });
-        
+
         _sut = new UserService(_userRepository.Object, _tokenService.Object, _mailService.Object, _templateService.Object, _identityOptions.Object);
     }
 
