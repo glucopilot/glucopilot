@@ -162,10 +162,10 @@ public sealed class UserService : IUserService
         {
             throw new UnauthorizedException("EMAIL_VERIFICATION_TOKEN_INVALID");
         }
-        
+
         user.EmailVerificationToken = null;
         user.IsVerified = true;
-        
+
         await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
     }
 }
