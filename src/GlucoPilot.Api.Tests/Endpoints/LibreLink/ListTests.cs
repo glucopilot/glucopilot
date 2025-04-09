@@ -139,11 +139,11 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
                 _patientRepositoryMock.Object,
                 CancellationToken.None);
 
-            var okResult = (Ok<List<ConnectionResponse>>)result.Result;
-            Assert.That(okResult.Value, Is.Not.Null);
-            Assert.That(okResult.Value.Count, Is.EqualTo(2));
-            Assert.That(okResult.Value[0].PatientId, Is.EqualTo(connections[0].PatientId));
-            Assert.That(okResult.Value[1].PatientId, Is.EqualTo(connections[1].PatientId));
+            var okResult = result.Value;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult.Count, Is.EqualTo(2));
+            Assert.That(okResult[0].PatientId, Is.EqualTo(connections[0].PatientId));
+            Assert.That(okResult[1].PatientId, Is.EqualTo(connections[1].PatientId));
         }
 
         [Test]
@@ -171,9 +171,9 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
                 _patientRepositoryMock.Object,
                 CancellationToken.None);
 
-            var okResult = (Ok<List<ConnectionResponse>>)result.Result;
-            Assert.That(okResult.Value, Is.Not.Null);
-            Assert.That(okResult.Value.Count, Is.EqualTo(0));
+            var okResult = result.Value;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult.Count, Is.EqualTo(0));
         }
     }
 }
