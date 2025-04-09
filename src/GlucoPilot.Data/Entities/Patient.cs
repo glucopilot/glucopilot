@@ -22,5 +22,5 @@ public class Patient : User
     /// <summary>
     /// The diabetes sensor system that the patient is using.
     /// </summary>
-    public GlucoseProvider? GlucoseProvider { get; set; }
+    public GlucoseProvider GlucoseProvider { get; set; }
 }
