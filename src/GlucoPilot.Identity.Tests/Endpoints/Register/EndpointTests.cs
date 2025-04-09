@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using GlucoPilot.Identity.Endpoints.Register;
 using GlucoPilot.Identity.Models;
 using GlucoPilot.Identity.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -9,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Endpoint = GlucoPilot.Identity.Endpoints.Register.Endpoint;
 
 namespace GlucoPilot.Identity.Tests.Endpoints.Register
 {
@@ -36,10 +37,10 @@ namespace GlucoPilot.Identity.Tests.Endpoints.Register
             validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
             var userServiceMock = new Mock<IUserService>();
-            userServiceMock.Setup(us => us.RegisterAsync(request, It.IsAny<CancellationToken>()))
+            userServiceMock.Setup(us => us.RegisterAsync(request, It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
 
-            var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, CancellationToken.None);
+            var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, new DefaultHttpContext(), CancellationToken.None);
 
             Assert.That(result.Result, Is.InstanceOf<Ok<RegisterResponse>>());
             Assert.That((result.Result as Ok<RegisterResponse>).Value, Is.EqualTo(response));
@@ -61,7 +62,7 @@ namespace GlucoPilot.Identity.Tests.Endpoints.Register
                 .ReturnsAsync(new ValidationResult(validationFailures));
             var userServiceMock = new Mock<IUserService>();
 
-            var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, CancellationToken.None);
+            var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, new DefaultHttpContext(), CancellationToken.None);
 
             Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
         }

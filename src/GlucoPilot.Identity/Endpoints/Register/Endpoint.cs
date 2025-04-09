@@ -15,6 +15,7 @@ namespace GlucoPilot.Identity.Endpoints.Register
             [FromBody] RegisterRequest request,
             [FromServices] IValidator<RegisterRequest> validator,
             [FromServices] IUserService userService,
+            HttpContext context,
             CancellationToken cancellationToken)
         {
             if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
@@ -22,7 +23,7 @@ namespace GlucoPilot.Identity.Endpoints.Register
             {
                 return TypedResults.ValidationProblem(validation.ToDictionary());
             }
-            var response = await userService.RegisterAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await userService.RegisterAsync(request, context.Request.Headers.Origin!, cancellationToken).ConfigureAwait(false);
             return TypedResults.Ok(response);
         }
     }
