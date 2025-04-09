@@ -17,6 +17,10 @@ public static class MealsEndpoints
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
+        group.MapGet("/{id:guid}", GetMeal.HandleAsync)
+            .HasApiVersion(1.0)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }
