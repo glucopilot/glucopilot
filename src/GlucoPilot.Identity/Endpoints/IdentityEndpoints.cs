@@ -18,6 +18,9 @@ internal static class IdentityEndpoints
         group.MapPost("/register", Register.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .AllowAnonymous();
+        group.MapGet("/verify-email", VerifyEmail.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .AllowAnonymous();
 
         return endpoints;
     }

@@ -7,7 +7,7 @@ public sealed record LoginRequest
     public required string Email { get; init; }
     public required string Password { get; init; }
 
-    internal sealed class Validator : AbstractValidator<LoginRequest>
+    public sealed class Validator : AbstractValidator<LoginRequest>
     {
         public Validator()
         {

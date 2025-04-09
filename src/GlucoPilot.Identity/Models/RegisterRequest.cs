@@ -16,7 +16,7 @@ public sealed record RegisterRequest
 
     public Guid? PatientId { get; init; }
 
-    internal sealed class Validator : AbstractValidator<RegisterRequest>
+    public sealed class Validator : AbstractValidator<RegisterRequest>
     {
         public Validator()
         {
