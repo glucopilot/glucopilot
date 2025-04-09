@@ -14,6 +14,7 @@ public static class Startup
             .ValidateOnStart();
 
         services.AddTransient<IMailService, MailService>();
+        services.AddTransient<ITemplateService, TemplateService>();
         services.AddTransient<ISmtpClientFactory, SmtpClientFactory>();
 
         return services;

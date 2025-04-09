@@ -8,8 +8,10 @@ using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Models;
 using GlucoPilot.Identity.Services;
+using GlucoPilot.Mail;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace GlucoPilot.Identity.Tests.Services;
@@ -19,6 +21,9 @@ internal sealed class UserServiceTests
 {
     private Mock<IRepository<User>> _userRepository;
     private Mock<ITokenService> _tokenService;
+    private Mock<IMailService> _mailService;
+    private Mock<ITemplateService> _templateService;
+    private Mock<IOptions<IdentityOptions>> _identityOptions;
     private UserService _sut;
 
     [SetUp]
@@ -26,8 +31,15 @@ internal sealed class UserServiceTests
     {
         _userRepository = new Mock<IRepository<User>>();
         _tokenService = new Mock<ITokenService>();
-
-        _sut = new UserService(_userRepository.Object, _tokenService.Object);
+        _mailService = new Mock<IMailService>();
+        _templateService = new Mock<ITemplateService>();
+        _identityOptions = new Mock<IOptions<IdentityOptions>>();
+        _identityOptions.Setup(x => x.Value).Returns(new IdentityOptions
+        {
+            RequireEmailVerification = false,
+        });
+        
+        _sut = new UserService(_userRepository.Object, _tokenService.Object, _mailService.Object, _templateService.Object, _identityOptions.Object);
     }
 
     [Test]
@@ -35,8 +47,10 @@ internal sealed class UserServiceTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(() => new UserService(null!, _tokenService.Object), Throws.ArgumentNullException);
-            Assert.That(() => new UserService(_userRepository.Object, null!), Throws.ArgumentNullException);
+            Assert.That(() => new UserService(null!, _tokenService.Object, _mailService.Object, _templateService.Object, _identityOptions.Object), Throws.ArgumentNullException);
+            Assert.That(() => new UserService(_userRepository.Object!, null!, _mailService.Object, _templateService.Object, _identityOptions.Object), Throws.ArgumentNullException);
+            Assert.That(() => new UserService(_userRepository.Object!, _tokenService.Object, _mailService.Object, null!, _identityOptions.Object), Throws.ArgumentNullException);
+            Assert.That(() => new UserService(_userRepository.Object!, _tokenService.Object, _mailService.Object, _templateService.Object, null!), Throws.ArgumentNullException);
         });
     }
 
@@ -106,7 +120,7 @@ internal sealed class UserServiceTests
             AcceptedTerms = true
         };
 
-        var result = await _sut.RegisterAsync(request);
+        var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Email, Is.EqualTo(request.Email));
@@ -130,7 +144,7 @@ internal sealed class UserServiceTests
             PatientId = patient.Id
         };
 
-        var result = await _sut.RegisterAsync(request);
+        var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Email, Is.EqualTo(request.Email));
@@ -151,7 +165,7 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        Assert.That(() => _sut.RegisterAsync(request), Throws.InstanceOf<ConflictException>());
+        Assert.That(() => _sut.RegisterAsync(request, "http://localhost", CancellationToken.None), Throws.InstanceOf<ConflictException>());
     }
 
     [Test]
@@ -166,6 +180,6 @@ internal sealed class UserServiceTests
             PatientId = Guid.NewGuid()
         };
 
-        Assert.That(() => _sut.RegisterAsync(request), Throws.InstanceOf<NotFoundException>());
+        Assert.That(() => _sut.RegisterAsync(request, "http://localhost", CancellationToken.None), Throws.InstanceOf<NotFoundException>());
     }
 }

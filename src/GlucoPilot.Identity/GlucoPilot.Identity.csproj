@@ -24,6 +24,13 @@
   <ItemGroup>
     <ProjectReference Include="..\GlucoPilot.AspNetCore\GlucoPilot.AspNetCore.csproj" />
     <ProjectReference Include="..\GlucoPilot.Data\GlucoPilot.Data.csproj" />
+    <ProjectReference Include="..\GlucoPilot.Mail\GlucoPilot.Mail.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templates\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

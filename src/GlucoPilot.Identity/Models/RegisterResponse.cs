@@ -9,4 +9,5 @@ public sealed record RegisterResponse
     public DateTimeOffset Created { get; init; }
     public DateTimeOffset? Updated { get; init; }
     public bool AcceptedTerms { get; init; }
+    public bool EmailVerified { get; init; }
 }
