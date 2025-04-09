@@ -1,4 +1,4 @@
-namespace GlucoPilot.Identity.Models;
+namespace GlucoPilot.Data.Enums;
 
 public enum GlucoseProvider
 {

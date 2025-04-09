@@ -16,4 +16,7 @@ public sealed record ConnectionData
 
     [JsonPropertyName("lastName")]
     public string? LastName { get; init; }
+
+    [JsonPropertyName("glucoseMeasurement")]
+    public GraphData? CurrentMeasurement { get; init; }
 }
