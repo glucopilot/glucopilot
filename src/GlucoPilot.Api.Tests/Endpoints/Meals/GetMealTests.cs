@@ -107,7 +107,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
                 Assert.That(ingredient.Protein, Is.EqualTo(5));
                 Assert.That(ingredient.Fat, Is.EqualTo(2));
                 Assert.That(ingredient.Uom, Is.EqualTo(UnitOfMeasurement.Grams));
-            });            
+            });
         }
     }
 }
