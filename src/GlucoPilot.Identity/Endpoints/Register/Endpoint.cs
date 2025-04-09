@@ -23,7 +23,7 @@ namespace GlucoPilot.Identity.Endpoints.Register
             {
                 return TypedResults.ValidationProblem(validation.ToDictionary());
             }
-            var response = await userService.RegisterAsync(request, context.Request.Headers["origin"]!, cancellationToken).ConfigureAwait(false);
+            var response = await userService.RegisterAsync(request, context.Request.Headers.Origin!, cancellationToken).ConfigureAwait(false);
             return TypedResults.Ok(response);
         }
     }
