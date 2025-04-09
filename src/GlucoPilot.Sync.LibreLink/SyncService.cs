@@ -27,12 +27,12 @@ public partial class SyncService : IHostedService, IDisposable
     public void Dispose()
     {
         _timer?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         StartingLibreLinkSyncService();
-        var startTime = DateTimeOffset.Now;
         _timer = new Timer(DoWork, cancellationToken, TimeSpan.Zero, TimeSpan.FromMinutes(1));
 
         return Task.CompletedTask;
@@ -126,9 +126,9 @@ public partial class SyncService : IHostedService, IDisposable
         }
     }
 
-    private DateTime NormaliseTimeStamp(DateTime timeStamp)
+    private static DateTime NormaliseTimeStamp(DateTime timeStamp)
     {
-        return new DateTime(timeStamp.Year, timeStamp.Month, timeStamp.Day, timeStamp.Hour, timeStamp.Minute, 0);
+        return new DateTime(timeStamp.Year, timeStamp.Month, timeStamp.Day, timeStamp.Hour, timeStamp.Minute, 0, DateTimeKind.Utc);
     }
 
     [LoggerMessage(LogLevel.Information, "Starting libre link sync service.")]
