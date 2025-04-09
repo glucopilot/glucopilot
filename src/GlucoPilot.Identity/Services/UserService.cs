@@ -107,7 +107,7 @@ public sealed class UserService : IUserService
             var confirmEmailModel = new EmailConfirmation()
             {
                 Email = user.Email,
-                Url = GetEmailVerificationUrl(user.EmailVerificationToken, origin),
+                Url = GetEmailVerificationUrl(user.EmailVerificationToken!, origin),
             };
 
             var message = new MailRequest()
