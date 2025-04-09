@@ -7,13 +7,13 @@ namespace GlucoPilot.Identity.Tests.Validators;
 internal sealed class RegisterRequestValidatorTests
 {
     private RegisterRequest.Validator _validator;
-    
+
     [SetUp]
     public void SetUp()
     {
         _validator = new RegisterRequest.Validator();
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Email_Is_Empty()
     {
@@ -28,7 +28,7 @@ internal sealed class RegisterRequestValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Email_Is_Invalid()
     {
@@ -43,7 +43,7 @@ internal sealed class RegisterRequestValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Password_Is_Empty()
     {
@@ -54,11 +54,11 @@ internal sealed class RegisterRequestValidatorTests
             ConfirmPassword = "password",
             AcceptedTerms = true,
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Password);
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Password_Is_LessThanSix_Characters()
     {
@@ -69,7 +69,7 @@ internal sealed class RegisterRequestValidatorTests
             ConfirmPassword = "password",
             AcceptedTerms = true,
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Password);
     }
@@ -84,11 +84,11 @@ internal sealed class RegisterRequestValidatorTests
             ConfirmPassword = "",
             AcceptedTerms = true,
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.ConfirmPassword);
     }
-    
+
     [Test]
     public void Should_Have_Error_When_ConfirmPassword_Does_Not_Match_Password()
     {
@@ -99,7 +99,7 @@ internal sealed class RegisterRequestValidatorTests
             ConfirmPassword = "testing",
             AcceptedTerms = true,
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.ConfirmPassword);
     }
@@ -114,7 +114,7 @@ internal sealed class RegisterRequestValidatorTests
             ConfirmPassword = "password",
             AcceptedTerms = false,
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.AcceptedTerms);
     }

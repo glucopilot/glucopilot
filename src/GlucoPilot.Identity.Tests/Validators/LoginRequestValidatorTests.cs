@@ -7,13 +7,13 @@ namespace GlucoPilot.Identity.Tests.Validators;
 internal sealed class LoginRequestValidatorTests
 {
     private LoginRequest.Validator _validator;
-    
+
     [SetUp]
     public void SetUp()
     {
         _validator = new LoginRequest.Validator();
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Email_Is_Empty()
     {
@@ -26,7 +26,7 @@ internal sealed class LoginRequestValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Email_Is_Invalid()
     {
@@ -48,7 +48,7 @@ internal sealed class LoginRequestValidatorTests
             Email = "user@nomail.com",
             Password = string.Empty
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Password);
     }
