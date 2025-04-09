@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ internal sealed class UserServiceTests
     private Mock<ITokenService> _tokenService;
     private Mock<IMailService> _mailService;
     private Mock<ITemplateService> _templateService;
+    private IdentityOptions _options;
     private Mock<IOptions<IdentityOptions>> _identityOptions;
     private UserService _sut;
 
@@ -34,11 +36,9 @@ internal sealed class UserServiceTests
         _mailService = new Mock<IMailService>();
         _templateService = new Mock<ITemplateService>();
         _identityOptions = new Mock<IOptions<IdentityOptions>>();
-        _identityOptions.Setup(x => x.Value).Returns(new IdentityOptions
-        {
-            RequireEmailVerification = false,
-        });
-
+        _options = new IdentityOptions() { RequireEmailVerification = false };
+        _identityOptions.Setup(x => x.Value).Returns(_options);
+        
         _sut = new UserService(_userRepository.Object, _tokenService.Object, _mailService.Object, _templateService.Object, _identityOptions.Object);
     }
 
@@ -86,6 +86,34 @@ internal sealed class UserServiceTests
     }
 
     [Test]
+    public void LoginAsync_WithValidPatientCredentials_Unverified_Throws_Unauthorized()
+    {
+        _options.RequireEmailVerification = true;
+        var request = new LoginRequest { Email = "test@example.com", Password = "password" };
+        var user = new Patient
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
+        
+        Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
+    }
+    
+    [Test]
+    public void LoginAsync_WithValidCareGiverCredentials_Unverified_Throws_Unauthorized()
+    {
+        _options.RequireEmailVerification = true;
+        var request = new LoginRequest { Email = "test@example.com", Password = "password" };
+        var user = new CareGiver
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
+        
+        Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
     public void LoginAsync_WithInvalidPatientCredentials_ThrowsUnauthorizedException()
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
@@ -108,7 +136,7 @@ internal sealed class UserServiceTests
 
         Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
     }
-
+    
     [Test]
     public async Task RegisterAsync_WithNewPatient_ReturnsRegisterResponse()
     {
@@ -150,6 +178,48 @@ internal sealed class UserServiceTests
         Assert.That(result.Email, Is.EqualTo(request.Email));
     }
 
+    [Test]
+    public async Task RegisterAsync_Patient_RequiresEmailVerification()
+    {
+        _options.RequireEmailVerification = true;
+        var patient = new Patient()
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(patient);
+
+        var request = new RegisterRequest
+        {
+            Email = "newuser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true,
+            PatientId = patient.Id
+        };
+
+        _ = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
+
+        _mailService.Verify(m => m.SendAsync(It.Is<MailRequest>(x => x.To.SequenceEqual(new[] { request.Email })), It.IsAny<CancellationToken>()), Times.Once);
+    }
+    
+    [Test]
+    public async Task RegisterAsync_CareGiver_RequiresEmailVerification()
+    {
+        _options.RequireEmailVerification = true;
+        
+        var request = new RegisterRequest
+        {
+            Email = "newuser@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true,
+        };
+
+        _ = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
+
+        _mailService.Verify(m => m.SendAsync(It.Is<MailRequest>(x => x.To.SequenceEqual(new[] { request.Email })), It.IsAny<CancellationToken>()), Times.Once);
+    }
+    
     [Test]
     public void RegisterAsync_WithExistingUser_ThrowsConflictException()
     {

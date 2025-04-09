@@ -8,5 +8,5 @@ public sealed class IdentityOptions
 
     [Required] public int TokenExpirationInMinutes { get; init; } = 60;
 
-    public bool RequireEmailVerification { get; init; } = true;
+    public bool RequireEmailVerification { get; set; } = true;
 }
