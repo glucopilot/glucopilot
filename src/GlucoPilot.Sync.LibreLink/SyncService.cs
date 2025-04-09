@@ -128,7 +128,7 @@ public partial class SyncService : IHostedService, IDisposable
 
     private static DateTime NormaliseTimeStamp(DateTime timeStamp)
     {
-        return new DateTime(timeStamp.Year, timeStamp.Month, timeStamp.Day, timeStamp.Hour, timeStamp.Minute, 0, DateTimeKind.Utc);
+        return new DateTime(timeStamp.Year, timeStamp.Month, timeStamp.Day, timeStamp.Hour, timeStamp.Minute, timeStamp.Second, DateTimeKind.Utc);
     }
 
     [LoggerMessage(LogLevel.Information, "Starting libre link sync service.")]
