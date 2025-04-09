@@ -6,6 +6,7 @@ using GlucoPilot.LibreLinkClient.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -25,7 +26,7 @@ internal static class List
         var patient = patientRepository.FindOne(p => p.Id == currentUser.GetUserId());
         if (patient is null || patient.AuthTicket is null)
         {
-            return TypedResults.NotFound();
+            return TypedResults.Unauthorized();
         }
 
         var authTicket = new LibreAuthTicket
@@ -53,11 +54,7 @@ internal static class List
 
             return TypedResults.Ok(response);
         }
-        catch (LibreLinkAuthenticationExpiredException)
-        {
-            return TypedResults.Unauthorized();
-        }
-        catch (LibreLinkNotAuthenticatedException)
+        catch (Exception ex) when (ex is LibreLinkAuthenticationExpiredException or LibreLinkNotAuthenticatedException)
         {
             return TypedResults.Unauthorized();
         }

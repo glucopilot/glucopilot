@@ -49,7 +49,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
                 _patientRepositoryMock.Object,
                 CancellationToken.None);
 
-            Assert.That(result.Result, Is.InstanceOf<NotFound>());
+            Assert.That(result.Result, Is.InstanceOf<UnauthorizedHttpResult>());
         }
 
         [Test]
