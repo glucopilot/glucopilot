@@ -18,7 +18,7 @@ namespace GlucoPilot.Api.Endpoints.LibreLink.Connections;
 
 internal static class List
 {
-    internal static async Task<Results<Ok<List<ConnectionResponse>>, NotFound, UnauthorizedHttpResult>> HandleAsync(
+    internal static async Task<Ok<List<ConnectionResponse>>> HandleAsync(
         [FromServices] ICurrentUser currentUser,
         [FromServices] ILibreLinkClient libreLinkClient,
         [FromServices] IRepository<Patient> patientRepository,
@@ -27,7 +27,7 @@ internal static class List
         var patient = patientRepository.FindOne(p => p.Id == currentUser.GetUserId());
         if (patient is null || patient.AuthTicket is null)
         {
-            return TypedResults.Unauthorized();
+            throw new UnauthorizedException("PATIENT_NOT_FOUND");
         }
 
         var authTicket = new LibreAuthTicket

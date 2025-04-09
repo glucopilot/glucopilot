@@ -37,24 +37,24 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
         }
 
         [Test]
-        public async Task HandleAsync_Patient_Not_Found_Returns_Not_Found()
+        public void HandleAsync_Patient_Not_Found_Returns_Not_Found()
         {
 
             _currentUserMock.Setup(c => c.GetUserId()).Returns(Guid.NewGuid());
             _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns((Patient)null);
 
-            var result = await List.HandleAsync(
+            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None);
+                CancellationToken.None));
 
-            Assert.That(result.Result, Is.InstanceOf<UnauthorizedHttpResult>());
+            Assert.That(exception.Message, Is.EqualTo("PATIENT_NOT_FOUND"));
         }
 
         [Test]
-        public void HandleAsync_Authentication_Expired_Returns_Unauthorized()
+        public void HandleAsync_Authentication_Expired_Throws_Exception()
         {
             var userId = Guid.NewGuid();
             _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
@@ -82,7 +82,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
         }
 
         [Test]
-        public void HandleAsync_Not_Authentication_Returns_Unauthorized()
+        public void HandleAsync_Not_Authentication_Throws_Exception()
         {
             var userId = Guid.NewGuid();
             _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
