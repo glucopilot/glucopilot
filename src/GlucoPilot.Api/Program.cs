@@ -12,7 +12,9 @@ using GlucoPilot.Mail;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,16 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddMail(builder.Configuration.GetSection("Mail").Bind);
 
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddSerilog(dispose: true);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,7 +84,6 @@ app.UseHttpsRedirection();
 app.UseIdentity();
 
 app.UseHealthChecks("/health");
-
 
 app.MapIdentityEndpoints();
 app.MapGlucoPilotEndpoints();

@@ -72,7 +72,7 @@ internal sealed class UserServiceTests
     }
 
     [Test]
-    public async Task LoginAsync_WithInvalidPatientCredentials_ThrowsUnauthorizedException()
+    public void LoginAsync_WithInvalidPatientCredentials_ThrowsUnauthorizedException()
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new Patient
@@ -84,7 +84,7 @@ internal sealed class UserServiceTests
     }
 
     [Test]
-    public async Task LoginAsync_WithInvalidCareGiverCredentials_ThrowsUnauthorizedException()
+    public void LoginAsync_WithInvalidCareGiverCredentials_ThrowsUnauthorizedException()
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new CareGiver
