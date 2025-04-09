@@ -1,4 +1,5 @@
-﻿using GlucoPilot.Data.Entities;
+﻿using GlucoPilot.AspNetCore.Exceptions;
+using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using GlucoPilot.LibreLinkClient;
@@ -54,9 +55,13 @@ internal static class List
 
             return TypedResults.Ok(response);
         }
-        catch (Exception ex) when (ex is LibreLinkAuthenticationExpiredException or LibreLinkNotAuthenticatedException)
+        catch (LibreLinkAuthenticationExpiredException)
         {
-            return TypedResults.Unauthorized();
+            throw new UnauthorizedException("LIBRE_LINK_AUTH_EXPIRED");
+        }
+        catch (LibreLinkNotAuthenticatedException)
+        {
+            throw new UnauthorizedException("LIBRE_LINK_NOT_AUTHENTICATED");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using GlucoPilot.Api.Endpoints.LibreLink.Connections;
 using GlucoPilot.Api.Models;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -53,7 +54,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
         }
 
         [Test]
-        public async Task HandleAsync_Authentication_Fails_Returns_Unauthorized()
+        public void HandleAsync_Authentication_Expired_Returns_Unauthorized()
         {
             var userId = Guid.NewGuid();
             _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
@@ -71,13 +72,41 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
             _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
 
-            var result = await List.HandleAsync(
+            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None);
+                CancellationToken.None));
 
-            Assert.That(result.Result, Is.InstanceOf<UnauthorizedHttpResult>());
+            Assert.That(exception.Message, Is.EqualTo("LIBRE_LINK_AUTH_EXPIRED"));
+        }
+
+        [Test]
+        public void HandleAsync_Not_Authentication_Returns_Unauthorized()
+        {
+            var userId = Guid.NewGuid();
+            _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+
+            var patient = new Patient
+            {
+                Id = userId,
+                Email = "test@test.com",
+                PasswordHash = "hashed-password",
+                AuthTicket = new AuthTicket { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            };
+            _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+                .Returns(patient);
+
+            _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new LibreLinkNotAuthenticatedException());
+
+            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(
+                _currentUserMock.Object,
+                _libreLinkClientMock.Object,
+                _patientRepositoryMock.Object,
+                CancellationToken.None));
+
+            Assert.That(exception.Message, Is.EqualTo("LIBRE_LINK_NOT_AUTHENTICATED"));
         }
 
         [Test]
