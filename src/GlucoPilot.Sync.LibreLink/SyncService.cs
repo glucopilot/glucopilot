@@ -89,7 +89,7 @@ public partial class SyncService : IHostedService, IDisposable
                         UserId = patient.Id,
                     };
 
-                    if (await readingRepository.AnyAsync(r => r.UserId == patientId && r.Created == reading.Created))
+                    if (await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created))
                     {
                         continue;
                     }
