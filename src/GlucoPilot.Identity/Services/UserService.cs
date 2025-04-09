@@ -152,4 +152,20 @@ public sealed class UserService : IUserService
         var endpointUri = new Uri(string.Concat($"{origin}/", route));
         return QueryHelpers.AddQueryString(endpointUri.ToString(), "token", verificationToken);
     }
+
+    public async Task VerifyEmailAsync(VerifyEmailRequest request, CancellationToken cancellationToken = default)
+    {
+        var user = await _repository.FindOneAsync(x => x.EmailVerificationToken == request.Token,
+                new FindOptions() { IsAsNoTracking = true, IsIgnoreAutoIncludes = true }, cancellationToken)
+            .ConfigureAwait(false);
+        if (user is null)
+        {
+            throw new UnauthorizedException("EMAIL_VERIFICATION_TOKEN_INVALID");
+        }
+        
+        user.EmailVerificationToken = null;
+        user.IsVerified = true;
+        
+        await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
+    }
 }
