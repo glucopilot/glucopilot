@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Models;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -28,7 +29,7 @@ internal static class List
 
         if (currentUser.GetUserId() is null)
         {
-            return TypedResults.Unauthorized();
+            throw new UnauthorizedException("PATIENT_NOT_FOUND");
         }
 
         var meals = repository.Find(m => m.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true })

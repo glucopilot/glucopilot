@@ -1,4 +1,4 @@
-﻿using GlucoPilot.Api.Endpoints.LibreLink.Connections;
+﻿using GlucoPilot.Api.Endpoints.LibreLink;
 using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
@@ -16,7 +16,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AuthTicket = GlucoPilot.Data.Entities.AuthTicket;
-using ConnectionResponse = GlucoPilot.Api.Endpoints.LibreLink.Connections.ConnectionResponse;
+using ConnectionResponse = GlucoPilot.Api.Endpoints.LibreLink.ConnectionResponse;
 using LibreAuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
 namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections

@@ -1,5 +1,4 @@
-﻿using GlucoPilot.Api.Endpoints.LibreLink.Connections;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;

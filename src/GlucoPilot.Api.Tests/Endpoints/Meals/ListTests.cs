@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Meals;
 using GlucoPilot.Api.Models;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -61,9 +62,9 @@ public class ListTests
         _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
-        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
+        var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object));
 
-        Assert.That(result.Result, Is.InstanceOf<UnauthorizedHttpResult>());
+        Assert.That(exception.Message, Is.EqualTo("PATIENT_NOT_FOUND"));
     }
 
     [Test]

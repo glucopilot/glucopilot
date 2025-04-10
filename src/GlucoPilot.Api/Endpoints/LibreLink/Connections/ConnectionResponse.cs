@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GlucoPilot.Api.Endpoints.LibreLink.Connections;
+namespace GlucoPilot.Api.Endpoints.LibreLink;
 
 public record ConnectionResponse
 {

@@ -14,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LibreAuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
-namespace GlucoPilot.Api.Endpoints.LibreLink.Connections;
+namespace GlucoPilot.Api.Endpoints.LibreLink;
 
 internal static class List
 {
