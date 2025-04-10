@@ -44,7 +44,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
             _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns((Patient)null);
 
-            Assert.That(async () => await List.HandleAsync(
+            Assert.That(() => List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
@@ -70,7 +70,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
             _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
 
-            Assert.That(async () => await List.HandleAsync(
+            Assert.That(() => List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
@@ -96,7 +96,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
             _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new LibreLinkNotAuthenticatedException());
 
-            Assert.That(async () => await List.HandleAsync(
+            Assert.That(() => List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
