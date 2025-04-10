@@ -64,7 +64,7 @@ public class ListTests
         _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
         Assert.That(() => List.HandleAsync(
-                request, 
+                request,
                 _validatorMock.Object,
                 _currentUserMock.Object,
                 _repositoryMock.Object,
