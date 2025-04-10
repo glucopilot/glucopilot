@@ -109,21 +109,4 @@ internal sealed class ListTests
         Assert.That(validationProblem, Is.Not.Null);
         Assert.That(validationProblem!.ProblemDetails.Errors, Contains.Key(nameof(ListReadingsRequest.To)));
     }
-
-    [Test]
-    public async Task HandleAsync_ReturnsUnauthorized_WhenUserIdIsNull()
-    {
-        var request = new ListReadingsRequest
-        {
-            From = DateTimeOffset.UtcNow,
-            To = DateTimeOffset.UtcNow.AddDays(1)
-        };
-        _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult());
-
-        _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
-
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
-        Assert.That(result.Result, Is.TypeOf<UnauthorizedHttpResult>());
-    }
 }

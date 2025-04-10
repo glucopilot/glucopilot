@@ -18,15 +18,12 @@ internal static class Endpoint
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository)
     {
-        if (currentUser.GetUserId() is null)
-        {
-            throw new UnauthorizedException("USER_NOT_LOGGED_IN");
-        }
+        var userId = currentUser.GetUserId();
 
         var newMeal = new Meal
         {
             Name = request.Name,
-            UserId = currentUser.GetUserId()!.Value,
+            UserId = userId,
             Created = DateTimeOffset.UtcNow,
             MealIngredients = request.MealIngredients,
         };

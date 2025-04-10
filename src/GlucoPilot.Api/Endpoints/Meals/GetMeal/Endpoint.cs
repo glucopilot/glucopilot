@@ -19,15 +19,10 @@ internal static class Endpoint
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository)
     {
-        var currentUserId = currentUser.GetUserId();
-
-        if (currentUserId is null)
-        {
-            return TypedResults.Unauthorized();
-        }
+        var userId = currentUser.GetUserId();
 
         var meal = repository
-            .Find(m => m.UserId == currentUserId && m.Id == mealId, new FindOptions { IsAsNoTracking = true })
+            .Find(m => m.UserId == userId && m.Id == mealId, new FindOptions { IsAsNoTracking = true })
             .Include(m => m.MealIngredients)
             .ThenInclude(mi => mi.Ingredient).FirstOrDefault();
 

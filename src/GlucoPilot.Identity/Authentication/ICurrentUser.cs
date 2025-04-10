@@ -6,7 +6,7 @@ namespace GlucoPilot.Identity.Authentication;
 
 public interface ICurrentUser
 {
-    Guid? GetUserId();
+    Guid GetUserId();
 
     string? GetUserEmail();
 
