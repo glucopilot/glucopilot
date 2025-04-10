@@ -8,6 +8,7 @@ using GlucoPilot.LibreLinkClient.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,16 @@ internal static class Login
             if (patient is null)
             {
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");
+            }
+
+            if (patient.AuthTicket is not null && DateTimeOffset.FromUnixTimeSeconds(patient.AuthTicket.Expires) > DateTimeOffset.UtcNow)
+            {
+                return TypedResults.Ok(new LoginResponse
+                {
+                    Token = patient.AuthTicket.Token,
+                    Expires = patient.AuthTicket.Expires,
+                    Duration = patient.AuthTicket.Duration,
+                });
             }
 
             var authTicket = await libreLinkClient.LoginAsync(request.Username, request.Password, cancellationToken).ConfigureAwait(false);
