@@ -44,13 +44,11 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
             _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns((Patient)null);
 
-            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(
+            Assert.That(async () => await List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None));
-
-            Assert.That(exception.Message, Is.EqualTo("PATIENT_NOT_FOUND"));
+                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
         }
 
         [Test]
@@ -72,13 +70,11 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
             _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
 
-            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(
+            Assert.That(async () => await List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None));
-
-            Assert.That(exception.Message, Is.EqualTo("LIBRE_LINK_AUTH_EXPIRED"));
+                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("LIBRE_LINK_AUTH_EXPIRED"));
         }
 
         [Test]
@@ -100,13 +96,11 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
             _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new LibreLinkNotAuthenticatedException());
 
-            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(
+            Assert.That(async () => await List.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None));
-
-            Assert.That(exception.Message, Is.EqualTo("LIBRE_LINK_NOT_AUTHENTICATED"));
+                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("LIBRE_LINK_NOT_AUTHENTICATED"));
         }
 
         [Test]

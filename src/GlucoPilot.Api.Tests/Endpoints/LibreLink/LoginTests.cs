@@ -60,7 +60,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
             _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
             Assert.That(async () => await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
-                Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
+                Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
         }
 
         [Test]

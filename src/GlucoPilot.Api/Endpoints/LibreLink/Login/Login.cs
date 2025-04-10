@@ -16,7 +16,7 @@ namespace GlucoPilot.Api.Endpoints.LibreLink;
 
 internal static class Login
 {
-    internal static async Task<Results<Ok<LoginResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
+    internal static async Task<Results<Ok<LoginResponse>, ValidationProblem>> HandleAsync(
         [AsParameters] LoginRequest request,
         [FromServices] IValidator<LoginRequest> validator,
         [FromServices] ICurrentUser currentUser,
@@ -32,7 +32,7 @@ internal static class Login
 
         if (!currentUser.GetUserId().HasValue)
         {
-            throw new UnauthorizedException("PATIENT_NOT_FOUND");
+            throw new UnauthorizedException("USER_NOT_LOGGED_IN");
         }
 
         var currentUserId = currentUser.GetUserId()!.Value;
