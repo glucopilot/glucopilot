@@ -27,12 +27,9 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        if (currentUser.GetUserId() is null)
-        {
-            return TypedResults.Unauthorized();
-        }
+        var userId = currentUser.GetUserId();
 
-        var readings = repository.Find(r => r.UserId == currentUser.GetUserId() && r.Created >= request.From && r.Created <= request.To, new FindOptions { IsAsNoTracking = true })
+        var readings = repository.Find(r => r.UserId == userId && r.Created >= request.From && r.Created <= request.To, new FindOptions { IsAsNoTracking = true })
             .OrderByDescending(r => r.Created)
             .Select(r => new ReadingsResponse
             {

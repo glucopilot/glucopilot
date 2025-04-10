@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Identity.Authentication;
 
 namespace GlucoPilot.Identity.Tests.Authentication;
@@ -22,13 +23,11 @@ internal sealed class CurrentUserTests
     }
 
     [Test]
-    public void GetUserId_WithUnauthenticatedUser_ReturnsNull()
+    public void GetUserId_WithUnauthenticatedUser_Throws_UnauthorizedException()
     {
         var currentUser = new CurrentUser();
 
-        var result = currentUser.GetUserId();
-
-        Assert.That(result, Is.Null);
+        Assert.That(() => currentUser.GetUserId(), Throws.InstanceOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
     }
 
     [Test]

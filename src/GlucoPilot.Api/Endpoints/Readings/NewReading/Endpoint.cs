@@ -26,14 +26,11 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        if (currentUser.GetUserId() is null)
-        {
-            return TypedResults.Unauthorized();
-        }
+        var userId = currentUser.GetUserId();
 
         var reading = new Reading
         {
-            UserId = currentUser.GetUserId()!.Value,
+            UserId = userId,
             Created = request.Created,
             GlucoseLevel = request.GlucoseLevel,
             Direction = ReadingDirection.NotComputable,

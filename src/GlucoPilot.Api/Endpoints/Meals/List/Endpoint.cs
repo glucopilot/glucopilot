@@ -29,12 +29,9 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        if (currentUser.GetUserId() is null)
-        {
-            throw new UnauthorizedException("USER_NOT_LOGGED_IN");
-        }
+        var userId = currentUser.GetUserId();
 
-        var meals = repository.Find(m => m.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true })
+        var meals = repository.Find(m => m.UserId == userId, new FindOptions { IsAsNoTracking = true })
             .OrderByDescending(m => m.Created)
             .Skip(request.Page * request.PageSize)
             .Take(request.PageSize)
@@ -46,7 +43,7 @@ internal static class Endpoint
             })
             .ToList();
 
-        var totalMeals = await repository.CountAsync(m => m.UserId == currentUser.GetUserId(), cancellationToken).ConfigureAwait(false);
+        var totalMeals = await repository.CountAsync(m => m.UserId == userId, cancellationToken).ConfigureAwait(false);
         var numberOfPages = (int)Math.Ceiling(totalMeals / (double)request.PageSize);
 
         var response = new ListMealsResponse
