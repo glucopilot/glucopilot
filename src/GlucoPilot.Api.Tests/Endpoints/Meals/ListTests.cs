@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GlucoPilot.Api.Tests.Endpoints.Meals;
@@ -45,7 +46,7 @@ public class ListTests
 
         _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(validationResult);
 
-        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
+        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.Multiple(() =>
         {
@@ -62,9 +63,12 @@ public class ListTests
         _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
-        var exception = Assert.ThrowsAsync<UnauthorizedException>(async () => await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object));
-
-        Assert.That(exception.Message, Is.EqualTo("PATIENT_NOT_FOUND"));
+        Assert.That(() => List.HandleAsync(
+                request, 
+                _validatorMock.Object,
+                _currentUserMock.Object,
+                _repositoryMock.Object,
+                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
     }
 
     [Test]
@@ -83,7 +87,7 @@ public class ListTests
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>())).Returns(meals.AsQueryable());
         _repositoryMock.Setup(r => r.CountAsync(It.IsAny<Expression<Func<Meal, bool>>>(), default)).ReturnsAsync(meals.Count);
 
-        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
+        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         var okResult = result.Result as Ok<ListMealsResponse>;
         Assert.That(okResult, Is.InstanceOf<Ok<ListMealsResponse>>());
