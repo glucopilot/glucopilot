@@ -13,7 +13,7 @@ namespace GlucoPilot.Api.Endpoints.Meals.NewMeal;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Created<NewMealResponse>, Conflict, UnauthorizedHttpResult>> HandleAsync(
+    internal static async Task<Results<Created<NewMealResponse>, UnauthorizedHttpResult>> HandleAsync(
         [FromBody] NewMealRequest request,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository)
@@ -23,29 +23,21 @@ internal static class Endpoint
             throw new UnauthorizedException("USER_NOT_LOGGED_IN");
         }
 
-        try
+        var newMeal = new Meal
         {
-            var newMeal = new Meal
-            {
-                Name = request.Name,
-                UserId = currentUser.GetUserId()!.Value,
-                Created = DateTimeOffset.UtcNow,
-                MealIngredients = request.MealIngredients,
-            };
-            repository.Add(newMeal);
+            Name = request.Name,
+            UserId = currentUser.GetUserId()!.Value,
+            Created = DateTimeOffset.UtcNow,
+            MealIngredients = request.MealIngredients,
+        };
+        repository.Add(newMeal);
 
-            var response = new NewMealResponse
-            {
-                Id = newMeal.Id,
-                Name = newMeal.Name,
-            };
-
-            return TypedResults.Created($"/meals/{newMeal.Id}", response);
-
-        }
-        catch (DbUpdateException)
+        var response = new NewMealResponse
         {
-            throw new ConflictException("MEAL_ALREADY_EXISTS");
-        }
+            Id = newMeal.Id,
+            Name = newMeal.Name,
+        };
+
+        return TypedResults.Created($"/meals/{newMeal.Id}", response);
     }
 }

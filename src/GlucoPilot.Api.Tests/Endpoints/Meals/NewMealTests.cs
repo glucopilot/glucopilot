@@ -49,17 +49,4 @@ public class Endpoint_Tests
         var createdResult = result.Result as Created<NewMealResponse>;
         Assert.That(createdResult?.Value.Name, Is.EqualTo("Test Meal"));
     }
-
-    [Test]
-    public void HandleAsync_Should_Throw_ConflictException_When_Meal_Already_Exists()
-    {
-        var userId = Guid.NewGuid();
-        _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
-        var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<MealIngredient>() };
-
-        _repositoryMock.Setup(x => x.Add(It.IsAny<Meal>())).Throws(new DbUpdateException());
-
-        Assert.That(async () => await Endpoint.HandleAsync(request, _currentUserMock.Object, _repositoryMock.Object),
-            Throws.TypeOf<ConflictException>().With.Message.EqualTo("MEAL_ALREADY_EXISTS"));
-    }
 }
