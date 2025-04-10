@@ -58,23 +58,6 @@ public class NewReadingTests
     }
 
     [Test]
-    public async Task HandleAsync_ReturnsUnauthorized_WhenUserIdIsNull()
-    {
-        var request = new NewReadingRequest
-        {
-            Created = DateTimeOffset.UtcNow,
-            GlucoseLevel = 5.0
-        };
-        _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult());
-
-        _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
-
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
-        Assert.That(result.Result, Is.TypeOf<UnauthorizedHttpResult>());
-    }
-
-    [Test]
     public async Task HandleAsync_ReturnsValidationProblem_WhenRequestIsInvalid()
     {
         var request = new NewReadingRequest

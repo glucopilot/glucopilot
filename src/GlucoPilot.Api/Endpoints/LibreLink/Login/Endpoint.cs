@@ -30,16 +30,11 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        if (!currentUser.GetUserId().HasValue)
-        {
-            throw new UnauthorizedException("USER_NOT_LOGGED_IN");
-        }
-
-        var currentUserId = currentUser.GetUserId()!.Value;
+        var userId = currentUser.GetUserId();
 
         try
         {
-            var patient = patientRepository.FindOne(p => p.Id == currentUserId);
+            var patient = patientRepository.FindOne(p => p.Id == userId);
             if (patient is null)
             {
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");

@@ -52,19 +52,6 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
         }
 
         [Test]
-        public void HandleAsync_Should_Throw_Unauthorized_Exception_When_User_Id_Is_Null()
-        {
-            var request = new LoginRequest { Username = "test", Password = "password" };
-            _validatorMock
-                .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
-            _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
-
-            Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
-                Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
-        }
-
-        [Test]
         public async Task HandleAsync_Should_Return_Ok_When_Login_Is_Successful()
         {
             var request = new LoginRequest { Username = "test", Password = "password" };

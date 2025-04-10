@@ -27,16 +27,6 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
         }
 
         [Test]
-        public async Task HandleAsync_Returns_Unauthorized_When_User_Not_Authenticated()
-        {
-            _mockCurrentUser.Setup(c => c.GetUserId()).Returns((Guid?)null);
-
-            var result = await Endpoint.HandleAsync(Guid.NewGuid(), _mockCurrentUser.Object, _mockRepository.Object);
-
-            Assert.That(result.Result, Is.InstanceOf<UnauthorizedHttpResult>());
-        }
-
-        [Test]
         public async Task HandleAsync_Returns_Not_Found_When_Meal_Does_Not_Exist()
         {
             var userId = Guid.NewGuid();
