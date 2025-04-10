@@ -21,7 +21,7 @@ public static class MealsEndpoints
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
-        group.MapPost("/newmeal", NewMeal.Endpoint.HandleAsync)
+        group.MapPost("/", NewMeal.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
