@@ -22,6 +22,7 @@ internal static class Endpoint
         [FromServices] IRepository<Ingredient> repository,
         CancellationToken cancellationToken)
     {
+        var userId = currentUser.GetUserId();
 
         if (await validator.ValidateAsync(request).ConfigureAwait(false) is
             { IsValid: false } validation)
@@ -29,7 +30,7 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        var ingredients = repository.Find(i => i.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true })
+        var ingredients = repository.Find(i => i.UserId == userId, new FindOptions { IsAsNoTracking = true })
             .OrderByDescending(i => i.Created)
             .Skip(request.Page * request.PageSize)
             .Take(request.PageSize)
@@ -46,7 +47,7 @@ internal static class Endpoint
             })
             .ToList();
 
-        var totalMeals = await repository.CountAsync(i => i.UserId == currentUser.GetUserId(), cancellationToken).ConfigureAwait(false);
+        var totalMeals = await repository.CountAsync(i => i.UserId == userId, cancellationToken).ConfigureAwait(false);
         var response = new ListIngredientsResponse
         {
             NumberOfPages = (int)Math.Ceiling(totalMeals / (double)request.PageSize),
