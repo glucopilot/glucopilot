@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GlucoPilot.Api.Endpoints.Meals.NewMeal;
@@ -25,8 +26,16 @@ internal static class Endpoint
             Name = request.Name,
             UserId = userId,
             Created = DateTimeOffset.UtcNow,
-            MealIngredients = request.MealIngredients,
+            MealIngredients = [],
         };
+        newMeal.MealIngredients = request.MealIngredients.Select(x => new MealIngredient()
+        {
+            Id = x.Id,
+            MealId = newMeal.Id,
+            IngredientId = x.IngredientId,
+            Quantity = x.Quantity,
+        }).ToList();
+
         repository.Add(newMeal);
 
         var response = new NewMealResponse
