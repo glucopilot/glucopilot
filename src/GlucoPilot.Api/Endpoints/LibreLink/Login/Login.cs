@@ -55,7 +55,7 @@ internal static class Login
                     Expires = authTicket.Expires,
                     Duration = authTicket.Duration,
                 };
-                patientRepository.Update(patient);
+                await patientRepository.UpdateAsync(patient);
             }
 
             var response = new LoginResponse
