@@ -35,7 +35,25 @@ public class ListTests
     }
 
     [Test]
-    public async Task HandleAsync_ReturnsValidationProblem_WhenRequestIsInvalid()
+    public async Task HandleAsync_ReturnsUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        var mockValidator = new Mock<IValidator<ListMealsRequest>>();
+        mockValidator
+            .Setup(v => v.ValidateAsync(It.IsAny<ListMealsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        _currentUserMock.Setup(x => x.GetUserId()).Throws(new UnauthorizedException("USER_NOT_LOGGED_IN"));
+
+        var mockRepository = new Mock<IRepository<Meal>>();
+
+        var request = new ListMealsRequest { Page = 0, PageSize = 10 };
+
+        Assert.That(() => Endpoint.HandleAsync(request, mockValidator.Object, _currentUserMock.Object, mockRepository.Object, CancellationToken.None),
+            Throws.InstanceOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
+    }
+
+    [Test]
+    public async Task HandleAsync_Returns_Validation_Problem_When_Request_Is_Invalid()
     {
         var request = new ListMealsRequest { Page = 0, PageSize = 10 };
         var validationResult = new ValidationResult(new List<ValidationFailure>
@@ -56,7 +74,7 @@ public class ListTests
     }
 
     [Test]
-    public async Task HandleAsync_ReturnsOk_WithMealsList()
+    public async Task HandleAsync_Returns_Ok_With_Meals_List()
     {
         var request = new ListMealsRequest { Page = 0, PageSize = 10 };
 

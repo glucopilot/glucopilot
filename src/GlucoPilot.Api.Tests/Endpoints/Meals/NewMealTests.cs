@@ -29,7 +29,7 @@ public class Endpoint_Tests
     [Test]
     public void HandleAsync_Should_Throw_UnauthorizedException_When_User_Not_Logged_In()
     {
-        _currentUserMock.Setup(x => x.GetUserId()).Returns((Guid?)null);
+        _currentUserMock.Setup(x => x.GetUserId()).Throws(new UnauthorizedException("USER_NOT_LOGGED_IN"));
         var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<NewMealIngredientRequest>() };
 
         Assert.That(async () => await Endpoint.HandleAsync(request, _currentUserMock.Object, _repositoryMock.Object),
