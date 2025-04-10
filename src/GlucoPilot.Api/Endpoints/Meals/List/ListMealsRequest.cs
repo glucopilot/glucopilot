@@ -1,24 +1,16 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Models;
 using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
 
 namespace GlucoPilot.Api.Endpoints.Meals.List;
 
-public sealed record ListMealsRequest
+public sealed record ListMealsRequest : PagedRequest
 {
-    [Required]
-    public int Page { get; set; }
-
-    [Required]
-    public int PageSize { get; set; }
-
     public sealed class ListMealsValidator : AbstractValidator<ListMealsRequest>
     {
         public ListMealsValidator(IOptions<ApiSettings> apiSettings)
         {
-            RuleFor(x => x.Page).GreaterThanOrEqualTo(0);
-            RuleFor(x => x.PageSize).InclusiveBetween(1, apiSettings.Value.MaxPageSize);
+            Include(new PagedRequestValidator(apiSettings));
         }
     }
 }

@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GlucoPilot.AspNetCore.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using GlucoPilot.Api.Models;
+using System.Linq;
 
 [TestFixture]
 public class Endpoint_Tests
@@ -28,7 +30,7 @@ public class Endpoint_Tests
     public void HandleAsync_Should_Throw_UnauthorizedException_When_User_Not_Logged_In()
     {
         _currentUserMock.Setup(x => x.GetUserId()).Returns((Guid?)null);
-        var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<MealIngredient>() };
+        var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<NewMealIngredientRequest>() };
 
         Assert.That(async () => await Endpoint.HandleAsync(request, _currentUserMock.Object, _repositoryMock.Object),
             Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
@@ -39,7 +41,7 @@ public class Endpoint_Tests
     {
         var userId = Guid.NewGuid();
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
-        var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<MealIngredient>() };
+        var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<NewMealIngredientRequest>() };
 
         _repositoryMock.Setup(x => x.Add(It.IsAny<Meal>()));
 
@@ -48,5 +50,44 @@ public class Endpoint_Tests
         Assert.That(result.Result, Is.InstanceOf<Created<NewMealResponse>>());
         var createdResult = result.Result as Created<NewMealResponse>;
         Assert.That(createdResult?.Value.Name, Is.EqualTo("Test Meal"));
+    }
+
+    [Test]
+    public async Task Should_Add_MealIngredients_To_NewMeal()
+    {
+        var mockCurrentUser = new Mock<ICurrentUser>();
+        mockCurrentUser.Setup(x => x.GetUserId()).Returns(Guid.NewGuid());
+
+        var mockRepository = new Mock<IRepository<Meal>>();
+
+        var request = new NewMealRequest
+        {
+            Name = "Test Meal",
+            MealIngredients = new List<NewMealIngredientRequest>
+        {
+            new NewMealIngredientRequest
+            {
+                Id = Guid.NewGuid(),
+                MealId = Guid.NewGuid(),
+                IngredientId = Guid.NewGuid(),
+                Quantity = 2
+            },
+            new NewMealIngredientRequest
+            {
+                Id = Guid.NewGuid(),
+                MealId = Guid.NewGuid(),
+                IngredientId = Guid.NewGuid(),
+                Quantity = 3
+            }
+        }
+        };
+
+        await Endpoint.HandleAsync(request, mockCurrentUser.Object, mockRepository.Object);
+
+        mockRepository.Verify(x => x.Add(It.Is<Meal>(meal =>
+            meal.MealIngredients.Count == 2 &&
+            meal.MealIngredients.Any(mi => mi.Quantity == 2) &&
+            meal.MealIngredients.Any(mi => mi.Quantity == 3)
+        )), Times.Once);
     }
 }

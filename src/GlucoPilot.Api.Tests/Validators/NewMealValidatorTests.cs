@@ -1,5 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.Meals.NewMeal;
+using GlucoPilot.Api.Models;
 using GlucoPilot.Data.Entities;
 using NUnit.Framework;
 using System;
@@ -20,10 +21,29 @@ public class NewMealValidatorTests
     [Test]
     public void Should_Have_Error_When_Name_Is_Empty()
     {
-        var model = new NewMealRequest { Name = string.Empty, MealIngredients = new List<MealIngredient> { } };
+        var model = new NewMealRequest { Name = string.Empty, MealIngredients = new List<NewMealIngredientRequest> { } };
 
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
+    }
+
+    [Test]
+    public void Should_Have_Error_For_Invalid_NewMealIngredientRequest()
+    {
+        var ingredientValidator = new NewMealIngredientRequest.NewMealIngredientValidator();
+        var model = new NewMealIngredientRequest
+        {
+            Id = Guid.Empty,
+            MealId = Guid.Empty,
+            IngredientId = Guid.Empty,
+            Quantity = 0
+        };
+
+        var result = ingredientValidator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(x => x.Id);
+        result.ShouldHaveValidationErrorFor(x => x.MealId);
+        result.ShouldHaveValidationErrorFor(x => x.IngredientId);
+        result.ShouldHaveValidationErrorFor(x => x.Quantity);
     }
 
     [Test]
@@ -32,9 +52,9 @@ public class NewMealValidatorTests
         var model = new NewMealRequest
         {
             Name = "Test Meal",
-            MealIngredients = new List<MealIngredient>
+            MealIngredients = new List<NewMealIngredientRequest>
             {
-                new MealIngredient
+                new NewMealIngredientRequest
                 {
                     Id = Guid.NewGuid(),
                     MealId = Guid.NewGuid(),
