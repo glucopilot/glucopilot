@@ -27,7 +27,7 @@ internal sealed class CurrentUserTests
     {
         var currentUser = new CurrentUser();
 
-       Assert.That(() => currentUser.GetUserId(), Throws.InstanceOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
+        Assert.That(() => currentUser.GetUserId(), Throws.InstanceOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
     }
 
     [Test]

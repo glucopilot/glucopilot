@@ -23,7 +23,7 @@ public class Endpoint_Tests
         _currentUserMock = new Mock<ICurrentUser>();
         _repositoryMock = new Mock<IRepository<Meal>>();
     }
-    
+
     [Test]
     public async Task HandleAsync_Should_Return_Created_When_Meal_Is_Successfully_Created()
     {
