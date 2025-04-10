@@ -31,13 +31,13 @@ internal static class Endpoint
         {
             return TypedResults.NoContent();
         }
-        
+
         var user = userRepository.FindOne(u => u.Email == request.Email);
         if (user is null)
         {
             throw new ForbiddenException("USER_NOT_VERIFIED");
         }
-        
+
         if (user.IsVerified)
         {
             return TypedResults.NoContent();

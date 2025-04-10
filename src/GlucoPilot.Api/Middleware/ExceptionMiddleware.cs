@@ -39,7 +39,7 @@ internal partial class ExceptionMiddleware : IMiddleware
             {
                 logContext.Add("UserId", _currentUser?.GetUserId());
             }
-            
+
             using var scope = _logger.BeginScope(logContext);
 
             context.Response.ContentType = "application/json";
