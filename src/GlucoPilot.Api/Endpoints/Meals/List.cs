@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Models;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GlucoPilot.Api.Endpoints.Meals;
@@ -18,7 +20,8 @@ internal static class List
         [AsParameters] ListMealsRequest request,
         [FromServices] IValidator<ListMealsRequest> validator,
         [FromServices] ICurrentUser currentUser,
-        [FromServices] IRepository<Meal> repository)
+        [FromServices] IRepository<Meal> repository,
+        CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request).ConfigureAwait(false) is
             { IsValid: false } validation)
@@ -28,7 +31,7 @@ internal static class List
 
         if (currentUser.GetUserId() is null)
         {
-            return TypedResults.Unauthorized();
+            throw new UnauthorizedException("USER_NOT_LOGGED_IN");
         }
 
         var meals = repository.Find(m => m.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true })
@@ -43,7 +46,7 @@ internal static class List
             })
             .ToList();
 
-        var totalMeals = await repository.CountAsync(m => m.UserId == currentUser.GetUserId()).ConfigureAwait(false);
+        var totalMeals = await repository.CountAsync(m => m.UserId == currentUser.GetUserId(), cancellationToken).ConfigureAwait(false);
         var numberOfPages = (int)Math.Ceiling(totalMeals / (double)request.PageSize);
 
         var response = new ListMealsResponse

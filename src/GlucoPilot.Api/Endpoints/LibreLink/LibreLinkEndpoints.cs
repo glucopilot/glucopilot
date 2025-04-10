@@ -1,5 +1,4 @@
-﻿using GlucoPilot.Api.Endpoints.LibreLink.Connections;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
@@ -14,7 +13,11 @@ public static class LibreLinkEndpoints
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/librelink")
             .WithTags("LibreLink");
 
-        group.MapGet("/", List.HandleAsync)
+        group.MapGet("/connections", List.HandleAsync)
+            .HasApiVersion(1.0)
+            .RequireAuthorization();
+
+        group.MapGet("/login", Login.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
