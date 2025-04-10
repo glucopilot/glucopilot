@@ -14,8 +14,6 @@ public record NewMealRequest
         public NewMealValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
-            RuleFor(x => x.MealIngredients).NotEmpty();
-            //RuleForEach(x => x.MealIngredients).SetValidator(new NewMealIngredientValidator());
         }
     }
 }
