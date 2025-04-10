@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GlucoPilot.Api.Endpoints.Meals;
-using GlucoPilot.Api.Models;
+using GlucoPilot.Api.Endpoints.Meals.GetMeal;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
@@ -32,7 +31,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
         {
             _mockCurrentUser.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
-            var result = await GetMeal.HandleAsync(Guid.NewGuid(), _mockCurrentUser.Object, _mockRepository.Object);
+            var result = await Endpoint.HandleAsync(Guid.NewGuid(), _mockCurrentUser.Object, _mockRepository.Object);
 
             Assert.That(result.Result, Is.InstanceOf<UnauthorizedHttpResult>());
         }
@@ -46,7 +45,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
                 .Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns(Enumerable.Empty<Meal>().AsQueryable());
 
-            var result = await GetMeal.HandleAsync(Guid.NewGuid(), _mockCurrentUser.Object, _mockRepository.Object);
+            var result = await Endpoint.HandleAsync(Guid.NewGuid(), _mockCurrentUser.Object, _mockRepository.Object);
 
             Assert.That(result.Result, Is.InstanceOf<NotFound>());
         }
@@ -91,7 +90,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
                 .Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns(new List<Meal> { meal }.AsQueryable());
 
-            var result = await GetMeal.HandleAsync(mealId, _mockCurrentUser.Object, _mockRepository.Object);
+            var result = await Endpoint.HandleAsync(mealId, _mockCurrentUser.Object, _mockRepository.Object);
 
             var okResult = result.Result as Ok<MealResponse>;
             Assert.Multiple(() =>

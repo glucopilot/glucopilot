@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Models;
+using GlucoPilot.Api.Endpoints.Meals.GetMeal;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -12,9 +12,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Endpoints.Meals;
+namespace GlucoPilot.Api.Endpoints.Meals.List;
 
-internal static class List
+internal static class Endpoint
 {
     internal static async Task<Results<Ok<ListMealsResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
         [AsParameters] ListMealsRequest request,

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using GlucoPilot.Api.Endpoints.Meals.GetMeal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GlucoPilot.Api.Models
+namespace GlucoPilot.Api.Endpoints.Meals.List
 {
     public sealed record ListMealsResponse
     {

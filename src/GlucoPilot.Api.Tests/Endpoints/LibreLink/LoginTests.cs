@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Endpoints.LibreLink;
+using GlucoPilot.Api.Endpoints.LibreLink.Login;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -45,7 +46,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
                     new FluentValidation.Results.ValidationFailure("Username", "Username is required")
                 }));
 
-            var result = await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+            var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
 
             Assert.That(result.Result, Is.TypeOf<ValidationProblem>());
         }
@@ -59,7 +60,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
             _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
-            Assert.That(async () => await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
+            Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
                 Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
         }
 
@@ -81,7 +82,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
             _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns(patient);
 
-            var result = await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+            var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
 
             Assert.That(result.Result, Is.TypeOf<Ok<LoginResponse>>());
             var okResult = result.Result as Ok<LoginResponse>;
@@ -117,7 +118,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
                 .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new LibreLinkAuthenticationFailedException());
 
-            Assert.That(async () => await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
+            Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
                 Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("LIBRE_LINK_AUTH_FAILED"));
         }
 
@@ -151,7 +152,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
                 .Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns(patient);
 
-            var result = await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+            var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
 
             Assert.That(result.Result, Is.TypeOf<Ok<LoginResponse>>());
             var okResult = result.Result as Ok<LoginResponse>;
@@ -174,7 +175,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
                 .Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns((Patient)null);
 
-            Assert.That(async () => await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
+            Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
                 Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
         }
 
@@ -205,7 +206,7 @@ namespace GlucoPilot.Tests.Endpoints.LibreLink
                 .Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
                 .Returns(patient);
 
-            var result = await Login.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+            var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
 
             Assert.That(result.Result, Is.TypeOf<Ok<LoginResponse>>());
             var okResult = result.Result as Ok<LoginResponse>;

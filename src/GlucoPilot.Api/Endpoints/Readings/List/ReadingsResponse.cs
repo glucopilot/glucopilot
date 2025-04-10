@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GlucoPilot.Api.Models;
+namespace GlucoPilot.Api.Endpoints.Readings.List;
 
 public sealed record ReadingsResponse
 {

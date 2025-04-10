@@ -10,9 +10,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Endpoints.Meals;
+namespace GlucoPilot.Api.Endpoints.Meals.GetMeal;
 
-internal static class GetMeal
+internal static class Endpoint
 {
     internal static async Task<Results<Ok<MealResponse>, NotFound, UnauthorizedHttpResult>> HandleAsync(
         [FromQuery] Guid mealId,

@@ -13,11 +13,11 @@ public static class LibreLinkEndpoints
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/librelink")
             .WithTags("LibreLink");
 
-        group.MapGet("/connections", List.HandleAsync)
+        group.MapGet("/connections", Connections.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
-        group.MapGet("/login", Login.HandleAsync)
+        group.MapGet("/login", Login.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 

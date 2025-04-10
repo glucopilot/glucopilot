@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace GlucoPilot.Api.Models
+namespace GlucoPilot.Api.Endpoints.Readings.List
 {
     public sealed record ListReadingsRequest
     {

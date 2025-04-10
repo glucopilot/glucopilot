@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using GlucoPilot.Api.Endpoints.Meals;
-using GlucoPilot.Api.Models;
+using GlucoPilot.Api.Endpoints.Meals.List;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -46,7 +45,7 @@ public class ListTests
 
         _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(validationResult);
 
-        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.Multiple(() =>
         {
@@ -63,7 +62,7 @@ public class ListTests
         _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
-        Assert.That(() => List.HandleAsync(
+        Assert.That(() => Endpoint.HandleAsync(
                 request,
                 _validatorMock.Object,
                 _currentUserMock.Object,
@@ -87,7 +86,7 @@ public class ListTests
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>())).Returns(meals.AsQueryable());
         _repositoryMock.Setup(r => r.CountAsync(It.IsAny<Expression<Func<Meal, bool>>>(), default)).ReturnsAsync(meals.Count);
 
-        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         var okResult = result.Result as Ok<ListMealsResponse>;
         Assert.That(okResult, Is.InstanceOf<Ok<ListMealsResponse>>());
