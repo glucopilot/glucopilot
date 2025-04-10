@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -9,21 +8,28 @@ using GlucoPilot.Identity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace GlucoPilot.Identity.Endpoints.IsVerified;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok, ForbidHttpResult, ValidationProblem>> HandleAsync(
+    internal static async Task<Results<NoContent, ForbidHttpResult, ValidationProblem>> HandleAsync(
         [AsParameters] IsVerifiedRequest request,
         [FromServices] IValidator<IsVerifiedRequest> validator,
         [FromServices] IRepository<User> userRepository,
+        [FromServices] IOptions<IdentityOptions> identityOptions,
         CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());
+        }
+
+        if (!identityOptions.Value.RequireEmailVerification)
+        {
+            return TypedResults.NoContent();
         }
         
         var user = userRepository.FindOne(u => u.Email == request.Email);
@@ -34,7 +40,7 @@ internal static class Endpoint
         
         if (user.IsVerified)
         {
-            return TypedResults.Ok();
+            return TypedResults.NoContent();
         }
         throw new ForbiddenException("USER_NOT_VERIFIED");
     }
