@@ -17,14 +17,14 @@ namespace GlucoPilot.Api.Endpoints.LibreLink.Login;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<LoginResponse>, ValidationProblem>> HandleAsync(
-        [AsParameters] LoginRequest request,
+        [FromBody] LoginRequest request,
         [FromServices] IValidator<LoginRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] ILibreLinkClient libreLinkClient,
         [FromServices] IRepository<Patient> patientRepository,
         CancellationToken cancellationToken)
     {
-        if (await validator.ValidateAsync(request).ConfigureAwait(false) is
+        if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());

@@ -17,7 +17,7 @@ public static class LibreLinkEndpoints
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
-        group.MapGet("/login", Login.Endpoint.HandleAsync)
+        group.MapPost("/login", Login.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
