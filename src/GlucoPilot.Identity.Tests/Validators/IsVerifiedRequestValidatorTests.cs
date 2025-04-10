@@ -7,7 +7,7 @@ namespace GlucoPilot.Identity.Tests.Validators;
 internal sealed class IsVerifiedRequestValidatorTests
 {
     private IsVerifiedRequest.Validator _validator;
-    
+
     [SetUp]
     public void SetUp()
     {
@@ -21,7 +21,7 @@ internal sealed class IsVerifiedRequestValidatorTests
         {
             Email = string.Empty,
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }
@@ -33,7 +33,7 @@ internal sealed class IsVerifiedRequestValidatorTests
         {
             Email = "invalid-email"
         };
-        
+
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }

@@ -28,7 +28,7 @@ internal sealed class ExceptionMiddlewareTests
 
         _sut = new ExceptionMiddleware(_currentUser.Object, _logger.Object);
     }
-    
+
     [Test]
     public async Task InvokeAsync_WithNoException_ReturnsOkStatusCode()
     {
@@ -38,7 +38,7 @@ internal sealed class ExceptionMiddlewareTests
 
         Assert.That(_httpContext.Response.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
     }
-    
+
     [Test]
     public async Task InvokeAsync_WithConflictException_ReturnsConflictStatusCode()
     {
