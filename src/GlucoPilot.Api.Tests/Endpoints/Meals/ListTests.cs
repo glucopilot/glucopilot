@@ -68,7 +68,7 @@ public class ListTests
                 _validatorMock.Object,
                 _currentUserMock.Object,
                 _repositoryMock.Object,
-                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
+                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
     }
 
     [Test]

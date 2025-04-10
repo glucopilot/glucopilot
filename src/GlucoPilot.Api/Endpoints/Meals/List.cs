@@ -31,7 +31,7 @@ internal static class List
 
         if (currentUser.GetUserId() is null)
         {
-            throw new UnauthorizedException("PATIENT_NOT_FOUND");
+            throw new UnauthorizedException("USER_NOT_LOGGED_IN");
         }
 
         var meals = repository.Find(m => m.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true })
