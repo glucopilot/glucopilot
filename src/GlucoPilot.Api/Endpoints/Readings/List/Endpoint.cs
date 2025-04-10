@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Models;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -11,9 +10,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Endpoints.Readings;
+namespace GlucoPilot.Api.Endpoints.Readings.List;
 
-internal static class List
+internal static class Endpoint
 {
     internal static async Task<Results<Ok<List<ReadingsResponse>>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
         [AsParameters] ListReadingsRequest request,

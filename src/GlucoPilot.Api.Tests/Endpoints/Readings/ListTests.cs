@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using GlucoPilot.Api.Endpoints.Readings;
-using GlucoPilot.Api.Models;
+using GlucoPilot.Api.Endpoints.Readings.List;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
@@ -59,7 +58,7 @@ internal sealed class ListTests
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>()))
             .Returns(new List<Reading> { reading }.AsQueryable());
 
-        var result = await List.HandleAsync(
+        var result = await Endpoint.HandleAsync(
             request,
             _validatorMock.Object,
             _currentUserMock.Object,
@@ -103,7 +102,7 @@ internal sealed class ListTests
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>()))
             .Returns(new List<Reading> { reading }.AsQueryable());
 
-        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
         var validationProblem = result.Result as ValidationProblem;
@@ -124,7 +123,7 @@ internal sealed class ListTests
 
         _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
-        var result = await List.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
         Assert.That(result.Result, Is.TypeOf<UnauthorizedHttpResult>());
     }
 }

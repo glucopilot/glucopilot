@@ -9,13 +9,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Endpoints.LibreLink;
+namespace GlucoPilot.Api.Endpoints.LibreLink.Login;
 
-internal static class Login
+internal static class Endpoint
 {
     internal static async Task<Results<Ok<LoginResponse>, ValidationProblem>> HandleAsync(
         [AsParameters] LoginRequest request,

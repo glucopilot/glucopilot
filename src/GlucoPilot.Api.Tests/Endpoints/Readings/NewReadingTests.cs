@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using GlucoPilot.Api.Endpoints.Readings;
-using GlucoPilot.Api.Models;
+using GlucoPilot.Api.Endpoints.Readings.NewReading;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
@@ -54,7 +53,7 @@ public class NewReadingTests
         _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Reading>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var result = await NewReading.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
         Assert.That(result.Result, Is.TypeOf<Ok>());
     }
 
@@ -71,7 +70,7 @@ public class NewReadingTests
 
         _currentUserMock.Setup(c => c.GetUserId()).Returns((Guid?)null);
 
-        var result = await NewReading.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
         Assert.That(result.Result, Is.TypeOf<UnauthorizedHttpResult>());
     }
 
@@ -91,7 +90,7 @@ public class NewReadingTests
         _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
 
-        var result = await NewReading.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
         Assert.That(result.Result, Is.TypeOf<ValidationProblem>());
     }
 }

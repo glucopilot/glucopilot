@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using GlucoPilot.Api.Models;
+using GlucoPilot.Api.Endpoints.Readings.List;
 using NUnit.Framework;
 using System;
 

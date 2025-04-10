@@ -1,4 +1,4 @@
-﻿namespace GlucoPilot.Api.Endpoints.LibreLink;
+﻿namespace GlucoPilot.Api.Endpoints.LibreLink.Login;
 
 public record LoginResponse
 {

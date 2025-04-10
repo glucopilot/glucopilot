@@ -13,11 +13,11 @@ public static class ReadingsEndpoints
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/readings")
             .WithTags("Readings");
 
-        group.MapGet("/", List.HandleAsync)
+        group.MapGet("/", List.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
-        group.MapPost("/", NewReading.HandleAsync)
+        group.MapPost("/", NewReading.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 

@@ -14,9 +14,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using LibreAuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
-namespace GlucoPilot.Api.Endpoints.LibreLink;
+namespace GlucoPilot.Api.Endpoints.LibreLink.Connections;
 
-internal static class List
+internal static class Endpoint
 {
     internal static async Task<Ok<List<ConnectionResponse>>> HandleAsync(
         [FromServices] ICurrentUser currentUser,

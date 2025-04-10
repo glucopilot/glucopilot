@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using System.ComponentModel.DataAnnotations;
 
-namespace GlucoPilot.Api.Endpoints.LibreLink
+namespace GlucoPilot.Api.Endpoints.LibreLink.Login
 {
     public class LoginRequest
     {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using System;
 
-namespace GlucoPilot.Api.Models;
+namespace GlucoPilot.Api.Endpoints.Readings.NewReading;
 
 public class NewReadingRequest
 {

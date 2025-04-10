@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using GlucoPilot.Api.Endpoints.Meals.List;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 

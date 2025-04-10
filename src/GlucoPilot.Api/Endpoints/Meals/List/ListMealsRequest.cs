@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
+using GlucoPilot.Api.Models;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-namespace GlucoPilot.Api.Models;
+namespace GlucoPilot.Api.Endpoints.Meals.List;
 
 public sealed record ListMealsRequest
 {

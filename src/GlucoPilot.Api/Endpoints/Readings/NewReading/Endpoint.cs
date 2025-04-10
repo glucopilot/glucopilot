@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Models;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
@@ -10,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Endpoints.Readings;
+namespace GlucoPilot.Api.Endpoints.Readings.NewReading;
 
-internal static class NewReading
+internal static class Endpoint
 {
     internal static async Task<Results<Ok, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
         [FromBody] NewReadingRequest request,
