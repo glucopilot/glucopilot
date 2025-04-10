@@ -32,10 +32,14 @@ internal partial class ExceptionMiddleware : IMiddleware
             var errorId = Guid.NewGuid();
             var logContext = new Dictionary<string, object?>()
             {
-                { "UserId", _currentUser?.GetUserId() },
                 { "Email", _currentUser?.GetUserEmail() },
                 { "ErrorId", errorId },
             };
+            if (context.User.Identity?.IsAuthenticated == true)
+            {
+                logContext.Add("UserId", _currentUser?.GetUserId());
+            }
+            
             using var scope = _logger.BeginScope(logContext);
 
             context.Response.ContentType = "application/json";
