@@ -46,6 +46,6 @@ internal static class Endpoint
         catch (DbUpdateException)
         {
             throw new ConflictException("MEAL_ALREADY_EXISTS");
-        }     
+        }
     }
 }
