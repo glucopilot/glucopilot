@@ -30,9 +30,9 @@ internal static class Endpoint
         }
 
         var ingredientIds = request.MealIngredients.Select(mi => mi.IngredientId).ToList();
-        var missingIngredientExists = await ingredientRepository.AnyAsync(i => !ingredientIds.Contains(i.Id), cancellationToken).ConfigureAwait(false);
+        var existingIngredientCount = await ingredientRepository.CountAsync(i => ingredientIds.Contains(i.Id), cancellationToken).ConfigureAwait(false);
 
-        if (missingIngredientExists)
+        if (existingIngredientCount != ingredientIds.Count)
         {
             throw new NotFoundException("INGREDIENT_NOT_FOUND");
         }
@@ -40,16 +40,15 @@ internal static class Endpoint
         meal.Name = request.Name;
 
         meal.MealIngredients.Clear();
-        foreach (var ingredientRequest in request.MealIngredients)
-        {
-            meal.MealIngredients.Add(new MealIngredient
+        meal.MealIngredients = request.MealIngredients
+            .Select(ingredientRequest => new MealIngredient
             {
-                Id = Guid.NewGuid(),
+                Id = ingredientRequest.Id,
                 MealId = meal.Id,
                 IngredientId = ingredientRequest.IngredientId,
                 Quantity = ingredientRequest.Quantity,
-            });
-        }
+            })
+            .ToList();
 
         await mealRepository.UpdateAsync(meal, cancellationToken).ConfigureAwait(false);
 

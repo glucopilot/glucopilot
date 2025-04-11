@@ -68,8 +68,8 @@ public class EndpointTests
             .ReturnsAsync(meal);
 
         _ingredientRepositoryMock
-            .Setup(i => i.AnyAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .Setup(i => i.CountAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
 
         var result = await Endpoint.HandleAsync(request, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None);
 
