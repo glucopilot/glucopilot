@@ -22,16 +22,16 @@ public record NewIngredientRequest
                 .WithMessage("NAME_IS_REQUIRED");
             RuleFor(x => x.Carbs)
                 .GreaterThan(0)
-                .WithMessage("CARBS_GEATER_THAN_ZERO");
+                .WithMessage("CARBS_GREATER_THAN_ZERO");
             RuleFor(x => x.Protein)
                 .GreaterThan(0)
-                .WithMessage("PROTEIN_GEATER_THAN_ZERO");
+                .WithMessage("PROTEIN_GREATER_THAN_ZERO");
             RuleFor(x => x.Fat)
                 .GreaterThan(0)
-                .WithMessage("FAT_GEATER_THAN_ZERO");
+                .WithMessage("FAT_GREATER_THAN_ZERO");
             RuleFor(x => x.Calories)
                 .GreaterThan(0)
-                .WithMessage("CALORIES_GEATER_THAN_ZERO");
+                .WithMessage("CALORIES_GREATER_THAN_ZERO");
         }
     }
 }
