@@ -30,6 +30,16 @@ internal sealed class ExceptionMiddlewareTests
     }
 
     [Test]
+    public async Task InvokeAsync_WithNoException_ReturnsOkStatusCode()
+    {
+        var next = new RequestDelegate(_ => Task.CompletedTask);
+
+        await _sut.InvokeAsync(_httpContext, next);
+
+        Assert.That(_httpContext.Response.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+    }
+
+    [Test]
     public async Task InvokeAsync_WithConflictException_ReturnsConflictStatusCode()
     {
         var next = new RequestDelegate(_ => throw new ConflictException("Conflict occurred"));

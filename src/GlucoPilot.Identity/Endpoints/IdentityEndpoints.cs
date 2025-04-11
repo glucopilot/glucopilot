@@ -21,6 +21,9 @@ internal static class IdentityEndpoints
         group.MapGet("/verify-email", VerifyEmail.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .AllowAnonymous();
+        group.MapGet("/is-verified", IsVerified.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .AllowAnonymous();
 
         return endpoints;
     }

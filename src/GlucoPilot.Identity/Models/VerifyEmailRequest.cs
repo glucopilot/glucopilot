@@ -11,7 +11,7 @@ public sealed class VerifyEmailRequest
     {
         public Validator()
         {
-            RuleFor(x => x.Token).NotEmpty();
+            RuleFor(x => x.Token).NotEmpty().WithMessage("TOKEN_REQUIRED");
         }
     }
 }
