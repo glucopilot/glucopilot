@@ -10,4 +10,6 @@ public sealed record RegisterResponse
     public DateTimeOffset? Updated { get; init; }
     public bool AcceptedTerms { get; init; }
     public bool EmailVerified { get; init; }
+    public string? FirstName { get; init; }
+    public string? LastName { get; init; }
 }
