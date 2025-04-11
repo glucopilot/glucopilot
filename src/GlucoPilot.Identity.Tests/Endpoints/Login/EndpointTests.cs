@@ -24,7 +24,7 @@ internal sealed class EndpointTests
             .ReturnsAsync(new ValidationResult());
         var userServiceMock = new Mock<IUserService>();
         userServiceMock.Setup(us => us.LoginAsync(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new LoginResponse { Token = "valid_token", UserId = Guid.NewGuid(), Email = "test@example.com"});
+            .ReturnsAsync(new LoginResponse { Token = "valid_token", UserId = Guid.NewGuid(), Email = "test@example.com" });
 
         var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, CancellationToken.None);
 
