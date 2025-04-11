@@ -41,6 +41,16 @@ public abstract class User
     public required string PasswordHash { get; set; }
 
     /// <summary>
+    /// The user's first name.
+    /// </summary>
+    public string? FirstName { get; set; }
+
+    /// <summary>
+    /// The user's last name.
+    /// </summary>
+    public string? LastName { get; set; }
+
+    /// <summary>
     /// Whether the user has accepted the terms of service.
     /// </summary>
     public bool AcceptedTerms { get; set; }

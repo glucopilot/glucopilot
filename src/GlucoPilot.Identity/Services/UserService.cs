@@ -71,7 +71,9 @@ public sealed class UserService : IUserService
                 EmailVerificationToken = _options.RequireEmailVerification
                     ? await GenerateVerificationTokenAsync(cancellationToken).ConfigureAwait(false)
                     : null,
-                IsVerified = !_options.RequireEmailVerification
+                IsVerified = !_options.RequireEmailVerification,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
             };
             user = patient;
 
@@ -97,7 +99,9 @@ public sealed class UserService : IUserService
                 EmailVerificationToken = _options.RequireEmailVerification
                     ? await GenerateVerificationTokenAsync(cancellationToken).ConfigureAwait(false)
                     : null,
-                IsVerified = !_options.RequireEmailVerification
+                IsVerified = !_options.RequireEmailVerification,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
             };
             user = careGiver;
 

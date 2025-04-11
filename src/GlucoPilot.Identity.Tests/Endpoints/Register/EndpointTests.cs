@@ -24,7 +24,9 @@ namespace GlucoPilot.Identity.Tests.Endpoints.Register
                 Email = "test@example.com",
                 Password = "password",
                 ConfirmPassword = "password",
-                AcceptedTerms = true
+                AcceptedTerms = true,
+                FirstName = "fisrt name",
+                LastName = "last name",
             };
             var response = new RegisterResponse
             {

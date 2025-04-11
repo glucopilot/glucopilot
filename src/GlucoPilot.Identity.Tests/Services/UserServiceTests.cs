@@ -154,7 +154,9 @@ internal sealed class UserServiceTests
             Email = "newuser@example.com",
             Password = "password",
             ConfirmPassword = "password",
-            AcceptedTerms = true
+            AcceptedTerms = true,
+            FirstName = "first name",
+            LastName = "last name",
         };
 
         var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
