@@ -35,7 +35,7 @@ public class ListTests
     }
 
     [Test]
-    public async Task HandleAsync_ReturnsUnauthorized_WhenUserIsNotAuthenticated()
+    public void HandleAsync_Returns_Unauthorized_When_User_Is_Not_Authenticated()
     {
         var mockValidator = new Mock<IValidator<ListMealsRequest>>();
         mockValidator
