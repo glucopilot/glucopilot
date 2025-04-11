@@ -24,7 +24,7 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
-        var response = await userService.RegisterAsync(request, $"http://{context.Request.Headers.Host!}", cancellationToken)
+        var response = await userService.RegisterAsync(request, $"{context.Request.Headers.Host!}", cancellationToken)
             .ConfigureAwait(false);
         return TypedResults.Ok(response);
     }
