@@ -7,7 +7,6 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.Api.Models;
@@ -15,7 +14,7 @@ using GlucoPilot.AspNetCore.Exceptions;
 using System.Linq.Expressions;
 
 [TestFixture]
-public class EndpointTests
+public class UpdateMealTests
 {
     private Mock<IRepository<Meal>> _mealRepositoryMock;
     private Mock<IRepository<Ingredient>> _ingredientRepositoryMock;

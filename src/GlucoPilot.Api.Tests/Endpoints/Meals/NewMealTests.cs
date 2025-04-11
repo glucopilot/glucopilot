@@ -14,7 +14,7 @@ using GlucoPilot.Api.Models;
 using System.Linq;
 
 [TestFixture]
-public class Endpoint_Tests
+public class NewMealTests
 {
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IRepository<Meal>> _repositoryMock;
