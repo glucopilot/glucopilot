@@ -1,4 +1,6 @@
-﻿using GlucoPilot.AspNetCore.Exceptions;
+﻿using FluentValidation;
+using GlucoPilot.Api.Endpoints.Ingredients.NewIngredient;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -16,11 +18,18 @@ internal static class Endpoint
 {
     internal static async Task<Results<Ok, NoContent, ValidationProblem>> HandleAsync(
         [FromBody] UpdateMealRequest request,
+        [FromServices] IValidator<UpdateMealRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> mealRepository,
         [FromServices] IRepository<Ingredient> ingredientRepository,
         CancellationToken cancellationToken)
     {
+        if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
+            { IsValid: false } validation)
+        {
+            return TypedResults.ValidationProblem(validation.ToDictionary());
+        }
+
         var userId = currentUser.GetUserId();
         var meal = await mealRepository.FindOneAsync(m => m.Id == request.Id && m.UserId == userId, new FindOptions() { IsAsNoTracking = true }).ConfigureAwait(false);
 
