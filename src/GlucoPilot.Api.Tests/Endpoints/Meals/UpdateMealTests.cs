@@ -12,10 +12,13 @@ using System.Threading.Tasks;
 using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using System.Linq.Expressions;
+using FluentValidation;
+using FluentValidation.Results;
 
 [TestFixture]
 public class UpdateMealTests
 {
+    private Mock<IValidator<UpdateMealRequest>> _validatorMock;
     private Mock<IRepository<Meal>> _mealRepositoryMock;
     private Mock<IRepository<Ingredient>> _ingredientRepositoryMock;
     private Mock<ICurrentUser> _currentUserMock;
@@ -23,9 +26,40 @@ public class UpdateMealTests
     [SetUp]
     public void SetUp()
     {
+        _validatorMock = new Mock<IValidator<UpdateMealRequest>>();
         _mealRepositoryMock = new Mock<IRepository<Meal>>();
         _ingredientRepositoryMock = new Mock<IRepository<Ingredient>>();
         _currentUserMock = new Mock<ICurrentUser>();
+    }
+
+    [Test]
+    public async Task HandleAsync_ReturnsValidationProblem_WhenRequestIsInvalid()
+    {
+        var request = new UpdateMealRequest
+        {
+            Id = Guid.NewGuid(),
+            Name = "",
+            MealIngredients = new List<NewMealIngredientRequest>()
+        };
+
+        var validationResult = new ValidationResult(new[]
+        {
+            new ValidationFailure("Name", "Name is required.")
+        });
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(validationResult);
+
+        var result = await Endpoint.HandleAsync(
+            request,
+            _validatorMock.Object,
+            _currentUserMock.Object,
+            _mealRepositoryMock.Object,
+            _ingredientRepositoryMock.Object,
+            CancellationToken.None);
+
+        Assert.That(result.Result, Is.TypeOf<ValidationProblem>());
     }
 
     [Test]
@@ -70,7 +104,7 @@ public class UpdateMealTests
             .Setup(i => i.CountAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
 
-        var result = await Endpoint.HandleAsync(request, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.InstanceOf<NoContent>());
         _mealRepositoryMock.Verify(m => m.UpdateAsync(It.IsAny<Meal>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -93,7 +127,7 @@ public class UpdateMealTests
             .Setup(m => m.FindOneAsync(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Meal)null);
 
-        Assert.That(async () => await Endpoint.HandleAsync(request, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None),
+        Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None),
             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("MEAL_NOT_FOUND"));
     }
 
@@ -139,7 +173,7 @@ public class UpdateMealTests
             .Setup(i => i.AnyAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        Assert.That(async () => await Endpoint.HandleAsync(request, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None),
+        Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None),
             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("INGREDIENT_NOT_FOUND"));
     }
 }

@@ -25,6 +25,14 @@ public static class MealsEndpoints
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
+        group.MapPatch("/", UpdateMeal.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .RequireAuthorization();
+
+        group.MapDelete("/{id:guid}", RemoveMeal.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }
