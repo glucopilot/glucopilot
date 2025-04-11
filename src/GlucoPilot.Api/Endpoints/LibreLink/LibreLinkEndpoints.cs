@@ -21,6 +21,10 @@ public static class LibreLinkEndpoints
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
+        group.MapPost("/pair", PairConnection.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }

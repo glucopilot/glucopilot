@@ -17,7 +17,7 @@ namespace GlucoPilot.Api.Endpoints.LibreLink.PairConnection;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<PairConnectionResponse>, UnauthorizedHttpResult, NotFound, ValidationProblem>> HandleAsync(
-        [AsParameters] PairConnectionRequest request,
+        [FromBody] PairConnectionRequest request,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Patient> patientRepository,
         [FromServices] ILibreLinkClient libreLinkClient,
