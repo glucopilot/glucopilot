@@ -48,6 +48,9 @@ public sealed class UserService : IUserService
         var response = new LoginResponse
         {
             Token = token,
+            UserId = user.Id,
+            Email = user.Email,
+            IsVerified = user.IsVerified,
         };
         return response;
     }
