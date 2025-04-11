@@ -22,7 +22,7 @@ internal static class Endpoint
         var userId = currentUser.GetUserId();
 
         var meal = await mealRepository.FindOneAsync(m => m.Id == mealId && m.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken);
-        
+
         if (meal is null)
         {
             throw new NotFoundException("MEAL_NOT_FOUND");
