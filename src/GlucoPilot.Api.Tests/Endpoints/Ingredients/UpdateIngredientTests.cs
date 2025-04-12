@@ -73,11 +73,11 @@ namespace GlucoPilot.Api.Tests.Endpoints.Ingredients
                 .ReturnsAsync((Ingredient)null);
 
             Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
-             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("MEAL_NOT_FOUND"));
+             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("INGREDIENT_NOT_FOUND"));
         }
 
         [Test]
-        public async Task HandleAsync_Returns_UpdateIngredientResponse_When_Successfull()
+        public async Task HandleAsync_Returns_UpdateIngredientResponse_When_Successful()
         {
             var userId = Guid.NewGuid();
             var request = new UpdateIngredientRequest { Id = Guid.NewGuid(), Name = "Ingredient", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = UnitOfMeasurement.Unit };

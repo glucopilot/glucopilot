@@ -32,7 +32,7 @@ internal static class Endpoint
 
         if (ingredient is null)
         {
-            throw new NotFoundException("MEAL_NOT_FOUND");
+            throw new NotFoundException("INGREDIENT_NOT_FOUND");
         }
 
         ingredient.Name = request.Name;
