@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
+using GlucoPilot.AspNetCore.Exceptions;
 
 namespace GlucoPilot.Api.Endpoints.Readings;
 
@@ -15,10 +16,12 @@ public static class ReadingsEndpoints
 
         group.MapGet("/", List.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/", NewReading.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         return endpoints;
