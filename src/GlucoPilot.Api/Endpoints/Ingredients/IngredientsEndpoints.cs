@@ -21,7 +21,7 @@ public static class IngredientsEndpoints
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
-        group.MapPatch("/", UpdateIngredient.Endpoint.HandleAsync)
+        group.MapPatch("/{id:guid}", UpdateIngredient.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .RequireAuthorization();
 

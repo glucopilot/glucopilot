@@ -26,7 +26,6 @@ namespace GlucoPilot.Api.Tests.Validators
         {
             var model = new UpdateIngredientRequest
             {
-                Id = Guid.Empty,
                 Name = "",
                 Carbs = -1,
                 Protein = -1,
@@ -36,7 +35,6 @@ namespace GlucoPilot.Api.Tests.Validators
             };
 
             var result = _validator.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Id);
             result.ShouldHaveValidationErrorFor(x => x.Name);
             result.ShouldHaveValidationErrorFor(x => x.Protein);
             result.ShouldHaveValidationErrorFor(x => x.Carbs);
@@ -49,7 +47,6 @@ namespace GlucoPilot.Api.Tests.Validators
         {
             var model = new UpdateIngredientRequest
             {
-                Id = Guid.NewGuid(),
                 Name = "Valid Ingredient",
                 Carbs = 10,
                 Protein = 5,

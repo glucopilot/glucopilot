@@ -15,7 +15,7 @@ namespace GlucoPilot.Api.Endpoints.Meals.GetMeal;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<MealResponse>, NotFound, UnauthorizedHttpResult>> HandleAsync(
-        [FromQuery] Guid mealId,
+        [FromRoute] Guid mealId,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository)
     {

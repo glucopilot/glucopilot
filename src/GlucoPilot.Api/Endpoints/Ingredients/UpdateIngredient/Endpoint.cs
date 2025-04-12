@@ -6,6 +6,7 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace GlucoPilot.Api.Endpoints.Ingredients.UpdateIngredient;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<UpdateIngredientResponse>, NotFound, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
+        [FromRoute] Guid id,
         [FromBody] UpdateIngredientRequest request,
         [FromServices] IValidator<UpdateIngredientRequest> validator,
         [FromServices] ICurrentUser currentUser,
@@ -28,7 +30,7 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var ingredient = await ingredientRepository.FindOneAsync(i => i.Id == request.Id && i.UserId == userId, new FindOptions() { IsAsNoTracking = true }).ConfigureAwait(false);
+        var ingredient = await ingredientRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions() { IsAsNoTracking = true }).ConfigureAwait(false);
 
         if (ingredient is null)
         {

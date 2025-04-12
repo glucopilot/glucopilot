@@ -6,7 +6,6 @@ namespace GlucoPilot.Api.Endpoints.Ingredients.UpdateIngredient;
 
 public sealed record UpdateIngredientRequest
 {
-    public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required int Carbs { get; set; }
     public required int Protein { get; set; }
@@ -18,9 +17,6 @@ public sealed record UpdateIngredientRequest
     {
         public UpdateIngredientRequestValidator()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty()
-                .WithMessage("ID_IS_REQUIRED");
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage("NAME_IS_REQUIRED");
