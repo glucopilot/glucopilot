@@ -21,7 +21,7 @@ namespace GlucoPilot.Api.Tests.Validators
             _validator = new UpdateIngredientRequest.UpdateIngredientRequestValidator();
         }
 
-        [Test] 
+        [Test]
         public void Should_Have_Error_For_Invalid_Request()
         {
             var model = new UpdateIngredientRequest
