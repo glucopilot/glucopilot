@@ -15,8 +15,8 @@ namespace GlucoPilot.Api.Endpoints.LibreLink.Login
     {
         public LoginRequestValidator()
         {
-            RuleFor(x => x.Username).NotEmpty();
-            RuleFor(x => x.Password).NotEmpty();
+            RuleFor(x => x.Username).NotEmpty().WithMessage("EMAIL_REQUIRED").EmailAddress().WithMessage("EMAIL_INVALID");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("PASSWORD_REQURIED");
         }
     }
 }

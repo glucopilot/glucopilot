@@ -51,6 +51,7 @@ public sealed class UserService : IUserService
             UserId = user.Id,
             Email = user.Email,
             IsVerified = user.IsVerified,
+            GlucoseProvider = user is Patient patient ? (GlucoseProvider)patient.GlucoseProvider : null,
         };
         return response;
     }

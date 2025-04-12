@@ -8,4 +8,5 @@ public sealed record LoginResponse
     public Guid UserId { get; init; }
     public required string Email { get; init; }
     public bool IsVerified { get; init; }
+    public GlucoseProvider? GlucoseProvider { get; init; }
 }
