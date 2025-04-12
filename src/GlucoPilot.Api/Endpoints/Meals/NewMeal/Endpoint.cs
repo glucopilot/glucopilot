@@ -52,6 +52,6 @@ internal static class Endpoint
             Name = newMeal.Name,
         };
 
-        return TypedResults.Created($"/meals/{newMeal.Id}", response);
+        return TypedResults.Created($"/api/v1/meals/{newMeal.Id}", response);
     }
 }
