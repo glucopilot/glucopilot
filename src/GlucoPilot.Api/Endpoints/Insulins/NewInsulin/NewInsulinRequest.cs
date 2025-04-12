@@ -11,7 +11,7 @@ public sealed record NewInsulinRequest
     public double? Scale { get; init; }
     public double? PeakTime { get; init; }
 
-    public sealed class NewInsulinRequestValidator: AbstractValidator<NewInsulinRequest>
+    public sealed class NewInsulinRequestValidator : AbstractValidator<NewInsulinRequest>
     {
         public NewInsulinRequestValidator()
         {
