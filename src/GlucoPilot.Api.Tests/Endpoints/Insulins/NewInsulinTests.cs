@@ -66,7 +66,7 @@ namespace GlucoPilot.Tests.Endpoints.Insulins.NewInsulin
         }
 
         [Test]
-        public async Task HandleAsync_Should_Return_Ok_When_Request_Is_Valid()
+        public async Task HandleAsync_Should_Return_Created_When_Request_Is_Valid()
         {
             var userId = Guid.NewGuid();
             _currentUserMock
@@ -100,12 +100,14 @@ namespace GlucoPilot.Tests.Endpoints.Insulins.NewInsulin
                 i.UserId == userId
             )), Times.Once);
 
-            Assert.That(result.Result, Is.TypeOf<Ok<NewInsulinResponse>>());
-            var okResult = result.Result as Ok<NewInsulinResponse>;
+            Assert.That(result.Result, Is.TypeOf<Created<NewInsulinResponse>>());
+            var okResult = result.Result as Created<NewInsulinResponse>;
             Assert.That(okResult!.Value.Name, Is.EqualTo(request.Name));
             Assert.That(okResult.Value.Type, Is.EqualTo(request.Type));
             Assert.That(okResult.Value.Duration, Is.EqualTo(request.Duration));
             Assert.That(okResult.Value.Scale, Is.EqualTo(request.Scale));
+            Assert.That(okResult.Value.Created, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromSeconds(1)));
+            Assert.That(okResult.Value.Id, Is.Not.EqualTo(Guid.Empty));
         }
     }
 }

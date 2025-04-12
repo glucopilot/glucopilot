@@ -5,6 +5,7 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace GlucoPilot.Api.Endpoints.Insulins.NewInsulin;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<NewInsulinResponse>, ValidationProblem>> HandleAsync(
+    internal static async Task<Results<Created<NewInsulinResponse>, ValidationProblem>> HandleAsync(
         [FromBody] NewInsulinRequest request,
         [FromServices] IValidator<NewInsulinRequest> validator,
         [FromServices] IRepository<Insulin> insulinsRepository,
@@ -33,7 +34,9 @@ internal static class Endpoint
             Type = request.Type,
             Duration = request.Duration,
             Scale = request.Scale,
+            PeakTime = request.PeakTime,
             UserId = userId,
+            Created = DateTimeOffset.UtcNow,            
         };
 
         insulinsRepository.Add(insulin);
@@ -41,12 +44,14 @@ internal static class Endpoint
         var response = new NewInsulinResponse
         {
             Id = insulin.Id,
-            Name = insulin.Name,
-            Type = insulin.Type,
-            Duration = insulin.Duration,
-            Scale = insulin.Scale,
+            Name = request.Name,
+            Type = request.Type,
+            Duration = request.Duration,
+            Scale = request.Scale,
+            PeakTime = request.PeakTime,
+            Created = DateTimeOffset.UtcNow,
         };
 
-        return TypedResults.Ok(response);
+        return TypedResults.Created($"/insulins/{insulin.Id}", response);
     }
 }
