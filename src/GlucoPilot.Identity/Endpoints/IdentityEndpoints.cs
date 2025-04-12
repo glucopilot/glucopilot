@@ -3,6 +3,7 @@ using System.Net;
 using GlucoPilot.AspNetCore.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
 namespace GlucoPilot.Identity.Endpoints;
@@ -24,6 +25,7 @@ internal static class IdentityEndpoints
         group.MapGet("/verify-email", VerifyEmail.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ContentResult>()
             .AllowAnonymous();
         group.MapGet("/is-verified", IsVerified.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
