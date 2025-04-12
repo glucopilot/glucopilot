@@ -48,6 +48,7 @@ public class NewMealTests
     [Test]
     public void HandleAsync_Should_Throw_UnauthorizedException_When_User_Not_Logged_In()
     {
+        _validatorMock.Setup(x => x.ValidateAsync(It.IsAny<NewMealRequest>(), default)).ReturnsAsync(new ValidationResult());
         _currentUserMock.Setup(x => x.GetUserId()).Throws(new UnauthorizedException("USER_NOT_LOGGED_IN"));
         var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<NewMealIngredientRequest>() };
 
@@ -59,6 +60,7 @@ public class NewMealTests
     public async Task HandleAsync_Should_Return_Created_When_Meal_Is_Successfully_Created()
     {
         var userId = Guid.NewGuid();
+        _validatorMock.Setup(x => x.ValidateAsync(It.IsAny<NewMealRequest>(), default)).ReturnsAsync(new ValidationResult());
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<NewMealIngredientRequest>() };
 
@@ -74,6 +76,7 @@ public class NewMealTests
     [Test]
     public async Task Should_Add_MealIngredients_To_NewMeal()
     {
+        _validatorMock.Setup(x => x.ValidateAsync(It.IsAny<NewMealRequest>(), default)).ReturnsAsync(new ValidationResult());
         var mockCurrentUser = new Mock<ICurrentUser>();
         mockCurrentUser.Setup(x => x.GetUserId()).Returns(Guid.NewGuid());
 
