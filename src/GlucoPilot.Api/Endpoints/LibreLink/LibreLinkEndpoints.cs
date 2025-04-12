@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
+using GlucoPilot.AspNetCore.Exceptions;
 
 namespace GlucoPilot.Api.Endpoints.LibreLink;
 
@@ -15,14 +16,17 @@ public static class LibreLinkEndpoints
 
         group.MapGet("/connections", Connections.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/login", Login.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/pair", PairConnection.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         return endpoints;

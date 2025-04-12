@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
+using GlucoPilot.AspNetCore.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -17,12 +19,15 @@ internal static class IdentityEndpoints
             .AllowAnonymous();
         group.MapPost("/register", Register.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status409Conflict)
             .AllowAnonymous();
         group.MapGet("/verify-email", VerifyEmail.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .AllowAnonymous();
         group.MapGet("/is-verified", IsVerified.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .AllowAnonymous();
 
         return endpoints;

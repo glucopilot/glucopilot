@@ -43,7 +43,7 @@ internal static class Endpoint
 
             patient.PatientId = request.PatientId.ToString();
 
-            await patientRepository.UpdateAsync(patient);
+            await patientRepository.UpdateAsync(patient, cancellationToken);
 
             var response = new PairConnectionResponse
             {
