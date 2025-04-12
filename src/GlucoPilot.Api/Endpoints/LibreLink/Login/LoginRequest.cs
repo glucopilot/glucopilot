@@ -9,7 +9,7 @@ namespace GlucoPilot.Api.Endpoints.LibreLink.Login
         public required string Username { get; set; }
         [Required]
         public required string Password { get; set; }
-        
+
         public sealed class LoginRequestValidator : AbstractValidator<LoginRequest>
         {
             public LoginRequestValidator()

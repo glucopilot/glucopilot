@@ -8,12 +8,12 @@ namespace GlucoPilot.Api.Tests.Validators;
 internal sealed class LibreLinkLoginRequestValidatorTests
 {
     private readonly LoginRequest.LoginRequestValidator _validator;
-    
+
     public LibreLinkLoginRequestValidatorTests()
     {
         _validator = new LoginRequest.LoginRequestValidator();
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Username_Is_Empty()
     {
@@ -21,7 +21,7 @@ internal sealed class LibreLinkLoginRequestValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Username);
     }
-    
+
     [Test]
     public void Should_Have_Error_When_Username_Is_Invalid_Email()
     {
