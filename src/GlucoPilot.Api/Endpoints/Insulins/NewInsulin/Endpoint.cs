@@ -52,6 +52,6 @@ internal static class Endpoint
             Created = DateTimeOffset.UtcNow,
         };
 
-        return TypedResults.Created($"/insulins/{insulin.Id}", response);
+        return TypedResults.Created($"api/v1/insulins/{insulin.Id}", response);
     }
 }
