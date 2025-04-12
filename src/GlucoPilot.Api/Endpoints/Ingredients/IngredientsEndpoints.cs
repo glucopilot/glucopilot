@@ -25,6 +25,10 @@ public static class IngredientsEndpoints
             .HasApiVersion(1.0)
             .RequireAuthorization();
 
+        group.MapDelete("/{id:guid}", RemoveIngredient.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }
