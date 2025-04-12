@@ -25,7 +25,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Ingredients
         [SetUp]
         public void SetUp()
         {
-           _validatorMock = new Mock<IValidator<UpdateIngredientRequest>>();
+            _validatorMock = new Mock<IValidator<UpdateIngredientRequest>>();
             _currentUserMock = new Mock<ICurrentUser>();
             _repositoryMock = new Mock<IRepository<Ingredient>>();
         }
@@ -100,7 +100,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Ingredients
                 Assert.That(okResult.Value.Calories, Is.EqualTo(request.Calories));
                 Assert.That(okResult.Value.Uom, Is.EqualTo(request.Uom));
             });
-            
+
         }
     }
 }
