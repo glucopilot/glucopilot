@@ -16,7 +16,7 @@ namespace GlucoPilot.Api.Endpoints.Meals.UpdateMeal;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok, NoContent, ValidationProblem>> HandleAsync(
+    internal static async Task<Results<NoContent, NotFound, ValidationProblem>> HandleAsync(
         [FromBody] UpdateMealRequest request,
         [FromServices] IValidator<UpdateMealRequest> validator,
         [FromServices] ICurrentUser currentUser,
