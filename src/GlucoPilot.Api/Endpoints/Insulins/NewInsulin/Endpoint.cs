@@ -36,7 +36,7 @@ internal static class Endpoint
             Scale = request.Scale,
             PeakTime = request.PeakTime,
             UserId = userId,
-            Created = DateTimeOffset.UtcNow,            
+            Created = DateTimeOffset.UtcNow,
         };
 
         insulinsRepository.Add(insulin);
