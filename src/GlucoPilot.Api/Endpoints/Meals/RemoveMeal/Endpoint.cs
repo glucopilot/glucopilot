@@ -13,7 +13,7 @@ namespace GlucoPilot.Api.Endpoints.Meals.RemoveMeal;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<NoContent, NotFound>> HandleAsync(
+    internal static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult>> HandleAsync(
         [FromRoute] Guid id,
         [FromServices] IRepository<Meal> mealRepository,
         [FromServices] ICurrentUser currentUser,
