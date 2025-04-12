@@ -24,6 +24,6 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
         await userService.VerifyEmailAsync(request, cancellationToken).ConfigureAwait(false);
-        return TypedResults.Content("<h1>Success</h1><p>Your email has been verified.</p>", "text/html", Encoding.UTF8);
+        return TypedResults.Content("<h1>Success</h1><p>Your email has been verified.</p>", "text/html", Encoding.UTF8, statusCode: StatusCodes.Status200OK);
     }
 }
