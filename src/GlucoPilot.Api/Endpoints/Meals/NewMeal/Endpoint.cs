@@ -1,4 +1,5 @@
-﻿using GlucoPilot.AspNetCore.Exceptions;
+﻿using FluentValidation;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -14,11 +15,18 @@ namespace GlucoPilot.Api.Endpoints.Meals.NewMeal;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Created<NewMealResponse>, UnauthorizedHttpResult>> HandleAsync(
+    internal static async Task<Results<Created<NewMealResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
         [FromBody] NewMealRequest request,
+        [FromServices] IValidator<NewMealRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository)
     {
+        if (await validator.ValidateAsync(request).ConfigureAwait(false) is
+            { IsValid: false } validation)
+        {
+            return TypedResults.ValidationProblem(validation.ToDictionary());
+        }
+
         var userId = currentUser.GetUserId();
 
         var newMeal = new Meal
