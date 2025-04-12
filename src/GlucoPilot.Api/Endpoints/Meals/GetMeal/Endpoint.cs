@@ -15,14 +15,14 @@ namespace GlucoPilot.Api.Endpoints.Meals.GetMeal;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<MealResponse>, NotFound, UnauthorizedHttpResult>> HandleAsync(
-        [FromQuery] Guid mealId,
+        [FromRoute] Guid id,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository)
     {
         var userId = currentUser.GetUserId();
 
         var meal = repository
-            .Find(m => m.UserId == userId && m.Id == mealId, new FindOptions { IsAsNoTracking = true })
+            .Find(m => m.UserId == userId && m.Id == id, new FindOptions { IsAsNoTracking = true })
             .Include(m => m.MealIngredients)
             .ThenInclude(mi => mi.Ingredient).FirstOrDefault();
 

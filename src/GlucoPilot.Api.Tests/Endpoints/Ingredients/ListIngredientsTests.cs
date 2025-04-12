@@ -51,7 +51,6 @@ namespace GlucoPilot.Api.Tests.Endpoints.Ingredients.List
         [Test]
         public async Task HandleAsync_Returns_Ok_With_Ingredients_When_Request_Is_Valid()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var request = new ListIngredientsRequest { Page = 0, PageSize = 2 };
             var ingredients = new List<Ingredient>
