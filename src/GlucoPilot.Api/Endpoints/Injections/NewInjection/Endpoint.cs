@@ -30,7 +30,7 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.InsulinId && i.UserId == userId, new FindOptions { IsAsNoTracking = true }).ConfigureAwait(false);
+        var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.InsulinId && (i.UserId == userId || i.UserId == null), new FindOptions { IsAsNoTracking = true }).ConfigureAwait(false);
         if (insulin is null)
         {
             throw new NotFoundException("INSULIN_NOT_FOUND");
