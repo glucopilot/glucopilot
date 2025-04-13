@@ -16,7 +16,7 @@ namespace GlucoPilot.Api.Endpoints.Insulins.List;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<ListInsulinsResponse>, UnauthorizedHttpResult,ValidationProblem>> HandleAsync(
+    internal static async Task<Results<Ok<ListInsulinsResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
         [AsParameters] ListInsulinsRequest request,
         [FromServices] IValidator<ListInsulinsRequest> validator,
         [FromServices] ICurrentUser currentUser,
