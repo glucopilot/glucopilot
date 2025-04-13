@@ -11,6 +11,6 @@ namespace GlucoPilot.Api.Endpoints.Insulins.GetInsulin
         public double? Duration { get; init; }
         public double? Scale { get; init; }
         public double? PeakTime { get; init; }
-        public DateTimeOffset Created { get; init; }
+        public required DateTimeOffset Created { get; init; }
     }
 }
