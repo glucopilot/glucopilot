@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace GlucoPilot.Api.Tests.Endpoints.Ingredients.List
 {
     [TestFixture]
-    public class EndpointTests
+    public class ListIngredientsTests
     {
         private Mock<IValidator<ListIngredientsRequest>> _validatorMock;
         private Mock<ICurrentUser> _currentUserMock;

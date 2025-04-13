@@ -15,7 +15,7 @@ using GlucoPilot.Data.Enums;
 namespace GlucoPilot.Tests.Endpoints.Ingredients.RemoveIngredient
 {
     [TestFixture]
-    public class EndpointTests
+    public class RemoveIngredientTests
     {
         private Mock<ICurrentUser> _currentUserMock;
         private Mock<IRepository<Ingredient>> _ingredientRepositoryMock;
