@@ -19,6 +19,11 @@ public static class InsulinsEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
+        group.MapGet("/{id:guid}", GetInsulin.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
         group.MapPost("/", NewInsulin.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
