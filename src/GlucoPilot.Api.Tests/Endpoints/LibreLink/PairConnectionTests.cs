@@ -39,9 +39,14 @@ namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
             var patientId = Guid.NewGuid();
             var patient = new Patient
             {
-                Id = userId, Email = "test@test.com", PasswordHash = "passwordhash", AuthTicket = new AuthTicket
+                Id = userId,
+                Email = "test@test.com",
+                PasswordHash = "passwordhash",
+                AuthTicket = new AuthTicket
                 {
-                    Token = "libreToken", Duration = 1000, Expires = long.MaxValue
+                    Token = "libreToken",
+                    Duration = 1000,
+                    Expires = long.MaxValue
                 }
             };
             var request = new PairConnectionRequest { PatientId = patientId };
@@ -106,9 +111,14 @@ namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
             var userId = Guid.NewGuid();
             var patient = new Patient
             {
-                Id = userId, Email = "test@test.com", PasswordHash = "passwordhash", AuthTicket = new AuthTicket
+                Id = userId,
+                Email = "test@test.com",
+                PasswordHash = "passwordhash",
+                AuthTicket = new AuthTicket
                 {
-                    Token = "libreToken", Duration = 1000, Expires = long.MaxValue
+                    Token = "libreToken",
+                    Duration = 1000,
+                    Expires = long.MaxValue
                 }
             };
             var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };

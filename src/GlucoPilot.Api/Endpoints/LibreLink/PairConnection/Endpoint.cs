@@ -39,7 +39,8 @@ internal static class Endpoint
                 .LoginAsync(
                     new AuthTicket
                     {
-                        Token = patient.AuthTicket.Token, Expires = patient.AuthTicket.Expires,
+                        Token = patient.AuthTicket.Token,
+                        Expires = patient.AuthTicket.Expires,
                         Duration = patient.AuthTicket.Duration
                     }, cancellationToken).ConfigureAwait(false);
 
