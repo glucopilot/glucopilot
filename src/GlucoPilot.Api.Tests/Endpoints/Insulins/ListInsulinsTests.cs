@@ -50,7 +50,7 @@ public class EndpointTests
     }
 
     [Test]
-    public void HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
+    public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
     {
         var request = new ListInsulinsRequest();
         _validatorMock
