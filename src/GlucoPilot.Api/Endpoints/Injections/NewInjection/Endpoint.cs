@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -18,6 +19,7 @@ internal static class Endpoint
         [FromServices] IValidator<NewInjectionRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Injection> injectionsRepository,
+        [FromServices] IRepository<Insulin> insulinRepository,
         CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request).ConfigureAwait(false) is
@@ -27,6 +29,12 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
+
+        var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.InsulinId && (i.UserId == userId || i.UserId == null), new FindOptions { IsAsNoTracking = true }).ConfigureAwait(false);
+        if (insulin is null)
+        {
+            throw new NotFoundException("INSULIN_NOT_FOUND");
+        }
 
         var newInjection = new Injection
         {
