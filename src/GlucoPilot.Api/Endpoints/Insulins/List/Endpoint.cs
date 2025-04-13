@@ -47,8 +47,8 @@ internal static class Endpoint
             })
             .ToList();
 
-        var totalMeals = await repository.CountAsync(i => i.UserId == userId && (request.Type == null || i.Type == request.Type), cancellationToken).ConfigureAwait(false);
-        var numberOfPages = (int)Math.Ceiling(totalMeals / (double)request.PageSize);
+        var totalInsulins = await repository.CountAsync(i => i.UserId == userId && (request.Type == null || i.Type == request.Type), cancellationToken).ConfigureAwait(false);
+        var numberOfPages = (int)Math.Ceiling(totalInsulins / (double)request.PageSize);
 
         var response = new ListInsulinsResponse
         {
