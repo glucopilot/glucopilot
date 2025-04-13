@@ -139,7 +139,15 @@ namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
         public void HandleAsync_Should_Throw_UnauthorizedException_When_NotAuthenticated()
         {
             var userId = Guid.NewGuid();
-            var patient = new Patient { Id = userId, Email = "test@test.com", PasswordHash = "passwordhash" };
+            var patient = new Patient
+            {
+                Id = userId, Email = "test@test.com", PasswordHash = "passwordhash", AuthTicket = new AuthTicket
+                {
+                    Token = "libreToken",
+                    Duration = 1000,
+                    Expires = long.MaxValue
+                }
+            };
             var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
             _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
@@ -158,7 +166,15 @@ namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
         public void HandleAsync_Should_Throw_UnauthorizedException_When_Authentication_Expired()
         {
             var userId = Guid.NewGuid();
-            var patient = new Patient { Id = userId, Email = "test@test.com", PasswordHash = "passwordhash" };
+            var patient = new Patient
+            {
+                Id = userId, Email = "test@test.com", PasswordHash = "passwordhash", AuthTicket = new AuthTicket
+                {
+                    Token = "libreToken",
+                    Duration = 1000,
+                    Expires = long.MaxValue
+                }
+            };
             var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
             _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
@@ -168,16 +184,23 @@ namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
             _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
 
-            Assert.ThrowsAsync<UnauthorizedException>(async () =>
-                await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-                    _libreLinkClientMock.Object, CancellationToken.None));
+            Assert.That(() => Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
+                _libreLinkClientMock.Object, CancellationToken.None), Throws.TypeOf<UnauthorizedException>());
         }
 
         [Test]
         public void HandleAsync_Should_Throw_UnauthorizedException_When_Authentication_Fails()
         {
             var userId = Guid.NewGuid();
-            var patient = new Patient { Id = userId, Email = "test@test.com", PasswordHash = "passwordhash" };
+            var patient = new Patient
+            {
+                Id = userId, Email = "test@test.com", PasswordHash = "passwordhash", AuthTicket = new AuthTicket
+                {
+                    Token = "libreToken",
+                    Duration = 1000,
+                    Expires = long.MaxValue
+                }
+            };
             var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
             _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
