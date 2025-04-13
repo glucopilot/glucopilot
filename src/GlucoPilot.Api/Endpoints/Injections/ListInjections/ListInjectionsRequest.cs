@@ -7,7 +7,7 @@ namespace GlucoPilot.Api.Endpoints.Injections.ListInjections;
 
 public sealed record ListInjectionsRequest : PagedRequest
 {
-    public sealed class ListInjectionsValidator : AbstractValidator<ListMealsRequest>
+    public sealed class ListInjectionsValidator : AbstractValidator<ListInjectionsRequest>
     {
         public ListInjectionsValidator(IOptions<ApiSettings> apiSettings)
         {
