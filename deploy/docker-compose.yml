@@ -23,6 +23,12 @@ services:
       Data__ConnectionString: "Server=mssql-db;Database=GlucoPilot;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True"
       Identity__TokenExpirationInMinutes: "60"
       Identity__TokenSigningKey: ${IDENTITY_TOKEN_SIGNING_KEY}
+      Mail__SmtpHost: ${SMTP_HOST}
+      Mail__Port: ${SMTP_PORT}
+      Mail__SmtpUser: ${SMTP_USER}
+      Mail__SmtpPassword: ${SMTP_PASSWORD}
+      Mail__DisplayName: ${SMTP_DISPLAY_NAME}
+      Mail__From: ${SMTP_FROM}
     ports:
       - "8080:8080"
       - "8081:8081"
