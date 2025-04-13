@@ -18,7 +18,7 @@ using AuthTicket = GlucoPilot.Data.Entities.AuthTicket;
 namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
 {
     [TestFixture]
-    public class EndpointTests
+    public class PairConnectionTests
     {
         private Mock<ICurrentUser> _currentUserMock;
         private Mock<IRepository<Patient>> _patientRepositoryMock;
