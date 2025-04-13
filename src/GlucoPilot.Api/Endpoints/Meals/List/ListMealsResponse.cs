@@ -8,6 +8,6 @@ namespace GlucoPilot.Api.Endpoints.Meals.List
 {
     public sealed record ListMealsResponse : PagedResponse
     {
-        public required ICollection<MealResponse> Meals { get; set; }
+        public required ICollection<GetMealResponse> Meals { get; set; }
     }
 }

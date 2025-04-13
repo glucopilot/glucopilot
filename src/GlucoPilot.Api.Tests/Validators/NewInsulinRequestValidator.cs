@@ -37,7 +37,7 @@ namespace GlucoPilot.Tests.Validators
         [Test]
         public void Should_Have_Error_When_Type_Is_Invalid()
         {
-            var model = new NewInsulinRequest { Name = "ValidName", Type = (InsulinType)999 };
+            var model = new NewInsulinRequest { Name = "ValidName", Type = (InsulinType)(-1) };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Type)
                 .WithErrorMessage("Type must be either Bolus or Basal.");

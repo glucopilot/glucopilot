@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GlucoPilot.Api.Endpoints.Meals.GetMeal;
 
-public record MealResponse
+public record GetMealResponse
 {
     public required Guid Id { get; set; }
     public required string Name { get; set; }
