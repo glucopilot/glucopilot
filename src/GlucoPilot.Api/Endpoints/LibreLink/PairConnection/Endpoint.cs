@@ -11,27 +11,38 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using AuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
 namespace GlucoPilot.Api.Endpoints.LibreLink.PairConnection;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<PairConnectionResponse>, UnauthorizedHttpResult, NotFound, ValidationProblem>> HandleAsync(
-        [FromBody] PairConnectionRequest request,
-        [FromServices] ICurrentUser currentUser,
-        [FromServices] IRepository<Patient> patientRepository,
-        [FromServices] ILibreLinkClient libreLinkClient,
-        CancellationToken cancellationToken)
+    internal static async Task<Results<Ok<PairConnectionResponse>, UnauthorizedHttpResult, NotFound, ValidationProblem>>
+        HandleAsync(
+            [FromBody] PairConnectionRequest request,
+            [FromServices] ICurrentUser currentUser,
+            [FromServices] IRepository<Patient> patientRepository,
+            [FromServices] ILibreLinkClient libreLinkClient,
+            CancellationToken cancellationToken)
     {
         var userId = currentUser.GetUserId();
 
         try
         {
             var patient = patientRepository.FindOne(p => p.Id == userId);
-            if (patient is null)
+            if (patient is null || string.IsNullOrWhiteSpace(patient.AuthTicket?.Token))
             {
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");
             }
+
+            await libreLinkClient
+                .LoginAsync(
+                    new AuthTicket
+                    {
+                        Token = patient.AuthTicket.Token,
+                        Expires = patient.AuthTicket.Expires,
+                        Duration = patient.AuthTicket.Duration
+                    }, cancellationToken).ConfigureAwait(false);
 
             var connections = await libreLinkClient.GetConnectionsAsync(cancellationToken).ConfigureAwait(false);
             var connection = connections.FirstOrDefault(c => c.PatientId == request.PatientId);
@@ -54,6 +65,14 @@ internal static class Endpoint
             };
 
             return TypedResults.Ok(response);
+        }
+        catch (LibreLinkNotAuthenticatedException)
+        {
+            throw new UnauthorizedException("LIBRE_LINK_NOT_AUTHENTICATED");
+        }
+        catch (LibreLinkAuthenticationExpiredException)
+        {
+            throw new UnauthorizedException("LIBRE_LINK_AUTH_EXPIRED");
         }
         catch (LibreLinkAuthenticationFailedException)
         {
