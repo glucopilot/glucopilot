@@ -153,7 +153,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
                 await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
                     _libreLinkClientMock.Object, CancellationToken.None));
         }
-        
+
         [Test]
         public void HandleAsync_Should_Throw_UnauthorizedException_When_Authentication_Expired()
         {
@@ -172,7 +172,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
                 await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
                     _libreLinkClientMock.Object, CancellationToken.None));
         }
-        
+
         [Test]
         public void HandleAsync_Should_Throw_UnauthorizedException_When_Authentication_Fails()
         {
