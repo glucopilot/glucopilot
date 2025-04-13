@@ -35,7 +35,7 @@ internal static class Endpoint
             .OrderByDescending(m => m.Created)
             .Skip(request.Page * request.PageSize)
             .Take(request.PageSize)
-            .Select(m => new MealResponse
+            .Select(m => new GetMealResponse
             {
                 Id = m.Id,
                 Created = m.Created,

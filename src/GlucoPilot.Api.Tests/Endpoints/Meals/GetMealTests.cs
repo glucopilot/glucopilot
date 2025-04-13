@@ -82,10 +82,10 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
 
             var result = await Endpoint.HandleAsync(mealId, _mockCurrentUser.Object, _mockRepository.Object);
 
-            var okResult = result.Result as Ok<MealResponse>;
+            var okResult = result.Result as Ok<GetMealResponse>;
             Assert.Multiple(() =>
             {
-                Assert.That(okResult, Is.InstanceOf<Ok<MealResponse>>());
+                Assert.That(okResult, Is.InstanceOf<Ok<GetMealResponse>>());
                 Assert.That(mealId, Is.EqualTo(okResult.Value.Id));
                 Assert.That(okResult.Value.Name, Is.EqualTo("Test Meal"));
                 Assert.That(okResult.Value.MealIngredients.Count, Is.EqualTo(1));

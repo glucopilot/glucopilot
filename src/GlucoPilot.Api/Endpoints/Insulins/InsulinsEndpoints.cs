@@ -14,6 +14,11 @@ public static class InsulinsEndpoints
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/insulins")
             .WithTags("Insulins");
 
+        group.MapGet("/", List.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
         group.MapPost("/", NewInsulin.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
