@@ -30,7 +30,7 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var ingredient = await ingredientRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions() { IsAsNoTracking = true }).ConfigureAwait(false);
+        var ingredient = await ingredientRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions() { IsAsNoTracking = false }).ConfigureAwait(false);
 
         if (ingredient is null)
         {
