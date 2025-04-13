@@ -17,7 +17,7 @@ using System.Linq.Expressions;
 namespace GlucoPilot.Api.Tests.Endpoints.LibreLink.PairConnection
 {
     [TestFixture]
-    public class PairConnectinTests
+    public class PairConnectionTests
     {
         private Mock<ICurrentUser> _currentUserMock;
         private Mock<IRepository<Patient>> _patientRepositoryMock;
