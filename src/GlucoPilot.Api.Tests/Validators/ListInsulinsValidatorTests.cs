@@ -34,7 +34,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Insulins
             {
                 Page = 1,
                 PageSize = 10,
-                Type = (InsulinType)999
+                Type = (InsulinType)(-1)
             };
 
             var result = _validator.TestValidate(request);
