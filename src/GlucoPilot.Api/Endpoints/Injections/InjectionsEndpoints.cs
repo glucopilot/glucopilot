@@ -14,6 +14,11 @@ public static class InjectionsEndpoints
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/injections")
             .WithTags("Injections");
 
+        group.MapGet("/{id:guid}", GetInjection.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
         group.MapGet("/", ListInjections.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
