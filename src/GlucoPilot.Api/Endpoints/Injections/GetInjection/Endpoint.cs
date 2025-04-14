@@ -13,7 +13,7 @@ namespace GlucoPilot.Api.Endpoints.Injections.GetInjection;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<GetInjectionResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
+    internal static async Task<Results<Ok<GetInjectionResponse>, UnauthorizedHttpResult>> HandleAsync(
         [FromRoute] Guid id,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Injection> injectionsRepository,
