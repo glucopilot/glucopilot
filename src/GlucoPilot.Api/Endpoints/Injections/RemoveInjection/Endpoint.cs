@@ -24,7 +24,7 @@ internal static class Endpoint
 
         if (injection is null)
         {
-            throw new NotFoundException("INSULIN_NOT_FOUND");
+            throw new NotFoundException("INJECTION_NOT_FOUND");
         }
 
         await injectionRepository.DeleteAsync(injection, cancellationToken).ConfigureAwait(false);
