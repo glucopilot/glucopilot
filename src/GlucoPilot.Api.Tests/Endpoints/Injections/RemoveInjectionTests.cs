@@ -56,7 +56,7 @@ public class RemoveInjectionTests
             .ReturnsAsync((Injection?)null);
 
         Assert.That(async () => await Endpoint.HandleAsync(injectionId, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
-            Throws.TypeOf<NotFoundException>().With.Message.EqualTo("INSULIN_NOT_FOUND"));
+            Throws.TypeOf<NotFoundException>().With.Message.EqualTo("INJECTION_NOT_FOUND"));
     }
 
     [Test]
