@@ -19,3 +19,4 @@ GlucoPilot: Your open source partner in diabetes care.
 
 ## GlucoPilot.Mail
 [See docs](./src/GlucoPilot.Mail/README.md).
+
