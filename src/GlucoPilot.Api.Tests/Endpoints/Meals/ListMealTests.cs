@@ -22,7 +22,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals;
 public class ListMealTests
 {
     private static readonly Guid _userId = Guid.NewGuid();
-    private Mock<IValidator<ListIngredientsRequest>> _validatorMock;
+    private Mock<IValidator<ListMealsRequest>> _validatorMock;
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IRepository<Meal>> _repositoryMock;
 
@@ -31,23 +31,23 @@ public class ListMealTests
     {
         _currentUserMock = new Mock<ICurrentUser>();
         _currentUserMock.Setup(c => c.GetUserId()).Returns(_userId);
-        _validatorMock = new Mock<IValidator<ListIngredientsRequest>>();
+        _validatorMock = new Mock<IValidator<ListMealsRequest>>();
         _repositoryMock = new Mock<IRepository<Meal>>();
     }
 
     [Test]
     public void HandleAsync_Returns_Unauthorized_When_User_Is_Not_Authenticated()
     {
-        var mockValidator = new Mock<IValidator<ListIngredientsRequest>>();
+        var mockValidator = new Mock<IValidator<ListMealsRequest>>();
         mockValidator
-            .Setup(v => v.ValidateAsync(It.IsAny<ListIngredientsRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(v => v.ValidateAsync(It.IsAny<ListMealsRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
         _currentUserMock.Setup(x => x.GetUserId()).Throws(new UnauthorizedException("USER_NOT_LOGGED_IN"));
 
         var mockRepository = new Mock<IRepository<Meal>>();
 
-        var request = new ListIngredientsRequest { Page = 0, PageSize = 10 };
+        var request = new ListMealsRequest { Page = 0, PageSize = 10 };
 
         Assert.That(() => Endpoint.HandleAsync(request, mockValidator.Object, _currentUserMock.Object, mockRepository.Object, CancellationToken.None),
             Throws.InstanceOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
@@ -56,7 +56,7 @@ public class ListMealTests
     [Test]
     public async Task HandleAsync_Returns_Validation_Problem_When_Request_Is_Invalid()
     {
-        var request = new ListIngredientsRequest { Page = 0, PageSize = 10 };
+        var request = new ListMealsRequest { Page = 0, PageSize = 10 };
         var validationResult = new ValidationResult(new List<ValidationFailure>
         {
             new ValidationFailure("Page", "Page is required")
@@ -70,14 +70,14 @@ public class ListMealTests
         {
             var validationProblem = result.Result as ValidationProblem;
             Assert.That(validationProblem, Is.InstanceOf<ValidationProblem>());
-            Assert.That(validationProblem!.ProblemDetails.Errors, Contains.Key(nameof(ListIngredientsRequest.Page)));
+            Assert.That(validationProblem!.ProblemDetails.Errors, Contains.Key(nameof(ListMealsRequest.Page)));
         });
     }
 
     [Test]
     public async Task HandleAsync_Returns_Ok_With_Meals_List()
     {
-        var request = new ListIngredientsRequest { Page = 0, PageSize = 10 };
+        var request = new ListMealsRequest { Page = 0, PageSize = 10 };
 
         var meals = new List<Meal>
         {
@@ -104,7 +104,7 @@ public class ListMealTests
     public async Task HandleAsync_Returns_Ok_With_Correct_Meals_And_Nutrition()
     {
         var userId = Guid.NewGuid();
-        var request = new ListIngredientsRequest { Page = 0, PageSize = 2 };
+        var request = new ListMealsRequest { Page = 0, PageSize = 2 };
 
         var ingredient1 = new Ingredient
         {

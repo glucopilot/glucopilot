@@ -4,9 +4,9 @@ using Microsoft.Extensions.Options;
 
 namespace GlucoPilot.Api.Endpoints.Meals.List;
 
-public sealed record ListIngredientsRequest : PagedRequest
+public sealed record ListMealsRequest : PagedRequest
 {
-    public sealed class ListMealsValidator : AbstractValidator<ListIngredientsRequest>
+    public sealed class ListMealsValidator : AbstractValidator<ListMealsRequest>
     {
         public ListMealsValidator(IOptions<ApiSettings> apiSettings)
         {

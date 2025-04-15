@@ -18,8 +18,8 @@ namespace GlucoPilot.Api.Endpoints.Meals.List;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<ListMealsResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
-        [AsParameters] ListIngredientsRequest request,
-        [FromServices] IValidator<ListIngredientsRequest> validator,
+        [AsParameters] ListMealsRequest request,
+        [FromServices] IValidator<ListMealsRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository,
         CancellationToken cancellationToken)

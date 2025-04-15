@@ -8,18 +8,18 @@ namespace GlucoPilot.Api.Models.Tests;
 [TestFixture]
 public class ListMealsValidatorTests
 {
-    private readonly ListIngredientsRequest.ListMealsValidator _validator;
+    private readonly ListMealsRequest.ListMealsValidator _validator;
 
     public ListMealsValidatorTests()
     {
         var apiSettings = Options.Create(new ApiSettings { MaxPageSize = 100 });
-        _validator = new ListIngredientsRequest.ListMealsValidator(apiSettings);
+        _validator = new ListMealsRequest.ListMealsValidator(apiSettings);
     }
 
     [Test]
     public void Should_Have_Error_When_Page_Is_Less_Than_Zero()
     {
-        var model = new ListIngredientsRequest { Page = -1, PageSize = 10 };
+        var model = new ListMealsRequest { Page = -1, PageSize = 10 };
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Page);
     }
@@ -27,7 +27,7 @@ public class ListMealsValidatorTests
     [Test]
     public void Should_Not_Have_Error_When_Page_Is_Zero_Or_Greater()
     {
-        var model = new ListIngredientsRequest { Page = 0, PageSize = 10 };
+        var model = new ListMealsRequest { Page = 0, PageSize = 10 };
         var result = _validator.TestValidate(model);
         result.ShouldNotHaveValidationErrorFor(x => x.Page);
     }
@@ -35,7 +35,7 @@ public class ListMealsValidatorTests
     [Test]
     public void Should_Have_Error_When_PageSize_Is_Less_Than_One()
     {
-        var model = new ListIngredientsRequest { Page = 0, PageSize = 0 };
+        var model = new ListMealsRequest { Page = 0, PageSize = 0 };
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.PageSize);
     }
@@ -43,7 +43,7 @@ public class ListMealsValidatorTests
     [Test]
     public void Should_Have_Error_When_PageSize_Is_Greater_Than_MaxPageSize()
     {
-        var model = new ListIngredientsRequest { Page = 0, PageSize = 101 };
+        var model = new ListMealsRequest { Page = 0, PageSize = 101 };
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.PageSize);
     }
@@ -51,7 +51,7 @@ public class ListMealsValidatorTests
     [Test]
     public void Should_Not_Have_Error_When_PageSize_Is_Within_Valid_Range()
     {
-        var model = new ListIngredientsRequest { Page = 0, PageSize = 50 };
+        var model = new ListMealsRequest { Page = 0, PageSize = 50 };
         var result = _validator.TestValidate(model);
         result.ShouldNotHaveValidationErrorFor(x => x.PageSize);
     }
