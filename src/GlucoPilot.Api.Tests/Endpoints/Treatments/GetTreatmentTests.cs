@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Moq;
-using Moq.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
