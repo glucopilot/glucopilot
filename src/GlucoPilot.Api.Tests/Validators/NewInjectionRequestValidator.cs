@@ -22,7 +22,8 @@ namespace GlucoPilot.Api.Tests.Endpoints.Injections
             var model = new NewInjectionRequest
             {
                 InsulinId = Guid.Empty,
-                Units = 10
+                Units = 10,
+                Created = DateTimeOffset.UtcNow
             };
 
             var result = _validator.TestValidate(model);
@@ -36,7 +37,8 @@ namespace GlucoPilot.Api.Tests.Endpoints.Injections
             var model = new NewInjectionRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Units = 10
+                Units = 10,
+                Created = DateTimeOffset.UtcNow
             };
 
             var result = _validator.TestValidate(model);
@@ -49,7 +51,8 @@ namespace GlucoPilot.Api.Tests.Endpoints.Injections
             var model = new NewInjectionRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Units = 0
+                Units = 0,
+                Created = DateTimeOffset.UtcNow
             };
 
             var result = _validator.TestValidate(model);
@@ -63,11 +66,40 @@ namespace GlucoPilot.Api.Tests.Endpoints.Injections
             var model = new NewInjectionRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Units = 5
+                Units = 5,
+                Created = DateTimeOffset.UtcNow
             };
 
             var result = _validator.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Units);
+        }
+
+        [Test]
+        public void Should_Not_Have_Error_When_Created_Is_Valid_Date()
+        {
+            var model = new NewInjectionRequest
+            {
+                InsulinId = Guid.NewGuid(),
+                Units = 5,
+                Created = DateTimeOffset.UtcNow
+            };
+
+            var result = _validator.TestValidate(model);
+            result.ShouldNotHaveValidationErrorFor(x => x.Created);
+        }
+
+        [Test]
+        public void Should_Have_Error_When_Created_Is_Invalid_Date()
+        {
+            var model = new NewInjectionRequest
+            {
+                InsulinId = Guid.NewGuid(),
+                Units = 5,
+                Created = default
+            };
+            var result = _validator.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.Created)
+                .WithErrorMessage("Created date is required.");
         }
     }
 }

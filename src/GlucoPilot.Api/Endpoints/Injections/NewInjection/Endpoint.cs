@@ -39,7 +39,7 @@ internal static class Endpoint
         var newInjection = new Injection
         {
             UserId = userId,
-            Created = DateTimeOffset.UtcNow,
+            Created = request.Created,
             InsulinId = request.InsulinId,
             Units = request.Units,
         };

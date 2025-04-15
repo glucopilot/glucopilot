@@ -36,7 +36,7 @@ namespace GlucoPilot.Tests.Endpoints.Injections.NewInjection
         [Test]
         public async Task HandleAsync_Should_Return_ValidationProblem_When_Request_Is_Invalid()
         {
-            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10 };
+            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10, Created = DateTimeOffset.UtcNow };
             _validatorMock
                 .Setup(v => v.ValidateAsync(request, default))
                 .ReturnsAsync(new ValidationResult
@@ -52,7 +52,7 @@ namespace GlucoPilot.Tests.Endpoints.Injections.NewInjection
         [Test]
         public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
         {
-            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10 };
+            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10, Created = DateTimeOffset.UtcNow };
             _validatorMock
                 .Setup(v => v.ValidateAsync(request, default))
                 .ReturnsAsync(new ValidationResult());
@@ -67,7 +67,7 @@ namespace GlucoPilot.Tests.Endpoints.Injections.NewInjection
         [Test]
         public async Task HandleAsync_Should_Return_Ok_When_Request_Is_Valid()
         {
-            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10 };
+            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10, Created = DateTimeOffset.UtcNow };
             var userId = Guid.NewGuid();
 
             _validatorMock
@@ -96,10 +96,14 @@ namespace GlucoPilot.Tests.Endpoints.Injections.NewInjection
             var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _injectionsRepositoryMock.Object, _insulinRepositoryMock.Object, CancellationToken.None);
 
             var okResult = result.Result as Ok<NewInjectionResponse>;
-            Assert.That(okResult, Is.TypeOf<Ok<NewInjectionResponse>>());
-            Assert.That(okResult?.Value, Is.Not.Null);
-            Assert.That(okResult?.Value.InsulinId, Is.EqualTo(request.InsulinId));
-            Assert.That(okResult?.Value.Units, Is.EqualTo(request.Units));
+            Assert.Multiple(() =>
+            {
+                Assert.That(okResult, Is.TypeOf<Ok<NewInjectionResponse>>());
+                Assert.That(okResult?.Value, Is.Not.Null);
+                Assert.That(okResult?.Value.InsulinId, Is.EqualTo(request.InsulinId));
+                Assert.That(okResult?.Value.Units, Is.EqualTo(request.Units));
+                Assert.That(okResult?.Value.Created, Is.EqualTo(request.Created));
+            });
         }
 
         [Test]
@@ -108,7 +112,8 @@ namespace GlucoPilot.Tests.Endpoints.Injections.NewInjection
             var request = new NewInjectionRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Units = 10
+                Units = 10,
+                Created = DateTimeOffset.UtcNow
             };
 
             var userId = Guid.NewGuid();
