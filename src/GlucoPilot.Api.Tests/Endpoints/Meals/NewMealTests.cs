@@ -90,14 +90,12 @@ public class NewMealTests
             new NewMealIngredientRequest
             {
                 Id = Guid.NewGuid(),
-                MealId = Guid.NewGuid(),
                 IngredientId = Guid.NewGuid(),
                 Quantity = 2
             },
             new NewMealIngredientRequest
             {
                 Id = Guid.NewGuid(),
-                MealId = Guid.NewGuid(),
                 IngredientId = Guid.NewGuid(),
                 Quantity = 3
             }

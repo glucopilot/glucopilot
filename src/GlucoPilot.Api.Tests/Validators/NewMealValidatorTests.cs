@@ -34,14 +34,12 @@ public class NewMealValidatorTests
         var model = new NewMealIngredientRequest
         {
             Id = Guid.Empty,
-            MealId = Guid.Empty,
             IngredientId = Guid.Empty,
             Quantity = 0
         };
 
         var result = ingredientValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Id);
-        result.ShouldHaveValidationErrorFor(x => x.MealId);
         result.ShouldHaveValidationErrorFor(x => x.IngredientId);
         result.ShouldHaveValidationErrorFor(x => x.Quantity);
     }
@@ -57,7 +55,6 @@ public class NewMealValidatorTests
                 new NewMealIngredientRequest
                 {
                     Id = Guid.NewGuid(),
-                    MealId = Guid.NewGuid(),
                     IngredientId = Guid.NewGuid(),
                     Quantity = 1
                 }
