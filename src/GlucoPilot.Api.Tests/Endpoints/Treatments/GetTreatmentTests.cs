@@ -76,7 +76,7 @@ namespace GlucoPilot.Api.Endpoints.Treatments
                 Assert.That(okResult, Is.InstanceOf<Ok<GetTreatmentResponse>>());
                 Assert.That(okResult?.Value.Id, Is.EqualTo(treatmentId));
                 Assert.That(okResult.Value.Meal.Id, Is.EqualTo(mealId));
-            });            
+            });
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace GlucoPilot.Api.Endpoints.Treatments
                 Assert.That(okResult, Is.InstanceOf<Ok<GetTreatmentResponse>>());
                 Assert.That(okResult?.Value.Id, Is.EqualTo(treatmentId));
                 Assert.That(okResult.Value.Injection.Id, Is.EqualTo(injectionId));
-            });            
+            });
         }
 
         [Test]
