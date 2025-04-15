@@ -44,7 +44,7 @@ internal static class Endpoint
                 MealIngredients = m.MealIngredients.Select(mi => new MealIngredientResponse
                 {
                     Id = mi.Id,
-                    Ingredient = new IngredientResponse
+                    Ingredient = mi.Ingredient != null ? new IngredientResponse
                     {
                         Id = mi.Ingredient!.Id,
                         Name = mi.Ingredient.Name,
@@ -53,13 +53,13 @@ internal static class Endpoint
                         Fat = mi.Ingredient.Fat,
                         Calories = mi.Ingredient.Calories,
                         Uom = mi.Ingredient.Uom
-                    },
+                    } : null,
                     Quantity = mi.Quantity
                 }).ToList(),
-                TotalCalories = m.MealIngredients.Sum(mi => mi.Ingredient!.Calories * mi.Quantity),
-                TotalCarbs = m.MealIngredients.Sum(mi => mi.Ingredient!.Carbs * mi.Quantity),
-                TotalProtein = m.MealIngredients.Sum(mi => mi.Ingredient!.Protein * mi.Quantity),
-                TotalFat = m.MealIngredients.Sum(mi => mi.Ingredient!.Fat * mi.Quantity)
+                TotalCalories = m.MealIngredients.Sum(mi => mi.Ingredient == null ? 0 : mi.Ingredient.Calories * mi.Quantity),
+                TotalCarbs = m.MealIngredients.Sum(mi => mi.Ingredient == null ? 0 : mi.Ingredient!.Carbs * mi.Quantity),
+                TotalProtein = m.MealIngredients.Sum(mi => mi.Ingredient == null ? 0 : mi.Ingredient!.Protein * mi.Quantity),
+                TotalFat = m.MealIngredients.Sum(mi => mi.Ingredient == null ? 0 : mi.Ingredient!.Fat * mi.Quantity)
             })
             .ToList();
 

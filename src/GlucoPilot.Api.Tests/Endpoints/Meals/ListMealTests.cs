@@ -93,11 +93,14 @@ public class ListMealTests
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         var okResult = result.Result as Ok<ListMealsResponse>;
-        Assert.That(okResult, Is.InstanceOf<Ok<ListMealsResponse>>());
-        Assert.That(okResult.Value.Meals.Count, Is.EqualTo(2));
-        Assert.That(okResult.Value.Meals.ElementAt(0).Id, Is.EqualTo(meals[0].Id));
-        Assert.That(okResult.Value.Meals.ElementAt(1).Id, Is.EqualTo(meals[1].Id));
-        Assert.That(okResult.Value.NumberOfPages, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(okResult, Is.InstanceOf<Ok<ListMealsResponse>>());
+            Assert.That(okResult.Value.Meals.Count, Is.EqualTo(2));
+            Assert.That(okResult.Value.Meals.ElementAt(0).Id, Is.EqualTo(meals[0].Id));
+            Assert.That(okResult.Value.Meals.ElementAt(1).Id, Is.EqualTo(meals[1].Id));
+            Assert.That(okResult.Value.NumberOfPages, Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -183,5 +186,72 @@ public class ListMealTests
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalProtein, Is.EqualTo(5));
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalFat, Is.EqualTo(2));
         });
+    }
+
+    [Test]
+    public async Task HandleAsync_Should_Handle_Null_Ingredient()
+    {
+        var mockValidator = new Mock<IValidator<ListMealsRequest>>();
+        mockValidator
+            .Setup(v => v.ValidateAsync(It.IsAny<ListMealsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        var mockCurrentUser = new Mock<ICurrentUser>();
+        var userId = Guid.NewGuid();
+        mockCurrentUser.Setup(cu => cu.GetUserId()).Returns(userId);
+
+        var mockRepository = new Mock<IRepository<Meal>>();
+        var mealId = Guid.NewGuid();
+        var ingredientId = Guid.NewGuid();
+        mockRepository
+            .Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(new List<Meal>
+            {
+                    new Meal
+                    {
+                        Id = mealId,
+                        UserId = userId,
+                        Created = DateTimeOffset.UtcNow,
+                        Name = "Test Meal",
+                        MealIngredients = new List<MealIngredient>
+                        {
+                            new MealIngredient
+                            {
+                                Id = Guid.NewGuid(),
+                                Quantity = 2,
+                                Ingredient = null,
+                                IngredientId = ingredientId,
+                                MealId = mealId
+                            }
+                        }
+                    }
+            }.AsQueryable());
+
+        mockRepository
+            .Setup(r => r.CountAsync(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
+
+        var request = new ListMealsRequest
+        {
+            Page = 0,
+            PageSize = 10
+        };
+
+        var result = await Endpoint.HandleAsync(
+            request,
+            mockValidator.Object,
+            mockCurrentUser.Object,
+            mockRepository.Object,
+            CancellationToken.None);
+
+        var okResult = result.Result as Ok<ListMealsResponse>;
+        var response = okResult.Value;
+
+        Assert.That(response, Is.Not.Null);
+        var meal = response.Meals.First();
+        Assert.That(meal.Name, Is.EqualTo("Test Meal"));
+        Assert.That(meal.MealIngredients.Count, Is.EqualTo(1));
+        var ingredientResponse = meal.MealIngredients.First().Ingredient;
+        Assert.That(ingredientResponse, Is.Null);
     }
 }

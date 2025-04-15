@@ -51,10 +51,10 @@ internal static class Endpoint
                     Uom = mi.Ingredient.Uom
                 } : null,
             }).ToList(),
-            TotalCalories = meal.MealIngredients.Sum(mi => mi.Ingredient!.Calories * mi.Quantity),
-            TotalCarbs = meal.MealIngredients.Sum(mi => mi.Ingredient!.Carbs * mi.Quantity),
-            TotalProtein = meal.MealIngredients.Sum(mi => mi.Ingredient!.Protein * mi.Quantity),
-            TotalFat = meal.MealIngredients.Sum(mi => mi.Ingredient!.Fat * mi.Quantity)
+            TotalCalories = meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Calories * mi.Quantity),
+            TotalCarbs = meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Carbs * mi.Quantity),
+            TotalProtein = meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Protein * mi.Quantity),
+            TotalFat = meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Fat * mi.Quantity)
         };
         return TypedResults.Ok(response);
     }

@@ -159,5 +159,50 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
                 Assert.That(okResult.Value.MealIngredients[1].Ingredient.Name, Is.EqualTo("Ingredient2"));
             });
         }
+
+        [Test]
+        public async Task HandleAsync_Should_Handle_Null_Ingredient()
+        {
+            var userId = Guid.NewGuid();
+            var mealId = Guid.NewGuid();
+            var ingredientId = Guid.NewGuid();
+
+            var meal = new Meal
+            {
+                Id = mealId,
+                UserId = userId,
+                Name = "Test Meal",
+                Created = DateTimeOffset.UtcNow,
+                MealIngredients = new List<MealIngredient>
+        {
+            new MealIngredient
+            {
+                Id = Guid.NewGuid(),
+                MealId = mealId,
+                IngredientId = ingredientId,
+                Quantity = 2,
+                Ingredient = null
+            }
+        }
+            };
+
+            _mockCurrentUser.Setup(c => c.GetUserId()).Returns(userId);
+            _mockRepository
+                .Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>()))
+                .Returns(new List<Meal> { meal }.AsQueryable());
+
+            var result = await Endpoint.HandleAsync(mealId, _mockCurrentUser.Object, _mockRepository.Object);
+
+            var okResult = result.Result as Ok<GetMealResponse>;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(okResult.Value.Id, Is.EqualTo(mealId));
+                Assert.That(okResult.Value.Name, Is.EqualTo("Test Meal"));
+                Assert.That(okResult.Value.MealIngredients.Count, Is.EqualTo(1));
+                var ingredientResponse = okResult.Value.MealIngredients.First().Ingredient;
+                Assert.That(ingredientResponse, Is.Null);
+            });
+        }
     }
 }
