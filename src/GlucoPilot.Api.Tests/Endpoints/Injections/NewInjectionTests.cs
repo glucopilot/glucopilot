@@ -52,7 +52,7 @@ namespace GlucoPilot.Tests.Endpoints.Injections.NewInjection
         [Test]
         public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
         {
-            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10 , Created = DateTimeOffset.UtcNow };
+            var request = new NewInjectionRequest { InsulinId = Guid.NewGuid(), Units = 10, Created = DateTimeOffset.UtcNow };
             _validatorMock
                 .Setup(v => v.ValidateAsync(request, default))
                 .ReturnsAsync(new ValidationResult());
