@@ -56,7 +56,6 @@ public class UpdateMealRequestValidatorTests
             new NewMealIngredientRequest
             {
                 Id = Guid.NewGuid(),
-                MealId = Guid.NewGuid(),
                 IngredientId = Guid.Empty,
                 Quantity = 1
             }
@@ -79,7 +78,6 @@ public class UpdateMealRequestValidatorTests
                 new NewMealIngredientRequest
                 {
                     Id = Guid.NewGuid(),
-                    MealId = Guid.NewGuid(),
                     IngredientId = Guid.NewGuid(),
                     Quantity = 1
                 }

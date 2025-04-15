@@ -79,7 +79,6 @@ public class UpdateMealTests
                 {
                     Id = Guid.NewGuid(),
                     IngredientId = ingredientId,
-                    MealId = mealId,
                     Quantity = 1
                 }
             }
@@ -149,7 +148,6 @@ public class UpdateMealTests
                     IngredientId = ingredientId,
                     Quantity = 1,
                     Id = Guid.NewGuid(),
-                    MealId = mealId,
                 }
             }
         };

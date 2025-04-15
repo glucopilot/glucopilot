@@ -6,7 +6,6 @@ namespace GlucoPilot.Api.Models;
 public sealed record NewMealIngredientRequest
 {
     public required Guid Id { get; set; }
-    public required Guid MealId { get; set; }
     public required Guid IngredientId { get; set; }
     public required int Quantity { get; set; }
 
@@ -15,7 +14,6 @@ public sealed record NewMealIngredientRequest
         public NewMealIngredientValidator()
         {
             RuleFor(x => x.Id).NotEmpty();
-            RuleFor(x => x.MealId).NotEmpty();
             RuleFor(x => x.IngredientId).NotEmpty();
             RuleFor(x => x.Quantity).GreaterThan(0);
         }

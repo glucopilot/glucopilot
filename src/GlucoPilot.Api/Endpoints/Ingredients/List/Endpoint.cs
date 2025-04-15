@@ -22,13 +22,13 @@ internal static class Endpoint
         [FromServices] IRepository<Ingredient> repository,
         CancellationToken cancellationToken)
     {
-        var userId = currentUser.GetUserId();
-
         if (await validator.ValidateAsync(request).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
+
+        var userId = currentUser.GetUserId();
 
         var ingredients = repository.Find(i => i.UserId == userId, new FindOptions { IsAsNoTracking = true })
             .OrderByDescending(i => i.Created)

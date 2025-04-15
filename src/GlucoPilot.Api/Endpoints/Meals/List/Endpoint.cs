@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Endpoints.Meals.GetMeal;
+using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -17,8 +18,8 @@ namespace GlucoPilot.Api.Endpoints.Meals.List;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<ListMealsResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
-        [AsParameters] ListMealsRequest request,
-        [FromServices] IValidator<ListMealsRequest> validator,
+        [AsParameters] ListIngredientsRequest request,
+        [FromServices] IValidator<ListIngredientsRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository,
         CancellationToken cancellationToken)
@@ -40,6 +41,25 @@ internal static class Endpoint
                 Id = m.Id,
                 Created = m.Created,
                 Name = m.Name,
+                MealIngredients = m.MealIngredients.Select(mi => new MealIngredientResponse
+                {
+                    Id = mi.Id,
+                    Ingredient = new IngredientResponse
+                    {
+                        Id = mi.Ingredient!.Id,
+                        Name = mi.Ingredient.Name,
+                        Carbs = mi.Ingredient.Carbs,
+                        Protein = mi.Ingredient.Protein,
+                        Fat = mi.Ingredient.Fat,
+                        Calories = mi.Ingredient.Calories,
+                        Uom = mi.Ingredient.Uom
+                    },
+                    Quantity = mi.Quantity
+                }).ToList(),
+                TotalCalories = m.MealIngredients.Sum(mi => mi.Ingredient!.Calories * mi.Quantity),
+                TotalCarbs = m.MealIngredients.Sum(mi => mi.Ingredient!.Carbs * mi.Quantity),
+                TotalProtein = m.MealIngredients.Sum(mi => mi.Ingredient!.Protein * mi.Quantity),
+                TotalFat = m.MealIngredients.Sum(mi => mi.Ingredient!.Fat * mi.Quantity)
             })
             .ToList();
 
