@@ -174,6 +174,6 @@ public class NewTreatmentTests
             Assert.That(okResult!.Value.MealId, Is.EqualTo(request.MealId));
             Assert.That(okResult.Value.InjectionId, Is.EqualTo(request.InjectionId));
             Assert.That(okResult.Value.ReadingId, Is.EqualTo(request.ReadingId));
-        });        
+        });
     }
 }
