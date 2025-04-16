@@ -19,14 +19,14 @@ internal static class Endpoint
         CancellationToken cancellationToken)
     {
         var refreshToken = context.Request.Cookies[identityOptions.Value.RefreshTokenCookieName];
-        
+
         var response = await userService.RefreshTokenAsync(refreshToken, context.IpAddress(), cancellationToken).ConfigureAwait(false);
 
         if (!string.IsNullOrWhiteSpace(response.RefreshToken))
         {
             context.SetRefreshTokenCookie(response.RefreshToken, identityOptions.Value);
         }
-        
+
         return TypedResults.Ok(response);
     }
 }
