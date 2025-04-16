@@ -150,7 +150,7 @@ public class NewTreatmentTests
         _mealRepositoryMock.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Meal { Id = request.MealId.Value, UserId = userId, Created = DateTimeOffset.UtcNow, Name = "Sugar on Toast" });
         _injectionRepositoryMock.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Injection, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Injection { Id = request.InjectionId.Value, UserId = userId, InsulinId = Guid.NewGuid(), Units = 5 });
+            .ReturnsAsync(new Injection { Id = request.InjectionId.Value, UserId = userId, InsulinId = Guid.NewGuid(), Units = 5, Insulin = new Insulin() { Name = "Fiasp", Type = InsulinType.Bolus } });
         _readingRepositoryMock.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Reading { Id = request.ReadingId.Value, UserId = userId, Created = DateTimeOffset.UtcNow, Direction = ReadingDirection.Steady, GlucoseLevel = 5.0 });
 
@@ -174,6 +174,10 @@ public class NewTreatmentTests
             Assert.That(okResult!.Value.MealId, Is.EqualTo(request.MealId));
             Assert.That(okResult.Value.InjectionId, Is.EqualTo(request.InjectionId));
             Assert.That(okResult.Value.ReadingId, Is.EqualTo(request.ReadingId));
+            Assert.That(okResult.Value.InsulinName, Is.EqualTo("Fiasp"));
+            Assert.That(okResult.Value.InsulinUnits, Is.EqualTo(5));
+            Assert.That(okResult.Value.MealName, Is.EqualTo("Sugar on Toast"));
+            Assert.That(okResult.Value.ReadingGlucoseLevel, Is.EqualTo(5.0));
         });
     }
 }
