@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Services;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -12,6 +13,7 @@ namespace GlucoPilot.Identity.Tests.Services;
 internal sealed class TokenServiceTests
 {
     private Mock<IOptions<IdentityOptions>> _mockOptions;
+    private Mock<IRepository<RefreshToken>> _mockReopsitory;
     private TokenService _tokenService;
 
     [SetUp]
@@ -23,18 +25,21 @@ internal sealed class TokenServiceTests
             TokenSigningKey = Guid.NewGuid().ToString(),
             TokenExpirationInMinutes = 30
         });
-        _tokenService = new TokenService(_mockOptions.Object);
+        _mockReopsitory = new Mock<IRepository<RefreshToken>>();
+        _tokenService = new TokenService(_mockOptions.Object, _mockReopsitory.Object);
     }
 
     [Test]
     public void Constructor_Should_Throw_ArgumentNullExceptions()
     {
+        var nullOption = new Mock<IOptions<IdentityOptions>>();
+        nullOption.Setup(o => o.Value).Returns((IdentityOptions)null);
+        
         Assert.Multiple(() =>
         {
-            Assert.That(() => new TokenService(null!), Throws.ArgumentNullException);
-            var options = new Mock<IOptions<IdentityOptions>>();
-            options.Setup(o => o.Value).Returns((IdentityOptions)null);
-            Assert.That(() => new TokenService(options.Object), Throws.ArgumentNullException);
+            Assert.That(() => new TokenService(null!, _mockReopsitory.Object), Throws.ArgumentNullException);
+            Assert.That(() => new TokenService(nullOption.Object, _mockReopsitory.Object), Throws.ArgumentNullException);
+            Assert.That(() => new TokenService(_mockOptions.Object, null!), Throws.ArgumentNullException);
         });
     }
 
@@ -72,7 +77,7 @@ internal sealed class TokenServiceTests
             TokenSigningKey = "",
             TokenExpirationInMinutes = 30
         });
-        var tokenService = new TokenService(_mockOptions.Object);
+        var tokenService = new TokenService(_mockOptions.Object, _mockReopsitory.Object);
         var user = new Patient { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
 
         Assert.That(() => tokenService.GenerateJwtToken(user), Throws.ArgumentException);
