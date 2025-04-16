@@ -153,13 +153,14 @@ namespace GlucoPilot.Api.Endpoints.Treatments
         {
             var treatmentId = Guid.NewGuid();
 
-            _mockCurrentUser.Setup(x => x.IsAuthenticated()).Returns(false);
+            _mockCurrentUser.Setup(x => x.GetUserId()).Throws<UnauthorizedAccessException>();
 
             Assert.That(async () => await Endpoint.HandleAsync(
                 treatmentId,
                 _mockCurrentUser.Object,
                 _mockTreatmentRepository.Object,
-                CancellationToken.None), Throws.InstanceOf<NotFoundException>().With.Message.EqualTo("TREATMENT_NOT_FOUND"));
+                CancellationToken.None),
+                Throws.InstanceOf<UnauthorizedAccessException>());
         }
     }
 }
