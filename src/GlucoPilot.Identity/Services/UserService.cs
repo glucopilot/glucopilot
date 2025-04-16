@@ -194,7 +194,7 @@ public sealed class UserService : IUserService
 
         return user;
     }
-    
+
     public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
     {
         var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);

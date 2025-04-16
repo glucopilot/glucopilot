@@ -25,7 +25,7 @@ internal static class Endpoint
         CancellationToken cancellationToken)
     {
         var token = new RevokeTokenRequest
-            { Token = request.Token ?? httpContext.Request.Cookies[identityOptions.Value.RefreshTokenCookieName] };
+        { Token = request.Token ?? httpContext.Request.Cookies[identityOptions.Value.RefreshTokenCookieName] };
 
         if (await validator.ValidateAsync(token, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
@@ -39,7 +39,7 @@ internal static class Endpoint
         {
             throw new UnauthorizedException("UNAUTHORIZED");
         }
-        
+
         await userService.RevokeTokenAsync(token.Token, httpContext.IpAddress(), cancellationToken).ConfigureAwait(false);
         return TypedResults.NoContent();
     }
