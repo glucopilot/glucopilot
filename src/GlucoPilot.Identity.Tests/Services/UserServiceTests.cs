@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -68,7 +69,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -84,7 +85,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
@@ -100,7 +101,7 @@ internal sealed class UserServiceTests
         _options.RequireEmailVerification = true;
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -114,7 +115,7 @@ internal sealed class UserServiceTests
         _options.RequireEmailVerification = true;
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -127,7 +128,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new Patient
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
@@ -139,7 +140,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new CareGiver
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
@@ -169,7 +170,7 @@ internal sealed class UserServiceTests
     public async Task RegisterAsync_WithNewCareGiver_ReturnsRegisterResponse()
     {
         var patient = new Patient()
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(patient);
@@ -194,7 +195,7 @@ internal sealed class UserServiceTests
     {
         _options.RequireEmailVerification = true;
         var patient = new Patient()
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(patient);
@@ -245,8 +246,6 @@ internal sealed class UserServiceTests
             ConfirmPassword = "password",
             AcceptedTerms = true
         };
-        var user = new CareGiver
-        { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
@@ -279,7 +278,8 @@ internal sealed class UserServiceTests
         };
 
         _userRepository
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync((User)null);
 
         Assert.That(() => _sut.VerifyEmailAsync(request), Throws.TypeOf<UnauthorizedException>());
@@ -300,11 +300,107 @@ internal sealed class UserServiceTests
         };
 
         _userRepository
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         await _sut.VerifyEmailAsync(request, CancellationToken.None);
 
-        _userRepository.Verify(r => r.UpdateAsync(It.Is<User>(u => u.EmailVerificationToken == null && u.IsVerified), It.IsAny<CancellationToken>()), Times.Once);
+        _userRepository.Verify(
+            r => r.UpdateAsync(It.Is<User>(u => u.EmailVerificationToken == null && u.IsVerified),
+                It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task RefreshTokenAsync_With_Valid_Token_Returns_New_Token_Response()
+    {
+        var user = new Patient
+        {
+            Email = "existinguser@example.com",
+            PasswordHash = "password",
+            RefreshTokens =
+            [
+                new RefreshToken
+                    { Token = "valid-token", Expires = DateTime.UtcNow.AddMinutes(5), CreatedByIp = "127.0.0.1" }
+            ]
+        };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        var newRefreshToken = new RefreshToken
+        {
+            Token = "new-refresh-token",
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            CreatedByIp = "127.0.0.1",
+        };
+        _tokenService.Setup(t => t.GenerateRefreshToken("127.0.0.1")).Returns(newRefreshToken);
+        var newJwtToken = "new-token";
+        _tokenService.Setup(t => t.GenerateJwtToken(user)).Returns(newJwtToken);
+
+        var result = await _sut.RefreshTokenAsync("valid-token", "127.0.0.1", CancellationToken.None);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Token, Is.EqualTo(newJwtToken));
+        Assert.That(result.RefreshToken, Is.EqualTo(newRefreshToken.Token));
+    }
+
+    [Test]
+    public void RefreshTokenAsync_With_Null_Token_Throws_UnauthorizedException()
+    {
+        Assert.That(() => _sut.RefreshTokenAsync(null, "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
+    public void RefreshTokenAsync_With_Invalid_Token_Throws_UnauthorizedException()
+    {
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((User)null);
+
+        Assert.That(() => _sut.RefreshTokenAsync("invalid-token", "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
+    public void RefreshTokenAsync_With_Revoked_Token_Throws_UnauthorizedException()
+    {
+        var user = new Patient
+        {
+            Email = "test@nomail.com",
+            PasswordHash = "password",
+            RefreshTokens = new List<RefreshToken>
+            {
+                new RefreshToken { Token = "revoked-token", CreatedByIp = "127.0.0.1" }
+            }
+        };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        Assert.That(() => _sut.RefreshTokenAsync("revoked-token", "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
+    public async Task RefreshTokenAsync_With_Expired_Token_Throws_UnauthorizedException()
+    {
+        var user = new Patient
+        {
+            Email = "test@nomail.com",
+            PasswordHash = "password",
+            RefreshTokens =
+            [
+                new RefreshToken
+                    { Token = "expired-token", Expires = DateTime.UtcNow.AddMinutes(-5), CreatedByIp = "127.0.0.1" }
+            ]
+        };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        Assert.That(() => _sut.RefreshTokenAsync("expired-token", "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
     }
 }
