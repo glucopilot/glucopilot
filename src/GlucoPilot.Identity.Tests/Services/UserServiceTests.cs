@@ -76,8 +76,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.LoginAsync(request);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Token, Is.Not.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Empty); 
+        });
     }
 
     [Test]
@@ -91,8 +94,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.LoginAsync(request);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Token, Is.Not.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Empty); 
+        });
     }
 
     [Test]
@@ -162,8 +168,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Email, Is.EqualTo(request.Email));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Email, Is.EqualTo(request.Email)); 
+        });
     }
 
     [Test]
@@ -186,8 +195,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Email, Is.EqualTo(request.Email));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Email, Is.EqualTo(request.Email)); 
+        });
     }
 
     [Test]
@@ -340,9 +352,12 @@ internal sealed class UserServiceTests
 
         var result = await _sut.RefreshTokenAsync("valid-token", "127.0.0.1", CancellationToken.None);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Token, Is.EqualTo(newJwtToken));
-        Assert.That(result.RefreshToken, Is.EqualTo(newRefreshToken.Token));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.EqualTo(newJwtToken));
+            Assert.That(result.RefreshToken, Is.EqualTo(newRefreshToken.Token));
+        });
     }
 
     [Test]
@@ -402,5 +417,43 @@ internal sealed class UserServiceTests
 
         Assert.That(() => _sut.RefreshTokenAsync("expired-token", "127.0.0.1", CancellationToken.None),
             Throws.TypeOf<UnauthorizedException>());
+    }
+    
+    [Test]
+    public void RefreshTokenAsync_When_Refresh_Token_Is_Revoked_Revokes_Recursively()
+    {
+        var revokedToken = new RefreshToken
+        {
+            Token = "revoked-token",
+            Revoked = DateTimeOffset.Now.AddMinutes(-1),
+            ReplacedByToken = "child-token",
+            CreatedByIp = "127.0.0.1",
+        };
+
+        var childToken = new RefreshToken
+        {
+            Token = "child-token",
+            Expires = DateTimeOffset.Now.AddMinutes(1),
+            CreatedByIp = "127.0.0.1",
+        };
+
+        var user = new Patient
+        {
+            Email = "test@nomail.com",
+            PasswordHash = "password",
+            RefreshTokens = new List<RefreshToken> { revokedToken, childToken }
+        };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(async () => await _sut.RefreshTokenAsync("revoked-token", "127.0.0.1", CancellationToken.None),
+                Throws.TypeOf<UnauthorizedException>());
+
+            Assert.That(revokedToken.IsRevoked, Is.True);
+            Assert.That(childToken.IsRevoked, Is.True);
+        });
     }
 }
