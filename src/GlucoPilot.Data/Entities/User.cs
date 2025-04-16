@@ -64,6 +64,8 @@ public abstract class User
     /// Whether the user has verified their email address.
     /// </summary>
     public bool IsVerified { get; set; }
+    
+    public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>(); 
 
     /// <summary>
     /// A collection of patients that this user has access to.

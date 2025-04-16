@@ -31,6 +31,10 @@ internal static class IdentityEndpoints
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .AllowAnonymous();
+        group.MapPost("/refresh-token", RefreshToken.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .AllowAnonymous();
 
         return endpoints;
     }
