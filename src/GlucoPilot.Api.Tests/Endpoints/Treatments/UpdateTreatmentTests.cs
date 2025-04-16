@@ -81,7 +81,7 @@ public class UpdateTreatmentTests
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
-            
+
         _currentUserMock
             .Setup(c => c.GetUserId())
             .Returns(userId);
@@ -166,7 +166,7 @@ public class UpdateTreatmentTests
 
         _injectionRepositoryMock
             .Setup(r => r.Find(It.IsAny<Expression<Func<Injection, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(new [] { (Injection)null }.AsQueryable());
+            .Returns(new[] { (Injection)null }.AsQueryable());
 
         Assert.ThrowsAsync<NotFoundException>(async () =>
             await Endpoint.HandleAsync(
