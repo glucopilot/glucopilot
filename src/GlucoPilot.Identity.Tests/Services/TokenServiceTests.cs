@@ -1,6 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Linq.Expressions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Services;
@@ -38,7 +39,8 @@ internal sealed class TokenServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(() => new TokenService(null!, _mockReopsitory.Object), Throws.ArgumentNullException);
-            Assert.That(() => new TokenService(nullOption.Object, _mockReopsitory.Object), Throws.ArgumentNullException);
+            Assert.That(() => new TokenService(nullOption.Object, _mockReopsitory.Object),
+                Throws.ArgumentNullException);
             Assert.That(() => new TokenService(_mockOptions.Object, null!), Throws.ArgumentNullException);
         });
     }
@@ -81,5 +83,39 @@ internal sealed class TokenServiceTests
         var user = new Patient { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
 
         Assert.That(() => tokenService.GenerateJwtToken(user), Throws.ArgumentException);
+    }
+    
+    [Test]
+    public void GenerateRefreshToken_With_Valid_IpAddress_Returns_Valid_RefreshToken()
+    {
+        var options = Options.Create(new IdentityOptions { RefreshTokenExpirationInDays = 7 });
+        var repositoryMock = new Mock<IRepository<RefreshToken>>();
+        repositoryMock.Setup(r => r.Any(It.IsAny<Expression<Func<RefreshToken, bool>>>())).Returns(false);
+        var tokenService = new TokenService(options, repositoryMock.Object);
+
+        var refreshToken = tokenService.GenerateRefreshToken("127.0.0.1");
+
+        Assert.That(refreshToken, Is.Not.Null);
+        Assert.That(refreshToken.Token, Is.Not.Null.And.Not.Empty);
+        Assert.That(refreshToken.Expires, Is.GreaterThan(DateTimeOffset.UtcNow));
+        Assert.That(refreshToken.CreatedByIp, Is.EqualTo("127.0.0.1"));
+    }
+
+    [Test]
+    public void GenerateRefreshToken_With_Non_Unique_Token_Regenerates_Token()
+    {
+        var options = Options.Create(new IdentityOptions { RefreshTokenExpirationInDays = 7 });
+        var repositoryMock = new Mock<IRepository<RefreshToken>>();
+        repositoryMock.SetupSequence(r => r.Any(It.IsAny<Expression<Func<RefreshToken, bool>>>()))
+            .Returns(true)
+            .Returns(false);
+        var tokenService = new TokenService(options, repositoryMock.Object);
+
+        var refreshToken = tokenService.GenerateRefreshToken("127.0.0.1");
+
+        Assert.That(refreshToken, Is.Not.Null);
+        Assert.That(refreshToken.Token, Is.Not.Null.And.Not.Empty);
+        Assert.That(refreshToken.Expires, Is.GreaterThan(DateTimeOffset.UtcNow));
+        Assert.That(refreshToken.CreatedByIp, Is.EqualTo("127.0.0.1"));
     }
 }
