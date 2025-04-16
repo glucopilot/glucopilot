@@ -17,7 +17,7 @@ internal static class Endpoint
         [FromRoute] Guid id,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Treatment> treatmentRepository,
-        CancellationToken canellationToken)
+        CancellationToken cancellationToken)
     {
         var userId = currentUser.GetUserId();
 
