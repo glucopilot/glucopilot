@@ -53,7 +53,7 @@ internal sealed class TokenService : ITokenService
         var tokenIsUnique = !_refreshTokenRepository.Any(r => r.Token == refreshToken.Token);
         if (!tokenIsUnique)
         {
-            GenerateRefreshToken(ipAddress);
+            return GenerateRefreshToken(ipAddress);
         }
 
         return refreshToken;
