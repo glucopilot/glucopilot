@@ -34,7 +34,7 @@ internal sealed class TokenServiceTests
     {
         var nullOption = new Mock<IOptions<IdentityOptions>>();
         nullOption.Setup(o => o.Value).Returns((IdentityOptions)null);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(() => new TokenService(null!, _mockReopsitory.Object), Throws.ArgumentNullException);
