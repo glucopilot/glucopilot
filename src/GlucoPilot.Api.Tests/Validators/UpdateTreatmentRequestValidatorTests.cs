@@ -37,7 +37,7 @@ public class UpdateTreatmentRequestValidatorTests
                 x => x.ErrorMessage == "MealId cannot be null if all other properties are null."));
             Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
                 x => x.ErrorMessage == "ReadingId cannot be null if all other properties are null."));
-        });        
+        });
     }
 
     [Test]
