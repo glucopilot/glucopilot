@@ -69,7 +69,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -88,7 +88,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
@@ -107,7 +107,7 @@ internal sealed class UserServiceTests
         _options.RequireEmailVerification = true;
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -121,7 +121,7 @@ internal sealed class UserServiceTests
         _options.RequireEmailVerification = true;
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -134,7 +134,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new Patient
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
@@ -146,7 +146,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "wrongpassword" };
         var user = new CareGiver
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
@@ -179,7 +179,7 @@ internal sealed class UserServiceTests
     public async Task RegisterAsync_WithNewCareGiver_ReturnsRegisterResponse()
     {
         var patient = new Patient()
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(patient);
@@ -207,7 +207,7 @@ internal sealed class UserServiceTests
     {
         _options.RequireEmailVerification = true;
         var patient = new Patient()
-            { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(patient);
@@ -463,7 +463,7 @@ internal sealed class UserServiceTests
     {
         var token = "valid-token";
         var ipAddress = "127.0.0.1";
-        var refreshToken = new RefreshToken { Token = token, CreatedByIp = "127.0.0.1", Expires = DateTimeOffset.Now.AddMinutes(5)};
+        var refreshToken = new RefreshToken { Token = token, CreatedByIp = "127.0.0.1", Expires = DateTimeOffset.Now.AddMinutes(5) };
         var user = new Patient { Email = "test@nomail.com", PasswordHash = "password", RefreshTokens = new List<RefreshToken> { refreshToken } };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
@@ -500,7 +500,7 @@ internal sealed class UserServiceTests
     public void Revoke_Token_Async_With_Inactive_Token_Throws_UnauthorizedException()
     {
         var token = "inactive-token";
-        var refreshToken = new RefreshToken { Token = token, CreatedByIp = "127.0.0.1", Expires = DateTimeOffset.Now.AddMinutes(-5)};
+        var refreshToken = new RefreshToken { Token = token, CreatedByIp = "127.0.0.1", Expires = DateTimeOffset.Now.AddMinutes(-5) };
         var user = new Patient { Email = "test@nomail.com", PasswordHash = "password", RefreshTokens = new List<RefreshToken> { refreshToken } };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),

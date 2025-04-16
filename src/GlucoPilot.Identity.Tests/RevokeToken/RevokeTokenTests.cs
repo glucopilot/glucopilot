@@ -93,7 +93,7 @@ internal sealed class RevokeTokenTests
         currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         var userServiceMock = new Mock<IUserService>();
         userServiceMock.Setup(u => u.FindByRefreshTokenAsync("cookieToken", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Patient {  Id = userId, Email = "test@nomail.com", PasswordHash = "password" });
+            .ReturnsAsync(new Patient { Id = userId, Email = "test@nomail.com", PasswordHash = "password" });
         var identityOptions = Options.Create(new IdentityOptions { RefreshTokenCookieName = "RefreshToken" });
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers.Cookie = "RefreshToken=cookieToken";
