@@ -17,6 +17,11 @@ internal static class HttpContextExtensions
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
+#if DEBUG
+            Secure = false,
+#else
+            Secure = true,
+#endif
             Expires = DateTimeOffset.UtcNow.AddDays(options.RefreshTokenExpirationInDays),
         };
 
