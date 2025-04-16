@@ -84,7 +84,7 @@ internal sealed class TokenServiceTests
 
         Assert.That(() => tokenService.GenerateJwtToken(user), Throws.ArgumentException);
     }
-    
+
     [Test]
     public void GenerateRefreshToken_With_Valid_IpAddress_Returns_Valid_RefreshToken()
     {
