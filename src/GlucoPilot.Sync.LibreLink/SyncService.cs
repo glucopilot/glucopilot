@@ -9,6 +9,7 @@ using AuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using GlucoPilot.Data.Repository;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GlucoPilot.Sync.LibreLink;
 
@@ -54,6 +55,7 @@ public partial class SyncService : IHostedService, IDisposable
         {
             var patientRepository = scope.ServiceProvider.GetRequiredService<IRepository<Patient>>();
             var readingRepository = scope.ServiceProvider.GetRequiredService<IRepository<Reading>>();
+            var sensorRepository = scope.ServiceProvider.GetRequiredService<IRepository<Sensor>>();
             var patients = patientRepository.Find(p => p.PatientId != null && p.AuthTicket != null && p.GlucoseProvider == GlucoseProvider.LibreLink).ToList();
             foreach (var patient in patients)
             {
@@ -73,6 +75,28 @@ public partial class SyncService : IHostedService, IDisposable
                         LibreLinkGraphDataNotFound(patientId);
                         continue;
                     }
+
+                    var latestSensor = graph.Connection?.Sensor;
+                    if (latestSensor is null)
+                    {
+                        LibreLinkNoCurrentSensor(patientId);
+                        continue;
+                    }
+                    if (await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId))
+                    {
+                        continue;
+                    }
+
+                    var sensor = new Sensor
+                    {
+                        Created = DateTimeOffset.UtcNow,
+                        Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
+                        Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
+                        SensorId = latestSensor.SensorId,
+                        UserId = patient.Id,
+                    };
+
+                    await sensorRepository.AddAsync(sensor);
 
                     var lastReading = graph.Connection?.CurrentMeasurement;
                     if (lastReading is null)
@@ -154,4 +178,7 @@ public partial class SyncService : IHostedService, IDisposable
 
     [LoggerMessage(LogLevel.Error, "Failed to sync reading for patient {PatientId}")]
     private partial void LibreLinkSyncReadingFailed(string? patientId, Exception error);
+
+    [LoggerMessage(LogLevel.Information, "No current sensor for patient {PatientId}.")]
+    private partial void LibreLinkNoCurrentSensor(Guid patientId);
 }
