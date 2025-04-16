@@ -79,7 +79,7 @@ internal sealed class UserServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Token, Is.Not.Empty); 
+            Assert.That(result.Token, Is.Not.Empty);
         });
     }
 
@@ -97,7 +97,7 @@ internal sealed class UserServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Token, Is.Not.Empty); 
+            Assert.That(result.Token, Is.Not.Empty);
         });
     }
 
@@ -171,7 +171,7 @@ internal sealed class UserServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Email, Is.EqualTo(request.Email)); 
+            Assert.That(result.Email, Is.EqualTo(request.Email));
         });
     }
 
@@ -198,7 +198,7 @@ internal sealed class UserServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Email, Is.EqualTo(request.Email)); 
+            Assert.That(result.Email, Is.EqualTo(request.Email));
         });
     }
 
@@ -418,7 +418,7 @@ internal sealed class UserServiceTests
         Assert.That(() => _sut.RefreshTokenAsync("expired-token", "127.0.0.1", CancellationToken.None),
             Throws.TypeOf<UnauthorizedException>());
     }
-    
+
     [Test]
     public void RefreshTokenAsync_When_Refresh_Token_Is_Revoked_Revokes_Recursively()
     {
