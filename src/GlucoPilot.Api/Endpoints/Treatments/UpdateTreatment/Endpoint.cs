@@ -36,7 +36,7 @@ internal static class Endpoint
         var userId = currentUser.GetUserId();
 
         var treatment = await treatmentRepository
-            .FindOneAsync(t => t.Id == id && t.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken)
+            .FindOneAsync(t => t.Id == id && t.UserId == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken)
             .ConfigureAwait(false);
 
         if (treatment is null)
