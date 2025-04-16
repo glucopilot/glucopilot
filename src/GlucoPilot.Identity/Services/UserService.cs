@@ -178,7 +178,7 @@ public sealed class UserService : IUserService
         return response;
     }
 
-    private async Task<User> FindByRefreshTokenAsync(string? token, CancellationToken cancellationToken)
+    public async Task<User> FindByRefreshTokenAsync(string? token, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -193,6 +193,20 @@ public sealed class UserService : IUserService
         }
 
         return user;
+    }
+    
+    public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
+    {
+        var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);
+        var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+
+        if (!refreshToken.IsActive)
+        {
+            throw new UnauthorizedException("Invalid token");
+        }
+
+        RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
+        await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
     }
 
     private static void RevokeRefreshTokensRecursively(RefreshToken refreshToken, User user, string ipAddress, string reason)

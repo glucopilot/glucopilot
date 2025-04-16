@@ -35,6 +35,10 @@ internal static class IdentityEndpoints
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .AllowAnonymous();
+        group.MapPost("/revoke-token", RevokeToken.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
 
         return endpoints;
     }
