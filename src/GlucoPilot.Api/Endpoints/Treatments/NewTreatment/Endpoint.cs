@@ -32,9 +32,11 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
+        Injection? injection = null;
+
         if (request.InjectionId is not null)
         {
-            var injection = await injectionRepository
+            injection = await injectionRepository
                 .FindOneAsync(i => i.Id == request.InjectionId && i.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -44,9 +46,11 @@ internal static class Endpoint
             }
         }
 
+        Meal? meal = null;
+
         if (request.MealId is not null)
         {
-            var meal = await mealRepository
+            meal = await mealRepository
                 .FindOneAsync(m => m.Id == request.MealId && m.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken)
                 .ConfigureAwait(false);
             if (meal is null)
@@ -55,9 +59,11 @@ internal static class Endpoint
             }
         }
 
+        Reading? reading = null;
+
         if (request.ReadingId is not null)
         {
-            var reading = await readingRepository
+            reading = await readingRepository
                 .FindOneAsync(r => r.Id == request.ReadingId && r.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken)
                 .ConfigureAwait(false);
             if (reading is null)
@@ -70,9 +76,9 @@ internal static class Endpoint
         {
             UserId = userId,
             Created = request.Created ?? DateTimeOffset.UtcNow,
-            MealId = request.MealId,
-            InjectionId = request.InjectionId,
-            ReadingId = request.ReadingId,
+            MealId = meal?.Id,
+            InjectionId = injection?.Id,
+            ReadingId = reading?.Id,
         };
 
         await treatmentRepository.AddAsync(treatment, cancellationToken);
@@ -81,9 +87,13 @@ internal static class Endpoint
         {
             Id = treatment.Id,
             Created = treatment.Created,
-            MealId = treatment.MealId,
-            InjectionId = treatment.InjectionId,
-            ReadingId = treatment.ReadingId,
+            MealId = meal?.Id,
+            MealName = meal?.Name,
+            InjectionId = injection?.Id,
+            InsulinName = injection?.Insulin?.Name,
+            InsulinUnits = injection?.Units,
+            ReadingId = reading?.Id,
+            ReadingGlucoseLevel = reading?.GlucoseLevel,
         };
 
         return TypedResults.Ok(response);
