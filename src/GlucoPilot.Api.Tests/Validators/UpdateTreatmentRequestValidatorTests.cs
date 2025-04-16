@@ -28,9 +28,16 @@ public class UpdateTreatmentRequestValidatorTests
 
         var result = _validator.TestValidate(request);
 
-        Assert.That(result.IsValid, Is.False);
-        Assert.That(result.Errors, Has.One.Matches<FluentValidation.Results.ValidationFailure>(
-            x => x.ErrorMessage == "Either InjectionId, MealId or ReadingId must be provided."));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsValid, Is.False);
+            Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
+            x => x.ErrorMessage == "InjectionId cannot be null if all other properties are null."));
+            Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
+                x => x.ErrorMessage == "MealId cannot be null if all other properties are null."));
+            Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
+                x => x.ErrorMessage == "ReadingId cannot be null if all other properties are null."));
+        });        
     }
 
     [Test]

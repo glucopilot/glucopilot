@@ -13,8 +13,20 @@ namespace GlucoPilot.Api.Endpoints.Treatments.UpdateTreatment
         {
             public UpdateTreatmentRequestValidator()
             {
-                RuleFor(x => x).Must(x => x.InjectionId is not null || x.ReadingId is not null || x.MealId is not null)
-                    .WithMessage("Either InjectionId, MealId or ReadingId must be provided.");
+                When(x => x.InjectionId is null && x.ReadingId is null && x.MealId is null, () =>
+                {
+                    RuleFor(x => x.InjectionId)
+                        .NotNull()
+                        .WithMessage("InjectionId cannot be null if all other properties are null.");
+
+                    RuleFor(x => x.ReadingId)
+                        .NotNull()
+                        .WithMessage("ReadingId cannot be null if all other properties are null.");
+
+                    RuleFor(x => x.MealId)
+                        .NotNull()
+                        .WithMessage("MealId cannot be null if all other properties are null.");
+                });
             }
         }
     }
