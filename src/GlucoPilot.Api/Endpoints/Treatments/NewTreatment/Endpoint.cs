@@ -24,7 +24,7 @@ internal static class Endpoint
         [FromServices] IRepository<Injection> injectionRepository,
         CancellationToken cancellationToken)
     {
-        if (await validator.ValidateAsync(request).ConfigureAwait(false) is
+        if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());
@@ -75,7 +75,7 @@ internal static class Endpoint
             ReadingId = request.ReadingId,
         };
 
-        await treatmentRepository.AddAsync(treatment);
+        await treatmentRepository.AddAsync(treatment, cancellationToken);
 
         var response = new NewTreatmentResponse
         {
