@@ -55,8 +55,8 @@ public class RemoveSensorsEndpointTests
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         _sensorRepositoryMock
-            .Setup(x => x.GetAll(It.IsAny<FindOptions>()))
-            .Returns(Enumerable.Empty<Sensor>().AsQueryable());
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Sensor, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Sensor)null);
 
         Assert.That(async () => await Endpoint.HandleAsync(sensorId, _currentUserMock.Object, _sensorRepositoryMock.Object, CancellationToken.None),
             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("SENSOR_NOT_FOUND"));

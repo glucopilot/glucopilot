@@ -23,14 +23,14 @@ internal static class Endpoint
         var userId = currentUser.GetUserId();
 
         var sensor = await sensorRepository
-            .FindOneAsync(s => s.Id == id && s.UserId == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken);
+            .FindOneAsync(s => s.Id == id && s.UserId == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken).ConfigureAwait(false);
 
         if (sensor is null)
         {
             throw new NotFoundException("SENSOR_NOT_FOUND");
         }
 
-        await sensorRepository.DeleteAsync(sensor, cancellationToken);
+        await sensorRepository.DeleteAsync(sensor, cancellationToken).ConfigureAwait(false);
 
         return TypedResults.NoContent();
     }
