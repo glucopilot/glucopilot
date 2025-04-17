@@ -42,6 +42,7 @@ internal static class Endpoint
                 InsulinId = i.InsulinId,
                 InsulinName = i.Insulin!.Name,
                 Units = i.Units,
+                Updated = i.Updated,
             })
             .ToList();
 

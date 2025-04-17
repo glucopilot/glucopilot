@@ -46,6 +46,7 @@ internal static class Endpoint
 
         injection.Units = request.Units;
         injection.InsulinId = request.InsulinId;
+        injection.Updated = DateTimeOffset.UtcNow;
 
         injectionRepository.Update(injection);
 
@@ -55,6 +56,7 @@ internal static class Endpoint
             InsulinId = injection.InsulinId,
             InsulinName = insulin.Name,
             Units = injection.Units,
+            Updated = injection.Updated,
         };
 
         return TypedResults.Ok(response);

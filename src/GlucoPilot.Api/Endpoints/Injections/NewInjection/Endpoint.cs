@@ -52,6 +52,7 @@ internal static class Endpoint
             Created = newInjection.Created,
             InsulinId = newInjection.InsulinId,
             Units = newInjection.Units,
+            Updated = newInjection.Updated,
         };
 
         return TypedResults.Ok(response);

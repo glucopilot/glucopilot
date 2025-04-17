@@ -35,6 +35,11 @@ public class Injection
     public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
+    /// The date and time when the injection was last updated.
+    /// </summary>
+    public DateTimeOffset? Updated { get; set; }
+
+    /// <summary>
     /// The Id of the insulin used for the injection.
     /// </summary>
     public required Guid InsulinId { get; set; }
