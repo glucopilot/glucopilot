@@ -9,6 +9,8 @@ using AuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using GlucoPilot.Data.Repository;
+using Microsoft.IdentityModel.Tokens;
+using GlucoPilot.LibreLinkClient.Models;
 
 namespace GlucoPilot.Sync.LibreLink;
 
@@ -54,6 +56,7 @@ public partial class SyncService : IHostedService, IDisposable
         {
             var patientRepository = scope.ServiceProvider.GetRequiredService<IRepository<Patient>>();
             var readingRepository = scope.ServiceProvider.GetRequiredService<IRepository<Reading>>();
+            var sensorRepository = scope.ServiceProvider.GetRequiredService<IRepository<Sensor>>();
             var patients = patientRepository.Find(p => p.PatientId != null && p.AuthTicket != null && p.GlucoseProvider == GlucoseProvider.LibreLink).ToList();
             foreach (var patient in patients)
             {
@@ -74,27 +77,9 @@ public partial class SyncService : IHostedService, IDisposable
                         continue;
                     }
 
-                    var lastReading = graph.Connection?.CurrentMeasurement;
-                    if (lastReading is null)
-                    {
-                        LibreLinkNoCurrentReading(patientId);
-                        continue;
-                    }
+                    await SyncSensor(patient, patientId, graph, sensorRepository, cancellationToken).ConfigureAwait(false);
 
-                    var reading = new Reading
-                    {
-                        Created = NormaliseTimeStamp(DateTime.ParseExact(lastReading.FactoryTimeStamp, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)),
-                        GlucoseLevel = lastReading.Value,
-                        Direction = (ReadingDirection)lastReading.TrendArrow,
-                        UserId = patient.Id,
-                    };
-
-                    if (await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created))
-                    {
-                        continue;
-                    }
-
-                    await readingRepository.AddAsync(reading);
+                    await SyncReading(patient, patientId, graph, readingRepository, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -126,6 +111,51 @@ public partial class SyncService : IHostedService, IDisposable
         }
     }
 
+    private async Task SyncSensor(Patient patient, Guid patientId, GraphInformation graph, IRepository<Sensor> sensorRepository, CancellationToken cancellationToken)
+    {
+        var latestSensor = graph.Connection?.Sensor;
+        if (latestSensor is null)
+        {
+            LibreLinkNoCurrentSensor(patientId);
+        }
+        else if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId, cancellationToken))
+        {
+            var sensor = new Sensor
+            {
+                Created = DateTimeOffset.UtcNow,
+                Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
+                Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
+                SensorId = latestSensor.SensorId,
+                UserId = patient.Id,
+            };
+
+            await sensorRepository.AddAsync(sensor, cancellationToken);
+        }
+    }
+
+    private async Task SyncReading(Patient patient, Guid patientId, GraphInformation graph, IRepository<Reading> readingRepository, CancellationToken cancellationToken)
+    {
+        var lastReading = graph.Connection?.CurrentMeasurement;
+        if (lastReading is null)
+        {
+            LibreLinkNoCurrentReading(patientId);
+            return;
+        }
+
+        var reading = new Reading
+        {
+            Created = NormaliseTimeStamp(DateTime.ParseExact(lastReading.FactoryTimeStamp, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)),
+            GlucoseLevel = lastReading.Value,
+            Direction = (ReadingDirection)lastReading.TrendArrow,
+            UserId = patient.Id,
+        };
+        if (await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created, cancellationToken))
+        {
+            return;
+        }
+        await readingRepository.AddAsync(reading, cancellationToken);
+    }
+
     private static DateTime NormaliseTimeStamp(DateTime timeStamp)
     {
         return new DateTime(timeStamp.Year, timeStamp.Month, timeStamp.Day, timeStamp.Hour, timeStamp.Minute, timeStamp.Second, DateTimeKind.Utc);
@@ -154,4 +184,7 @@ public partial class SyncService : IHostedService, IDisposable
 
     [LoggerMessage(LogLevel.Error, "Failed to sync reading for patient {PatientId}")]
     private partial void LibreLinkSyncReadingFailed(string? patientId, Exception error);
+
+    [LoggerMessage(LogLevel.Information, "No current sensor for patient {PatientId}.")]
+    private partial void LibreLinkNoCurrentSensor(Guid patientId);
 }
