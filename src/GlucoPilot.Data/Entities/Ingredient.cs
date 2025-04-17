@@ -37,6 +37,11 @@ public class Ingredient
     public required DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
+    /// The date and time the ingredient was last updated.
+    /// </summary>
+    public DateTimeOffset? Updated { get; set; }
+
+    /// <summary>
     /// The name of the ingredient.
     /// </summary>
     public required string Name { get; set; }

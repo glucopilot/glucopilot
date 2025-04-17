@@ -43,6 +43,7 @@ internal static class Endpoint
         ingredient.Fat = request.Fat;
         ingredient.Calories = request.Calories;
         ingredient.Uom = request.Uom;
+        ingredient.Updated = DateTimeOffset.UtcNow;
 
         await ingredientRepository.UpdateAsync(ingredient, cancellationToken).ConfigureAwait(false);
 
@@ -54,7 +55,8 @@ internal static class Endpoint
             Protein = ingredient.Protein,
             Fat = ingredient.Fat,
             Calories = ingredient.Calories,
-            Uom = ingredient.Uom
+            Uom = ingredient.Uom,
+            Updated = ingredient.Updated
         };
 
         return TypedResults.Ok(response);

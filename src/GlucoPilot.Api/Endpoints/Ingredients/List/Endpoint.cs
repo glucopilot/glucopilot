@@ -44,6 +44,7 @@ internal static class Endpoint
                 Fat = i.Fat,
                 Calories = i.Calories,
                 Uom = i.Uom,
+                Updated = i.Updated
             })
             .ToList();
 

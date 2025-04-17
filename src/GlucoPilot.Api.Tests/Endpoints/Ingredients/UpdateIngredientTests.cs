@@ -103,6 +103,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Ingredients
                 Assert.That(okResult.Value.Fat, Is.EqualTo(request.Fat));
                 Assert.That(okResult.Value.Calories, Is.EqualTo(request.Calories));
                 Assert.That(okResult.Value.Uom, Is.EqualTo(request.Uom));
+                Assert.That(okResult.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
             });
 
         }
