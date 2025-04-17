@@ -182,14 +182,14 @@ public sealed class UserService : IUserService
     {
         if (string.IsNullOrWhiteSpace(token))
         {
-            throw new UnauthorizedException("Invalid token");
+            throw new UnauthorizedException("INVALID_TOKEN");
         }
 
         var user = await _repository.FindOneAsync(u => u.RefreshTokens.Any(t => t.Token == token), new FindOptions { IsAsNoTracking = false }, cancellationToken)
             .ConfigureAwait(false);
         if (user is null)
         {
-            throw new UnauthorizedException("Invalid token");
+            throw new UnauthorizedException("INVALID_TOKEN");
         }
 
         return user;
@@ -198,11 +198,15 @@ public sealed class UserService : IUserService
     public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
     {
         var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);
+        if (user is null)
+        {
+            throw new UnauthorizedException("INVALID_TOKEN");
+        }
         var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
         if (!refreshToken.IsActive)
         {
-            throw new UnauthorizedException("Invalid token");
+            throw new UnauthorizedException("INVALID_TOKEN");
         }
 
         RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");

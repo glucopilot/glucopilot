@@ -10,7 +10,7 @@ public sealed record RevokeTokenRequest
     {
         public Validator()
         {
-            RuleFor(x => x.Token).NotNull().WithMessage("TOKEN_REQUIRED").NotEmpty().WithMessage("TOKEN_REQURIED");
+            RuleFor(x => x.Token).NotNull().WithMessage("TOKEN_REQUIRED").NotEmpty().WithMessage("TOKEN_REQUIRED");
         }
     }
 }
