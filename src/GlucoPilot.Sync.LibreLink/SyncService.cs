@@ -128,7 +128,7 @@ public partial class SyncService : IHostedService, IDisposable
             SensorId = latestSensor.SensorId,
             UserId = patient.Id,
         };
-        if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId, cancellationToken))
+        if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId, cancellationToken).ConfigureAwait(false))
         {
             await sensorRepository.AddAsync(sensor, cancellationToken);
         }
@@ -150,7 +150,7 @@ public partial class SyncService : IHostedService, IDisposable
             Direction = (ReadingDirection)lastReading.TrendArrow,
             UserId = patient.Id,
         };
-        if (!await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created, cancellationToken))
+        if (!await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created, cancellationToken).ConfigureAwait(false))
         {
             await readingRepository.AddAsync(reading, cancellationToken);
         }
