@@ -88,7 +88,7 @@ public class ListSensorsEndpointTests
             Assert.That(response?.Sensors, Is.Empty);
             Assert.That(response?.NumberOfPages, Is.EqualTo(0));
         });
-        
+
     }
 
     [Test]
