@@ -10,6 +10,7 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using GlucoPilot.Data.Repository;
 using Microsoft.IdentityModel.Tokens;
+using GlucoPilot.LibreLinkClient.Models;
 
 namespace GlucoPilot.Sync.LibreLink;
 
@@ -76,48 +77,9 @@ public partial class SyncService : IHostedService, IDisposable
                         continue;
                     }
 
-                    var latestSensor = graph.Connection?.Sensor;
-                    if (latestSensor is null)
-                    {
-                        LibreLinkNoCurrentSensor(patientId);
-                    }
-                    if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId))
-                    {
-                        var sensor = new Sensor
-                        {
-                            Created = DateTimeOffset.UtcNow,
-                            Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
-                            Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
-                            SensorId = latestSensor.SensorId,
-                            UserId = patient.Id,
-                        };
+                    await SyncSensor(patient, patientId, graph, sensorRepository, cancellationToken).ConfigureAwait(false);
 
-                        await sensorRepository.AddAsync(sensor, cancellationToken);
-                    }
-
-
-
-                    var lastReading = graph.Connection?.CurrentMeasurement;
-                    if (lastReading is null)
-                    {
-                        LibreLinkNoCurrentReading(patientId);
-                        continue;
-                    }
-
-                    var reading = new Reading
-                    {
-                        Created = NormaliseTimeStamp(DateTime.ParseExact(lastReading.FactoryTimeStamp, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)),
-                        GlucoseLevel = lastReading.Value,
-                        Direction = (ReadingDirection)lastReading.TrendArrow,
-                        UserId = patient.Id,
-                    };
-
-                    if (await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created))
-                    {
-                        continue;
-                    }
-
-                    await readingRepository.AddAsync(reading, cancellationToken);
+                    await SyncReading(patient, patientId, graph, readingRepository, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -147,6 +109,51 @@ public partial class SyncService : IHostedService, IDisposable
         {
             LibreLinkSyncFailed(ex);
         }
+    }
+
+    private async Task SyncSensor(Patient patient, Guid patientId, GraphInformation graph, IRepository<Sensor> sensorRepository, CancellationToken cancellationToken)
+    {
+        var latestSensor = graph.Connection?.Sensor;
+        if (latestSensor is null)
+        {
+            LibreLinkNoCurrentSensor(patientId);
+        }
+        else if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId, cancellationToken))
+        {
+            var sensor = new Sensor
+            {
+                Created = DateTimeOffset.UtcNow,
+                Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
+                Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
+                SensorId = latestSensor.SensorId,
+                UserId = patient.Id,
+            };
+
+            await sensorRepository.AddAsync(sensor, cancellationToken);
+        }
+    }
+
+    private async Task SyncReading(Patient patient, Guid patientId, GraphInformation graph, IRepository<Reading> readingRepository, CancellationToken cancellationToken)
+    {
+        var lastReading = graph.Connection?.CurrentMeasurement;
+        if (lastReading is null)
+        {
+            LibreLinkNoCurrentReading(patientId);
+            return;
+        }
+
+        var reading = new Reading
+        {
+            Created = NormaliseTimeStamp(DateTime.ParseExact(lastReading.FactoryTimeStamp, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)),
+            GlucoseLevel = lastReading.Value,
+            Direction = (ReadingDirection)lastReading.TrendArrow,
+            UserId = patient.Id,
+        };
+        if (await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created, cancellationToken))
+        {
+            return;
+        }
+        await readingRepository.AddAsync(reading, cancellationToken);
     }
 
     private static DateTime NormaliseTimeStamp(DateTime timeStamp)
