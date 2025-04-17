@@ -12,5 +12,7 @@ namespace GlucoPilot.Api.Models
         public required int Fat { get; set; }
         public required int Calories { get; set; }
         public required UnitOfMeasurement Uom { get; set; }
+        public DateTimeOffset? Created { get; set; }
+        public DateTimeOffset? Updated { get; set; }
     }
 }

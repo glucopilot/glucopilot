@@ -9,6 +9,7 @@ public record GetMealResponse
     public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required DateTimeOffset Created { get; set; }
+    public DateTimeOffset? Updated { get; set; }
     public required int TotalCalories { get; set; }
     public required int TotalCarbs { get; set; }
     public required int TotalProtein { get; set; }
