@@ -44,6 +44,7 @@ internal static class Endpoint
                 Duration = i.Duration,
                 Scale = i.Scale,
                 PeakTime = i.PeakTime,
+                Updated = i.Updated
             })
             .ToList();
 

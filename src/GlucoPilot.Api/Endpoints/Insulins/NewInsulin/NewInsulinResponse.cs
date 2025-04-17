@@ -12,5 +12,6 @@ namespace GlucoPilot.Api.Endpoints.Insulins.NewInsulin
         public double? Scale { get; init; }
         public double? PeakTime { get; init; }
         public DateTimeOffset Created { get; init; }
+        public DateTimeOffset? Updated { get; init; }
     }
 }

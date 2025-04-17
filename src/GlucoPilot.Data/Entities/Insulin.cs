@@ -37,6 +37,11 @@ public class Insulin
     public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
+    /// The date and time the insulin was last updated.
+    /// </summary>
+    public DateTimeOffset? Updated { get; set; }
+
+    /// <summary>
     /// The name of the insulin.
     /// </summary>
     public required string Name { get; set; }

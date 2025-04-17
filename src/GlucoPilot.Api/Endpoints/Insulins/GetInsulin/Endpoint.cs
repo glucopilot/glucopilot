@@ -36,7 +36,8 @@ internal static class Endpoint
             Type = insulin.Type,
             Duration = insulin.Duration,
             Scale = insulin.Scale,
-            PeakTime = insulin.PeakTime
+            PeakTime = insulin.PeakTime,
+            Updated = insulin.Updated
         };
 
         return TypedResults.Ok(response);
