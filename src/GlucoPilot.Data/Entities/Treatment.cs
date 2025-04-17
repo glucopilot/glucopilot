@@ -36,6 +36,8 @@ public class Treatment
     /// </summary>
     public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
+    public DateTimeOffset? Updated { get; set; }
+
     /// <summary>
     /// The type of treatment, this can be a meal, an injection or a correction.
     /// </summary>

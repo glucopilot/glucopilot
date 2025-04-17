@@ -12,4 +12,5 @@ public sealed record UpdateTreatmentResponse
     public double? InsulinUnits { get; init; }
     public Guid? ReadingId { get; init; }
     public double? ReadingGlucoseLevel { get; init; }
+    public DateTimeOffset? Updated { get; init; }
 }

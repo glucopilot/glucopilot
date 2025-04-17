@@ -7,6 +7,7 @@ public record GetTreatmentResponse
 {
     public required Guid Id { get; init; }
     public required DateTimeOffset Created { get; init; }
+    public DateTimeOffset? Updated { get; init; }
     public required TreatmentType Type { get; init; }
     public GetTreatmentMealResponse? Meal { get; init; }
     public GetTreatmentInjectionResponse? Injection { get; init; }
