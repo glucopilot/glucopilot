@@ -22,7 +22,7 @@ public class Sensor
     /// <summary>
     /// The id of the user who created the sensor.
     /// </summary>
-    public Guid? UserId { get; set; }
+    public required Guid UserId { get; set; }
 
     /// <summary>
     /// The user who created the sensor.
