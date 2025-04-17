@@ -80,23 +80,22 @@ public partial class SyncService : IHostedService, IDisposable
                     if (latestSensor is null)
                     {
                         LibreLinkNoCurrentSensor(patientId);
-                        continue;
                     }
-                    if (await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId))
+                    if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId))
                     {
-                        continue;
+                        var sensor = new Sensor
+                        {
+                            Created = DateTimeOffset.UtcNow,
+                            Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
+                            Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
+                            SensorId = latestSensor.SensorId,
+                            UserId = patient.Id,
+                        };
+
+                        await sensorRepository.AddAsync(sensor, cancellationToken);
                     }
 
-                    var sensor = new Sensor
-                    {
-                        Created = DateTimeOffset.UtcNow,
-                        Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
-                        Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
-                        SensorId = latestSensor.SensorId,
-                        UserId = patient.Id,
-                    };
-
-                    await sensorRepository.AddAsync(sensor);
+                    
 
                     var lastReading = graph.Connection?.CurrentMeasurement;
                     if (lastReading is null)
@@ -118,7 +117,7 @@ public partial class SyncService : IHostedService, IDisposable
                         continue;
                     }
 
-                    await readingRepository.AddAsync(reading);
+                    await readingRepository.AddAsync(reading, cancellationToken);
                 }
                 catch (Exception ex)
                 {

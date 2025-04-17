@@ -18,6 +18,7 @@ public class SyncServiceTests
     private SyncService _sut;
     private Mock<IRepository<Patient>> _patientRepository;
     private Mock<IRepository<Reading>> _readingRepository;
+    private Mock<IRepository<Sensor>> _sensorRepository;
     private Mock<IServiceScopeFactory> _scopeFactory;
     private Mock<ILibreLinkClient> _libreLinkClient;
     private Mock<ILogger<SyncService>> _logger;
@@ -27,6 +28,7 @@ public class SyncServiceTests
     {
         _patientRepository = new Mock<IRepository<Patient>>();
         _readingRepository = new Mock<IRepository<Reading>>();
+        _sensorRepository = new Mock<IRepository<Sensor>>();
         _scopeFactory = new Mock<IServiceScopeFactory>();
         _scopeFactory
             .Setup(x => x.CreateScope())
@@ -36,6 +38,7 @@ public class SyncServiceTests
                 var serviceProvider = new Mock<IServiceProvider>();
                 serviceProvider.Setup(x => x.GetService(typeof(IRepository<Patient>))).Returns(_patientRepository.Object);
                 serviceProvider.Setup(x => x.GetService(typeof(IRepository<Reading>))).Returns(_readingRepository.Object);
+                serviceProvider.Setup(x => x.GetService(typeof(IRepository<Sensor>))).Returns(_sensorRepository.Object);
                 serviceProvider.Setup(x => x.GetService(typeof(ILibreLinkClient))).Returns(_libreLinkClient.Object);
                 scope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
                 return scope.Object;
@@ -173,6 +176,11 @@ public class SyncServiceTests
             Connection = new ConnectionData
             {
                 CurrentMeasurement = null,
+                Sensor = new SensorData
+                {
+                    SensorId = Guid.NewGuid().ToString(),
+                    Started = 12345678,
+                }
             }
         };
         _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
@@ -215,6 +223,11 @@ public class SyncServiceTests
                     TimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
                     Value = 5.0,
                     TrendArrow = 1
+                },
+                Sensor = new SensorData
+                {
+                    SensorId = Guid.NewGuid().ToString(),
+                    Started = 12345678,
                 }
             }
         };
@@ -255,6 +268,11 @@ public class SyncServiceTests
                     TimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
                     Value = 5.0,
                     TrendArrow = 1
+                },
+                Sensor = new SensorData
+                {
+                    SensorId = Guid.NewGuid().ToString(),
+                    Started = 12345678,
                 }
             }
         };
@@ -301,5 +319,129 @@ public class SyncServiceTests
                 exception,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
+    }
+
+    [Test]
+    public async Task DoWorkAsync_Logs_LibreLinkNoCurrentSensor()
+    {
+        var mockPatients = new List<Patient>
+        {
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },
+        };
+
+        _patientRepository
+            .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns((Expression<Func<Patient, bool>> predicate, FindOptions? _) =>
+                mockPatients.AsQueryable());
+
+        _libreLinkClient.Setup(x => x.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var graphInformation = new GraphInformation
+        {
+            Connection = new ConnectionData
+            {
+                CurrentMeasurement = new GraphData
+                {
+                    FactoryTimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
+                    TimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
+                    Value = 5.0,
+                    TrendArrow = 1
+                },
+                Sensor = null,
+            }
+        };
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
+
+        await _sut.DoWorkAsync(CancellationToken.None);
+        _logger.Verify(
+            x => x.Log(
+                LogLevel.Information,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString() == $"No current sensor for patient {mockPatients[0].PatientId}."),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task DoWorkAsync_Adds_New_Senser()
+    {
+        var mockPatients = new List<Patient>
+        {
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },        };
+
+        _patientRepository
+            .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns((Expression<Func<Patient, bool>> predicate, FindOptions? _) =>
+                mockPatients.AsQueryable());
+
+        _libreLinkClient.Setup(x => x.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var graphInformation = new GraphInformation
+        {
+            Connection = new ConnectionData
+            {
+                CurrentMeasurement = new GraphData
+                {
+                    FactoryTimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
+                    TimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
+                    Value = 5.0,
+                    TrendArrow = 1
+                },
+                Sensor = new SensorData
+                {
+                    SensorId = Guid.NewGuid().ToString(),
+                    Started = 12345678,
+                }
+            }
+        };
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
+
+        await _sut.DoWorkAsync(CancellationToken.None);
+
+        _sensorRepository.Verify(x => x.AddAsync(It.IsAny<Sensor>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task DoWorkAsync_Does_Not_Add_New_Senser_If_Exists()
+    {
+        var mockPatients = new List<Patient>
+        {
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },        };
+
+        _patientRepository
+            .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns((Expression<Func<Patient, bool>> predicate, FindOptions? _) =>
+                mockPatients.AsQueryable());
+
+        _libreLinkClient.Setup(x => x.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var graphInformation = new GraphInformation
+        {
+            Connection = new ConnectionData
+            {
+                CurrentMeasurement = new GraphData
+                {
+                    FactoryTimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
+                    TimeStamp = DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"),
+                    Value = 5.0,
+                    TrendArrow = 1
+                },
+                Sensor = new SensorData
+                {
+                    SensorId = Guid.NewGuid().ToString(),
+                    Started = 12345678,
+                }
+            }
+        };
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
+        _sensorRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Sensor, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+        await _sut.DoWorkAsync(CancellationToken.None);
+
+        _sensorRepository.Verify(x => x.AddAsync(It.IsAny<Sensor>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }
