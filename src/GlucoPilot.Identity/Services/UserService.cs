@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -142,6 +143,89 @@ public sealed class UserService : IUserService
         };
     }
 
+    public async Task<TokenResponse> RefreshTokenAsync(string? token, string ipAddress, CancellationToken cancellationToken)
+    {
+        var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);
+        var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
+
+        if (refreshToken?.IsRevoked ?? false)
+        {
+            RevokeRefreshTokensRecursively(refreshToken, user, ipAddress,
+                $"Attempted use of revoked ancestor token: {token}");
+            await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (!(refreshToken?.IsActive ?? false))
+        {
+            throw new UnauthorizedException("REFRESH_TOKEN_INCORRECT");
+        }
+
+        var newRefreshToken = _tokenService.GenerateRefreshToken(ipAddress);
+        RevokeRefreshToken(refreshToken, ipAddress, "Replaced by new token", newRefreshToken.Token);
+        user.RefreshTokens.Add(newRefreshToken);
+
+        RemoveOldRefreshTokens(user);
+
+        await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
+
+        var jwtToken = _tokenService.GenerateJwtToken(user);
+        var response = new TokenResponse()
+        {
+            Token = jwtToken,
+            RefreshToken = newRefreshToken.Token,
+        };
+
+        return response;
+    }
+
+    private async Task<User> FindByRefreshTokenAsync(string? token, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            throw new UnauthorizedException("Invalid token");
+        }
+
+        var user = await _repository.FindOneAsync(u => u.RefreshTokens.Any(t => t.Token == token), new FindOptions { IsAsNoTracking = false }, cancellationToken)
+            .ConfigureAwait(false);
+        if (user is null)
+        {
+            throw new UnauthorizedException("Invalid token");
+        }
+
+        return user;
+    }
+
+    private static void RevokeRefreshTokensRecursively(RefreshToken refreshToken, User user, string ipAddress, string reason)
+    {
+        if (string.IsNullOrEmpty(refreshToken.ReplacedByToken))
+        {
+            return;
+        }
+
+        var child = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken.ReplacedByToken);
+        if (child is null)
+        {
+            return;
+        }
+
+        if (child.IsActive)
+        {
+            RevokeRefreshToken(child, ipAddress, reason);
+        }
+        else
+        {
+            RevokeRefreshTokensRecursively(child, user, ipAddress, reason);
+        }
+    }
+
+    private static void RevokeRefreshToken(RefreshToken refreshToken, string ipAddress, string? reason = null, string? replacedByToken = null)
+    {
+        refreshToken.Revoked = DateTime.UtcNow;
+        refreshToken.RevokedByIp = ipAddress;
+        refreshToken.RevokedReason = reason;
+        refreshToken.ReplacedByToken = replacedByToken;
+    }
+
     private async Task<string> GenerateVerificationTokenAsync(CancellationToken cancellationToken)
     {
         var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
@@ -177,5 +261,11 @@ public sealed class UserService : IUserService
         user.IsVerified = true;
 
         await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
+    }
+
+    private void RemoveOldRefreshTokens(User user)
+    {
+        user.RefreshTokens.RemoveAll(x =>
+            !x.IsActive && x.Created.AddDays(_options.RefreshTokenExpirationInDays) <= DateTime.UtcNow);
     }
 }

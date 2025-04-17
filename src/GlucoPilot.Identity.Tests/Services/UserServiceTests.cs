@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -75,8 +76,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.LoginAsync(request);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Token, Is.Not.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Empty);
+        });
     }
 
     [Test]
@@ -90,8 +94,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.LoginAsync(request);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Token, Is.Not.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Empty);
+        });
     }
 
     [Test]
@@ -161,8 +168,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Email, Is.EqualTo(request.Email));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Email, Is.EqualTo(request.Email));
+        });
     }
 
     [Test]
@@ -185,8 +195,11 @@ internal sealed class UserServiceTests
 
         var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Email, Is.EqualTo(request.Email));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Email, Is.EqualTo(request.Email));
+        });
     }
 
     [Test]
@@ -245,8 +258,6 @@ internal sealed class UserServiceTests
             ConfirmPassword = "password",
             AcceptedTerms = true
         };
-        var user = new CareGiver
-        { Email = "existinguser@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
         _userRepository.Setup(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
@@ -279,7 +290,8 @@ internal sealed class UserServiceTests
         };
 
         _userRepository
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync((User)null);
 
         Assert.That(() => _sut.VerifyEmailAsync(request), Throws.TypeOf<UnauthorizedException>());
@@ -300,11 +312,148 @@ internal sealed class UserServiceTests
         };
 
         _userRepository
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         await _sut.VerifyEmailAsync(request, CancellationToken.None);
 
-        _userRepository.Verify(r => r.UpdateAsync(It.Is<User>(u => u.EmailVerificationToken == null && u.IsVerified), It.IsAny<CancellationToken>()), Times.Once);
+        _userRepository.Verify(
+            r => r.UpdateAsync(It.Is<User>(u => u.EmailVerificationToken == null && u.IsVerified),
+                It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task RefreshTokenAsync_With_Valid_Token_Returns_New_Token_Response()
+    {
+        var user = new Patient
+        {
+            Email = "existinguser@example.com",
+            PasswordHash = "password",
+            RefreshTokens =
+            [
+                new RefreshToken
+                    { Token = "valid-token", Expires = DateTime.UtcNow.AddMinutes(5), CreatedByIp = "127.0.0.1" }
+            ]
+        };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        var newRefreshToken = new RefreshToken
+        {
+            Token = "new-refresh-token",
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            CreatedByIp = "127.0.0.1",
+        };
+        _tokenService.Setup(t => t.GenerateRefreshToken("127.0.0.1")).Returns(newRefreshToken);
+        var newJwtToken = "new-token";
+        _tokenService.Setup(t => t.GenerateJwtToken(user)).Returns(newJwtToken);
+
+        var result = await _sut.RefreshTokenAsync("valid-token", "127.0.0.1", CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.EqualTo(newJwtToken));
+            Assert.That(result.RefreshToken, Is.EqualTo(newRefreshToken.Token));
+        });
+    }
+
+    [Test]
+    public void RefreshTokenAsync_With_Null_Token_Throws_UnauthorizedException()
+    {
+        Assert.That(() => _sut.RefreshTokenAsync(null, "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
+    public void RefreshTokenAsync_With_Invalid_Token_Throws_UnauthorizedException()
+    {
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((User)null);
+
+        Assert.That(() => _sut.RefreshTokenAsync("invalid-token", "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
+    public void RefreshTokenAsync_With_Revoked_Token_Throws_UnauthorizedException()
+    {
+        var user = new Patient
+        {
+            Email = "test@nomail.com",
+            PasswordHash = "password",
+            RefreshTokens = new List<RefreshToken>
+            {
+                new RefreshToken { Token = "revoked-token", CreatedByIp = "127.0.0.1" }
+            }
+        };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        Assert.That(() => _sut.RefreshTokenAsync("revoked-token", "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
+    public async Task RefreshTokenAsync_With_Expired_Token_Throws_UnauthorizedException()
+    {
+        var user = new Patient
+        {
+            Email = "test@nomail.com",
+            PasswordHash = "password",
+            RefreshTokens =
+            [
+                new RefreshToken
+                    { Token = "expired-token", Expires = DateTime.UtcNow.AddMinutes(-5), CreatedByIp = "127.0.0.1" }
+            ]
+        };
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        Assert.That(() => _sut.RefreshTokenAsync("expired-token", "127.0.0.1", CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>());
+    }
+
+    [Test]
+    public void RefreshTokenAsync_When_Refresh_Token_Is_Revoked_Revokes_Recursively()
+    {
+        var revokedToken = new RefreshToken
+        {
+            Token = "revoked-token",
+            Revoked = DateTimeOffset.Now.AddMinutes(-1),
+            ReplacedByToken = "child-token",
+            CreatedByIp = "127.0.0.1",
+        };
+
+        var childToken = new RefreshToken
+        {
+            Token = "child-token",
+            Expires = DateTimeOffset.Now.AddMinutes(1),
+            CreatedByIp = "127.0.0.1",
+        };
+
+        var user = new Patient
+        {
+            Email = "test@nomail.com",
+            PasswordHash = "password",
+            RefreshTokens = new List<RefreshToken> { revokedToken, childToken }
+        };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(async () => await _sut.RefreshTokenAsync("revoked-token", "127.0.0.1", CancellationToken.None),
+                Throws.TypeOf<UnauthorizedException>());
+
+            Assert.That(revokedToken.IsRevoked, Is.True);
+            Assert.That(childToken.IsRevoked, Is.True);
+        });
     }
 }
