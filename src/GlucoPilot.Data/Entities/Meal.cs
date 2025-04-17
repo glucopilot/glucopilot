@@ -41,6 +41,9 @@ public class Meal
     /// </summary>
     public required DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
+    /// <summary>
+    /// The date and time the meal was last updated.
+    /// </summary>
     public DateTimeOffset? Updated { get; set; }
 
     /// <summary>
