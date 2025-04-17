@@ -51,7 +51,7 @@ internal sealed class EndpointTests
         var request = new LoginRequest { Email = "", Password = "" };
         var validationResult = new FluentValidation.Results.ValidationResult(new[]
         {
-            new FluentValidation.Results.ValidationFailure("Username", "Username is required"),
+            new FluentValidation.Results.ValidationFailure("Email", "Email is required"),
             new FluentValidation.Results.ValidationFailure("Password", "Password is required")
         });
 
@@ -62,7 +62,7 @@ internal sealed class EndpointTests
 
         Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
         var problemDetails = ((ValidationProblem)result.Result).ProblemDetails;
-        Assert.That(problemDetails.Errors.ContainsKey("Username"), Is.True);
+        Assert.That(problemDetails.Errors.ContainsKey("Email"), Is.True);
         Assert.That(problemDetails.Errors.ContainsKey("Password"), Is.True);
     }
 
