@@ -178,21 +178,39 @@ public sealed class UserService : IUserService
         return response;
     }
 
-    private async Task<User> FindByRefreshTokenAsync(string? token, CancellationToken cancellationToken)
+    public async Task<User> FindByRefreshTokenAsync(string? token, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(token))
         {
-            throw new UnauthorizedException("Invalid token");
+            throw new UnauthorizedException("INVALID_TOKEN");
         }
 
         var user = await _repository.FindOneAsync(u => u.RefreshTokens.Any(t => t.Token == token), new FindOptions { IsAsNoTracking = false }, cancellationToken)
             .ConfigureAwait(false);
         if (user is null)
         {
-            throw new UnauthorizedException("Invalid token");
+            throw new UnauthorizedException("INVALID_TOKEN");
         }
 
         return user;
+    }
+
+    public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
+    {
+        var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);
+        if (user is null)
+        {
+            throw new UnauthorizedException("INVALID_TOKEN");
+        }
+        var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+
+        if (!refreshToken.IsActive)
+        {
+            throw new UnauthorizedException("INVALID_TOKEN");
+        }
+
+        RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
+        await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
     }
 
     private static void RevokeRefreshTokensRecursively(RefreshToken refreshToken, User user, string ipAddress, string reason)
