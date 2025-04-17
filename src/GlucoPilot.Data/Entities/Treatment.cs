@@ -36,6 +36,9 @@ public class Treatment
     /// </summary>
     public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
+    /// <summary>
+    /// The date and time when the treatment was last updated.
+    /// </summary>
     public DateTimeOffset? Updated { get; set; }
 
     /// <summary>
