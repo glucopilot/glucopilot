@@ -42,6 +42,7 @@ internal static class Endpoint
         insulin.Duration = request.Duration;
         insulin.Scale = request.Scale;
         insulin.PeakTime = request.PeakTime;
+        insulin.Updated = DateTimeOffset.UtcNow;
 
         await insulinRepository.UpdateAsync(insulin, cancellationToken).ConfigureAwait(false);
 
@@ -52,7 +53,8 @@ internal static class Endpoint
             Type = insulin.Type,
             Duration = insulin.Duration,
             Scale = insulin.Scale,
-            PeakTime = insulin.PeakTime
+            PeakTime = insulin.PeakTime,
+            Updated = insulin.Updated
         };
 
         return TypedResults.Ok(response);

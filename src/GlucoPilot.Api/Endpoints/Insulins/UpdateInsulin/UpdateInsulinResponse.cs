@@ -11,4 +11,5 @@ public record UpdateInsulinResponse
     public double? Duration { get; set; }
     public double? Scale { get; set; }
     public double? PeakTime { get; set; }
+    public DateTimeOffset? Updated { get; set; }
 }

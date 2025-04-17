@@ -50,6 +50,7 @@ internal static class Endpoint
             Scale = request.Scale,
             PeakTime = request.PeakTime,
             Created = DateTimeOffset.UtcNow,
+            Updated = insulin.Updated,
         };
 
         return TypedResults.Created($"/api/v1/insulins/{insulin.Id}", response);
