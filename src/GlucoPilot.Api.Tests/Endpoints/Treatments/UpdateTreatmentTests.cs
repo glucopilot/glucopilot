@@ -223,7 +223,7 @@ public class UpdateTreatmentTests
             Assert.That(okResult.Value, Is.Not.Null);
             Assert.That(okResult.Value.Id, Is.EqualTo(id));
             Assert.That(okResult.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
-        });        
+        });
     }
 
     [Test]
