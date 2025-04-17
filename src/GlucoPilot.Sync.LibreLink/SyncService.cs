@@ -130,7 +130,7 @@ public partial class SyncService : IHostedService, IDisposable
         };
         if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId, cancellationToken).ConfigureAwait(false))
         {
-            await sensorRepository.AddAsync(sensor, cancellationToken);
+            await sensorRepository.AddAsync(sensor, cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -152,7 +152,7 @@ public partial class SyncService : IHostedService, IDisposable
         };
         if (!await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created, cancellationToken).ConfigureAwait(false))
         {
-            await readingRepository.AddAsync(reading, cancellationToken);
+            await readingRepository.AddAsync(reading, cancellationToken).ConfigureAwait(false);
         }
     }
 
