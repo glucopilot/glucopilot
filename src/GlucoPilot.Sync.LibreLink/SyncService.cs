@@ -95,7 +95,7 @@ public partial class SyncService : IHostedService, IDisposable
                         await sensorRepository.AddAsync(sensor, cancellationToken);
                     }
 
-                    
+
 
                     var lastReading = graph.Connection?.CurrentMeasurement;
                     if (lastReading is null)
