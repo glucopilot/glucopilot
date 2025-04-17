@@ -117,18 +117,19 @@ public partial class SyncService : IHostedService, IDisposable
         if (latestSensor is null)
         {
             LibreLinkNoCurrentSensor(patientId);
+            return;
         }
-        else if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId, cancellationToken))
-        {
-            var sensor = new Sensor
-            {
-                Created = DateTimeOffset.UtcNow,
-                Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
-                Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
-                SensorId = latestSensor.SensorId,
-                UserId = patient.Id,
-            };
 
+        var sensor = new Sensor
+        {
+            Created = DateTimeOffset.UtcNow,
+            Started = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started),
+            Expires = DateTimeOffset.FromUnixTimeSeconds(latestSensor.Started).AddDays(14),
+            SensorId = latestSensor.SensorId,
+            UserId = patient.Id,
+        };
+        if (!await sensorRepository.AnyAsync(s => s.UserId == patient.Id && s.SensorId == latestSensor.SensorId, cancellationToken))
+        {
             await sensorRepository.AddAsync(sensor, cancellationToken);
         }
     }
@@ -149,11 +150,10 @@ public partial class SyncService : IHostedService, IDisposable
             Direction = (ReadingDirection)lastReading.TrendArrow,
             UserId = patient.Id,
         };
-        if (await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created, cancellationToken))
+        if (!await readingRepository.AnyAsync(r => r.UserId == reading.UserId && r.Created == reading.Created, cancellationToken))
         {
-            return;
+            await readingRepository.AddAsync(reading, cancellationToken);
         }
-        await readingRepository.AddAsync(reading, cancellationToken);
     }
 
     private static DateTime NormaliseTimeStamp(DateTime timeStamp)
