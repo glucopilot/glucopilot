@@ -14,7 +14,7 @@ namespace GlucoPilot.Api.Endpoints.Sensors.RemoveSensor;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<NoContent, NotFound<ErrorResult>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
+    internal static async Task<Results<NoContent, NotFound<ErrorResult>, UnauthorizedHttpResult>> HandleAsync(
         [FromRoute] Guid id,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Sensor> sensorRepository,
