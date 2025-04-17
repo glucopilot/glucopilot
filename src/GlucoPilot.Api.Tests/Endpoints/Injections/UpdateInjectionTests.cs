@@ -134,5 +134,6 @@ public class UpdateInsulinTests
         Assert.That(okResult.Value.InsulinId, Is.EqualTo(request.InsulinId));
         Assert.That(okResult.Value.InsulinName, Is.EqualTo("Test Insulin"));
         Assert.That(okResult.Value.Units, Is.EqualTo(1));
+        Assert.That(okResult.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
     }
 }

@@ -9,4 +9,5 @@ public record GetInjectionResponse
     public required Guid InsulinId { get; set; }
     public required string InsulinName { get; set; }
     public required double Units { get; set; }
+    public DateTimeOffset? Updated { get; set; }
 }
