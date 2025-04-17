@@ -33,7 +33,7 @@ public sealed class UserService : IUserService
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
     }
 
-    public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
+    public async Task<LoginResponse> LoginAsync(LoginRequest request, string ipAddress, CancellationToken cancellationToken = default)
     {
         var user = await _repository.FindOneAsync(u => u.Email == request.Email,
             new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true },
@@ -46,6 +46,13 @@ public sealed class UserService : IUserService
         }
 
         var token = _tokenService.GenerateJwtToken(user);
+        var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
+        user.RefreshTokens.Add(refreshToken);
+        
+        RemoveOldRefreshTokens(user);
+        
+        await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
+        
         var response = new LoginResponse
         {
             Token = token,
@@ -53,6 +60,7 @@ public sealed class UserService : IUserService
             Email = user.Email,
             IsVerified = user.IsVerified,
             GlucoseProvider = user is Patient patient ? (GlucoseProvider)patient.GlucoseProvider : null,
+            RefreshToken = refreshToken.Token,
         };
         return response;
     }

@@ -74,7 +74,9 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        var result = await _sut.LoginAsync(request);
+        _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
+        
+        var result = await _sut.LoginAsync(request, "127.0.0.1");
 
         Assert.Multiple(() =>
         {
@@ -85,19 +87,23 @@ internal sealed class UserServiceTests
 
     [Test]
     public async Task LoginAsync_WithValidCareGiverCredentials_ReturnsLoginResponse()
-    {
+    {        _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
+
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), Created = DateTimeOffset.UtcNow, RefreshTokens = new List<RefreshToken>() };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        var result = await _sut.LoginAsync(request);
+        _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
+
+        var result = await _sut.LoginAsync(request, "127.0.0.1");
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Token, Is.Not.Empty);
+            Assert.That(result.RefreshToken, Is.EqualTo("refresh_token"));
         });
     }
 
@@ -112,7 +118,7 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
+        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<UnauthorizedException>());
     }
 
     [Test]
@@ -126,7 +132,7 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
+        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<UnauthorizedException>());
     }
 
     [Test]
@@ -138,7 +144,7 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
+        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<UnauthorizedException>());
     }
 
     [Test]
@@ -150,7 +156,7 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        Assert.That(() => _sut.LoginAsync(request), Throws.TypeOf<UnauthorizedException>());
+        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<UnauthorizedException>());
     }
 
     [Test]
