@@ -75,7 +75,7 @@ internal sealed class UserServiceTests
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
         _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
-        
+
         var result = await _sut.LoginAsync(request, "127.0.0.1");
 
         Assert.Multiple(() =>
@@ -87,7 +87,8 @@ internal sealed class UserServiceTests
 
     [Test]
     public async Task LoginAsync_WithValidCareGiverCredentials_ReturnsLoginResponse()
-    {        _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
+    {
+        _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
 
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver

@@ -48,11 +48,11 @@ public sealed class UserService : IUserService
         var token = _tokenService.GenerateJwtToken(user);
         var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
         user.RefreshTokens.Add(refreshToken);
-        
+
         RemoveOldRefreshTokens(user);
-        
+
         await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
-        
+
         var response = new LoginResponse
         {
             Token = token,
