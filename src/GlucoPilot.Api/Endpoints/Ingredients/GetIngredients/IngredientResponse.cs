@@ -13,4 +13,5 @@ public record IngredientResponse
     public required int Calories { get; set; }
     public required UnitOfMeasurement Uom { get; set; }
     public required DateTimeOffset Created { get; set; }
+    public DateTimeOffset? Updated { get; set; }
 }

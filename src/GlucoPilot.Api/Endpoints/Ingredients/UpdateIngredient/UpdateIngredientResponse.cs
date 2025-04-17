@@ -12,4 +12,5 @@ public sealed record UpdateIngredientResponse
     public required int Fat { get; set; }
     public required int Calories { get; set; }
     public required UnitOfMeasurement Uom { get; set; }
+    public DateTimeOffset? Updated { get; set; }
 }
