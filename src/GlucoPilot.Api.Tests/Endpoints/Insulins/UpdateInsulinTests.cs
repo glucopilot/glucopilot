@@ -123,6 +123,6 @@ public class UpdateInsulinTests
             Assert.That(okResult?.Value.Scale, Is.EqualTo(1.5));
             Assert.That(okResult?.Value.PeakTime, Is.EqualTo(12));
             Assert.That(okResult?.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
-        });        
+        });
     }
 }
