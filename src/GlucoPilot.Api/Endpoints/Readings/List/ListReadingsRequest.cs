@@ -18,7 +18,6 @@ namespace GlucoPilot.Api.Endpoints.Readings.List
         public ListReadingValidator()
         {
             RuleFor(x => x.From).LessThan(x => x.To);
-            RuleFor(x => x.To).LessThanOrEqualTo(_ => DateTimeOffset.UtcNow);
         }
     }
 }
