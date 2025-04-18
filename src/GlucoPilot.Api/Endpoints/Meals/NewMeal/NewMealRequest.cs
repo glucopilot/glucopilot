@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Models;
+using System;
 using System.Collections.Generic;
-using static GlucoPilot.Api.Models.NewMealIngredientRequest;
 
 namespace GlucoPilot.Api.Endpoints.Meals.NewMeal;
 
@@ -15,7 +14,21 @@ public record NewMealRequest
         public NewMealValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
-            RuleForEach(x => x.MealIngredients).SetValidator(new NewMealIngredientValidator());
+        }
+    }
+}
+
+public sealed record NewMealIngredientRequest
+{
+    public required Guid IngredientId { get; set; }
+    public required int Quantity { get; set; }
+
+    public sealed class NewMealIngredientValidator : AbstractValidator<NewMealIngredientRequest>
+    {
+        public NewMealIngredientValidator()
+        {
+            RuleFor(x => x.IngredientId).NotEmpty();
+            RuleFor(x => x.Quantity).GreaterThan(0);
         }
     }
 }
