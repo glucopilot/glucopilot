@@ -13,6 +13,7 @@ public interface IRepository<TEntity> where TEntity : class
     TEntity? FindOne(Expression<Func<TEntity, bool>> predicate, FindOptions? findOptions = null);
     Task<TEntity?> FindOneAsync(Expression<Func<TEntity, bool>> predicate, FindOptions? findOptions = null, CancellationToken cancellationToken = default);
     IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, FindOptions? findOptions = null);
+    IQueryable<TEntity> FromSqlRaw(string sql, FindOptions? findOptions = null, params object[] parameters);
     void Add(TEntity entity);
     Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
     void AddMany(IEnumerable<TEntity> entities);
