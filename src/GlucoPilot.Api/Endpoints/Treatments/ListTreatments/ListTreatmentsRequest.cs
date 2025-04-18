@@ -1,4 +1,4 @@
-﻿using GlucoPilot.Api.Models;
+using GlucoPilot.Api.Models;
 using Microsoft.Extensions.Options;
 
 namespace GlucoPilot.Api.Endpoints.Treatments.ListTreatments;
