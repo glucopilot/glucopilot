@@ -64,7 +64,7 @@ internal static class Endpoint
                     WHERE 
                         row_num = 1
                         AND [Created] BETWEEN {1} AND {2}
-                            AND [userId] = {3}
+                            AND [UserId] = {3}
                     ORDER BY 
                         [Created] DESC;
                     """;
