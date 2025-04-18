@@ -95,6 +95,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         return Get(findOptions);
     }
 
+    public IQueryable<TEntity> FromSqlRaw(string sql, FindOptions? findOptions = null, params object[] parameters)
+    {
+        return Get(findOptions).FromSqlRaw(sql, parameters);
+    }
+
     public void Update(TEntity entity)
     {
         _glucoPilotDbContext.Set<TEntity>().Update(entity);

@@ -14,12 +14,13 @@ namespace GlucoPilot.Api.Endpoints.Readings.List;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<List<ReadingsResponse>>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
-        [AsParameters] ListReadingsRequest request,
-        [FromServices] IValidator<ListReadingsRequest> validator,
-        [FromServices] ICurrentUser currentUser,
-        [FromServices] IRepository<Reading> repository,
-        CancellationToken cancellationToken)
+    internal static async Task<Results<Ok<List<ReadingsResponse>>, UnauthorizedHttpResult, ValidationProblem>>
+        HandleAsync(
+            [AsParameters] ListReadingsRequest request,
+            [FromServices] IValidator<ListReadingsRequest> validator,
+            [FromServices] ICurrentUser currentUser,
+            [FromServices] IRepository<Reading> repository,
+            CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
@@ -29,8 +30,47 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var readings = repository.Find(r => r.UserId == userId && r.Created >= request.From && r.Created <= request.To, new FindOptions { IsAsNoTracking = true })
-            .OrderByDescending(r => r.Created)
+        var query = """
+                                    WITH QuarterHourIntervals AS (
+                        SELECT 
+                            CONVERT(
+                                TIME,
+                                DATEADD(MINUTE, (DATEPART(MINUTE, [Created]) / {0}) * {0}, 
+                                DATEADD(HOUR, DATEPART(HOUR, [Created]), 0))
+                            ) AS quarter_hour_start,
+                            [Id],
+                            [UserId],
+                            [Created],
+                            [GlucoseLevel],
+                            [Direction],
+                            ROW_NUMBER() OVER (
+                                PARTITION BY 
+                                    DATEADD(MINUTE, (DATEPART(MINUTE, [Created]) / {0}) * {0}, 
+                                    DATEADD(HOUR, DATEPART(HOUR, [Created]), 0)) 
+                                ORDER BY [Created] DESC
+                            ) AS row_num
+                        FROM 
+                            [readings]
+                    )
+
+                    SELECT 
+                        [Id],
+                        [UserId],
+                        [Created],
+                        [GlucoseLevel],
+                        [Direction]
+                    FROM 
+                        QuarterHourIntervals
+                    WHERE 
+                        row_num = 1
+                        AND [Created] BETWEEN {1} AND {2}
+                            AND [UserId] = {3}
+                    ORDER BY 
+                        [Created] DESC;
+                    """;
+
+        var readings = repository.FromSqlRaw(query, new FindOptions { IsAsNoTracking = true }, request.MinuteInterval, request.From, request.To,
+                userId).AsEnumerable()
             .Select(r => new ReadingsResponse
             {
                 UserId = r.UserId,

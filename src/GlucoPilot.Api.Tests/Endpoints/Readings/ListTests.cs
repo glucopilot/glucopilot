@@ -50,12 +50,12 @@ internal sealed class ListTests
         {
             Id = Guid.NewGuid(),
             UserId = _userId,
-            Created = DateTimeOffset.UtcNow.AddMinutes(-30),
+            Created = DateTimeOffset.UtcNow.AddMinutes(-15),
             GlucoseLevel = 100,
             Direction = ReadingDirection.Steady
         };
 
-        _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>()))
+        _repositoryMock.Setup(r => r.FromSqlRaw(It.IsAny<string>(), It.IsAny<FindOptions>(), It.IsAny<object[]>()))
             .Returns(new List<Reading> { reading }.AsQueryable());
 
         var result = await Endpoint.HandleAsync(
