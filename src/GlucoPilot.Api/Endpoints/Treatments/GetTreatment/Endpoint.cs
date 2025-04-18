@@ -43,6 +43,7 @@ internal static class Endpoint
         {
             Id = treatment.Id,
             Created = treatment.Created,
+            Updated = treatment.Updated,
             Type = treatment.Type,
             Meal = treatment.Meal is not null
             ? new GetTreatmentMealResponse

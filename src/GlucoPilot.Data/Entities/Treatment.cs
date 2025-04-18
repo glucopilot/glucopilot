@@ -37,6 +37,11 @@ public class Treatment
     public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
+    /// The date and time when the treatment was last updated.
+    /// </summary>
+    public DateTimeOffset? Updated { get; set; }
+
+    /// <summary>
     /// The type of treatment, this can be a meal, an injection or a correction.
     /// </summary>
     [NotMapped]

@@ -87,6 +87,7 @@ internal static class Endpoint
         {
             Id = treatment.Id,
             Created = treatment.Created,
+            Updated = treatment.Updated,
             MealId = meal?.Id,
             MealName = meal?.Name,
             InjectionId = injection?.Id,

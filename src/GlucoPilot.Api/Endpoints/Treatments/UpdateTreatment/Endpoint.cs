@@ -84,6 +84,7 @@ internal static class Endpoint
         treatment.ReadingId = request.ReadingId;
         treatment.MealId = request.MealId;
         treatment.InjectionId = request.InjectionId;
+        treatment.Updated = DateTimeOffset.UtcNow;
 
         await treatmentRepository.UpdateAsync(treatment, cancellationToken);
 
@@ -97,6 +98,7 @@ internal static class Endpoint
             InjectionId = treatment.InjectionId,
             InsulinName = injection?.Insulin?.Name,
             InsulinUnits = injection?.Units,
+            Updated = treatment.Updated
         };
 
         return TypedResults.Ok(response);

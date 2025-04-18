@@ -6,6 +6,7 @@ public record NewTreatmentResponse
 {
     public required Guid Id { get; init; }
     public required DateTimeOffset Created { get; init; }
+    public DateTimeOffset? Updated { get; init; }
     public Guid? MealId { get; init; }
     public string? MealName { get; init; }
     public Guid? InjectionId { get; init; }
