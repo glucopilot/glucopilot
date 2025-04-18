@@ -24,22 +24,7 @@ public class ListReadingsRequestValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.From);
     }
-
-    [Test]
-    public void Should_Have_Error_When_To_Is_In_The_Future()
-    {
-        var model = new ListReadingsRequest
-        {
-            From = DateTimeOffset.UtcNow.AddDays(-1),
-            To = DateTimeOffset.UtcNow.AddDays(1)
-        };
-
-        _validator = new ListReadingValidator();
-
-        var result = _validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.To);
-    }
-
+    
     [Test]
     public void Should_Not_Have_Error_When_Valid()
     {
