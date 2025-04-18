@@ -32,7 +32,7 @@ internal sealed class EndpointTests
     public async Task HandleAsync_With_Valid_Request_Returns_Ok_With_Login_Response()
     {
         var request = new LoginRequest { Email = "user", Password = "password" };
-        var loginResponse = new LoginResponse { Email = "user", Token = "accessToken", RefreshToken = "refreshToken" };
+        var loginResponse = new LoginResponse { Email = "user", Token = "accessToken", RefreshToken = "refreshToken", AlarmRules = null };
 
         _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
                       .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -70,7 +70,7 @@ internal sealed class EndpointTests
     public async Task HandleAsync_With_Valid_Request_Sets_Refresh_Token_Cookie()
     {
         var request = new LoginRequest { Email = "user", Password = "password" };
-        var loginResponse = new LoginResponse { Email = "user", Token = "accessToken", RefreshToken = "refreshToken" };
+        var loginResponse = new LoginResponse { Email = "user", Token = "accessToken", RefreshToken = "refreshToken", AlarmRules = null };
 
         _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
                       .ReturnsAsync(new FluentValidation.Results.ValidationResult());
