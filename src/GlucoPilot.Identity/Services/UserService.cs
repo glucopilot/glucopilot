@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
@@ -10,6 +11,7 @@ using GlucoPilot.Identity.Models;
 using GlucoPilot.Identity.Templates;
 using GlucoPilot.Mail;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using static BCrypt.Net.BCrypt;
 
@@ -18,15 +20,17 @@ namespace GlucoPilot.Identity.Services;
 public sealed class UserService : IUserService
 {
     private readonly IRepository<User> _repository;
+    private readonly IRepository<AlarmRule> _alarmRepository;
     private readonly ITokenService _tokenService;
     private readonly IMailService _mailService;
     private readonly ITemplateService _templateService;
     private readonly IdentityOptions _options;
 
-    public UserService(IRepository<User> repository, ITokenService tokenService, IMailService mailService,
+    public UserService(IRepository<User> repository, IRepository<AlarmRule> alarmRepository, ITokenService tokenService, IMailService mailService,
         ITemplateService templateService, IOptions<IdentityOptions> options)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _alarmRepository = alarmRepository ?? throw new ArgumentNullException(nameof(alarmRepository));
         _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
         _templateService = templateService ?? throw new ArgumentNullException(nameof(templateService));
@@ -36,8 +40,22 @@ public sealed class UserService : IUserService
     public async Task<LoginResponse> LoginAsync(LoginRequest request, string ipAddress, CancellationToken cancellationToken = default)
     {
         var user = await _repository.FindOneAsync(u => u.Email == request.Email,
-            new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true },
-            cancellationToken: cancellationToken).ConfigureAwait(false);
+            new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true }, cancellationToken);
+
+        List<AlarmRule>? alarmRules = null;
+        if (user is Patient)
+        {
+            alarmRules = _alarmRepository.Find(x => x.PatientId == user.Id,
+                new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = false })
+                .Select(alarm => new AlarmRule
+                {
+                    Id = alarm.Id,
+                    PatientId = alarm.PatientId,
+                    TargetValue = alarm.TargetValue,
+                    TargetDirection = alarm.TargetDirection
+                })
+                .ToList();
+        }
 
         if (user is null || (_options.RequireEmailVerification && !user.IsVerified) ||
             !Verify(request.Password, user.PasswordHash))
@@ -53,16 +71,40 @@ public sealed class UserService : IUserService
 
         await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
 
-        var response = new LoginResponse
+        if (user is Patient)
+        {
+            var patient = (Patient)user;
+            return new LoginResponse
+            {
+                Token = token,
+                UserId = user.Id,
+                Email = user.Email,
+                IsVerified = user.IsVerified,
+                GlucoseProvider = (GlucoseProvider)patient.GlucoseProvider,
+                TargetLow = patient.TargetLow,
+                TargetHigh = patient.TargetHigh,
+                AlarmRules = alarmRules is not null ? alarmRules.Select(r => new LoginAlarmRuleResponse
+                {
+                    Id = r.Id,
+                    TargetDirection = r.TargetDirection,
+                    TargetValue = r.TargetValue,
+                }).ToList() : null,
+                RefreshToken = refreshToken.Token,
+            };
+        }
+
+        return new LoginResponse
         {
             Token = token,
             UserId = user.Id,
             Email = user.Email,
             IsVerified = user.IsVerified,
-            GlucoseProvider = user is Patient patient ? (GlucoseProvider)patient.GlucoseProvider : null,
+            GlucoseProvider = null,
+            TargetLow = null,
+            TargetHigh = null,
+            AlarmRules = null,
             RefreshToken = refreshToken.Token,
         };
-        return response;
     }
 
     public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, string origin,

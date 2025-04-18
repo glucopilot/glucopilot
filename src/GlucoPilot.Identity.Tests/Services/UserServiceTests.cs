@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Models;
 using GlucoPilot.Identity.Services;
@@ -22,6 +23,7 @@ namespace GlucoPilot.Identity.Tests.Services;
 internal sealed class UserServiceTests
 {
     private Mock<IRepository<User>> _userRepository;
+    private Mock<IRepository<AlarmRule>> _alarmRepository;
     private Mock<ITokenService> _tokenService;
     private Mock<IMailService> _mailService;
     private Mock<ITemplateService> _templateService;
@@ -33,6 +35,7 @@ internal sealed class UserServiceTests
     public void Setup()
     {
         _userRepository = new Mock<IRepository<User>>();
+        _alarmRepository = new Mock<IRepository<AlarmRule>>();
         _tokenService = new Mock<ITokenService>();
         _mailService = new Mock<IMailService>();
         _templateService = new Mock<ITemplateService>();
@@ -40,7 +43,7 @@ internal sealed class UserServiceTests
         _options = new IdentityOptions() { RequireEmailVerification = false };
         _identityOptions.Setup(x => x.Value).Returns(_options);
 
-        _sut = new UserService(_userRepository.Object, _tokenService.Object, _mailService.Object,
+        _sut = new UserService(_userRepository.Object, _alarmRepository.Object, _tokenService.Object, _mailService.Object,
             _templateService.Object, _identityOptions.Object);
     }
 
@@ -50,16 +53,19 @@ internal sealed class UserServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(
-                () => new UserService(null!, _tokenService.Object, _mailService.Object, _templateService.Object,
+                () => new UserService(null!, _alarmRepository.Object, _tokenService.Object, _mailService.Object, _templateService.Object,
                     _identityOptions.Object), Throws.ArgumentNullException);
             Assert.That(
-                () => new UserService(_userRepository.Object!, null!, _mailService.Object, _templateService.Object,
+                () => new UserService(_userRepository.Object!, null!, _tokenService.Object, _mailService.Object, _templateService.Object,
                     _identityOptions.Object), Throws.ArgumentNullException);
             Assert.That(
-                () => new UserService(_userRepository.Object!, _tokenService.Object, _mailService.Object, null!,
+                () => new UserService(_userRepository.Object!, _alarmRepository.Object, null!, _mailService.Object, _templateService.Object,
                     _identityOptions.Object), Throws.ArgumentNullException);
             Assert.That(
-                () => new UserService(_userRepository.Object!, _tokenService.Object, _mailService.Object,
+                () => new UserService(_userRepository.Object!, _alarmRepository.Object, _tokenService.Object, _mailService.Object, null!,
+                    _identityOptions.Object), Throws.ArgumentNullException);
+            Assert.That(
+                () => new UserService(_userRepository.Object!, _alarmRepository.Object, _tokenService.Object, _mailService.Object,
                     _templateService.Object, null!), Throws.ArgumentNullException);
         });
     }
@@ -82,6 +88,56 @@ internal sealed class UserServiceTests
         {
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Token, Is.Not.Empty);
+        });
+    }
+
+    [Test]
+    public async Task LoginAsync_Returns_Patient_Targets_When_Patient()
+    {
+        var request = new LoginRequest { Email = "test@example.com", Password = "password" };
+        var user = new Patient
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), AlarmRules = [new AlarmRule() { PatientId = Guid.NewGuid(), TargetDirection = AlarmTargetDirection.GreaterThan, TargetValue = 10}], TargetHigh = 10, TargetLow = 4 };
+        var alarmRule = new AlarmRule { Id = Guid.NewGuid(), PatientId = user.Id, TargetDirection = AlarmTargetDirection.GreaterThan, TargetValue = 10 };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
+        _alarmRepository.Setup(r => r.Find(It.IsAny<Expression<Func<AlarmRule, bool>>>(), It.IsAny<FindOptions>())).Returns(new List<AlarmRule>() { alarmRule }.AsQueryable());
+
+        _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
+
+        var result = await _sut.LoginAsync(request, "127.0.0.1");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Empty);
+            Assert.That(result.TargetHigh, Is.EqualTo(user.TargetHigh));
+            Assert.That(result.TargetLow, Is.EqualTo(user.TargetLow));
+            Assert.That(result.AlarmRules.First().Id, Is.EqualTo(alarmRule.Id));
+        });
+    }
+
+    [Test]
+    public async Task LoginAsync_Does_Not_Return_Patient_Targets_When_CareGiver()
+    {
+        var request = new LoginRequest { Email = "test@example.com", Password = "password" };
+        var user = new CareGiver
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+
+        _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
+            It.IsAny<CancellationToken>())).ReturnsAsync(user);
+
+        _tokenService.Setup(t => t.GenerateRefreshToken(It.IsAny<string>())).Returns(new RefreshToken { Token = "refresh_token", CreatedByIp = "127.0.0.1" });
+
+        var result = await _sut.LoginAsync(request, "127.0.0.1");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Empty);
+            Assert.That(result.TargetHigh, Is.Null);
+            Assert.That(result.TargetLow, Is.Null);
+            Assert.That(result.AlarmRules, Is.Null);
         });
     }
 
