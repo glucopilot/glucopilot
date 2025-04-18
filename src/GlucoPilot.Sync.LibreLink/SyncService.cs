@@ -35,7 +35,12 @@ public partial class SyncService : IHostedService, IDisposable
     public Task StartAsync(CancellationToken cancellationToken)
     {
         StartingLibreLinkSyncService();
-        _timer = new Timer(DoWork, cancellationToken, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+
+        var now = DateTime.UtcNow;
+        var startTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, DateTimeKind.Utc);
+        var dueTime = startTime.AddMinutes(1) - DateTime.UtcNow;
+
+        _timer = new Timer(DoWork, cancellationToken, dueTime, TimeSpan.FromMinutes(1));
 
         return Task.CompletedTask;
     }
