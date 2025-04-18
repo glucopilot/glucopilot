@@ -25,6 +25,7 @@
     <ProjectReference Include="..\GlucoPilot.AspNetCore\GlucoPilot.AspNetCore.csproj" />
     <ProjectReference Include="..\GlucoPilot.Data\GlucoPilot.Data.csproj" />
     <ProjectReference Include="..\GlucoPilot.Mail\GlucoPilot.Mail.csproj" />
+    <ProjectReference Include="..\GlucoPilot.Resources\GlucoPilot.Resources.csproj" />
   </ItemGroup>
 
   <ItemGroup>
