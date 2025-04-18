@@ -50,7 +50,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
 
             Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
         }
-        
+
         [Test]
         public void HandleAsync_Returns_Unauthorized_When_User_Is_Not_Authenticated()
         {
@@ -131,7 +131,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
             Assert.That(response.TotalProtein, Is.EqualTo(20));
             Assert.That(response.TotalFat, Is.EqualTo(10));
         }
-        
+
         [Test]
         public async Task HandleAsync_Should_Ignore_Treatments_With_No_Meals()
         {
