@@ -43,7 +43,7 @@ public class ListReadingsRequestValidatorTests
             result.ShouldNotHaveValidationErrorFor(x => x.To);
         });
     }
-    
+
     [Test]
     public void Should_Have_Error_When_MinuteInterval_Is_Zero()
     {
@@ -59,7 +59,7 @@ public class ListReadingsRequestValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.MinuteInterval);
     }
-    
+
     [Test]
     public void Should_Have_Error_When_MinuteInterval_Is_Over_60()
     {
