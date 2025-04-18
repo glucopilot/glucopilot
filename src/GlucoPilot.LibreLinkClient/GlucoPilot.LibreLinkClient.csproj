@@ -5,11 +5,22 @@
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>true</IsPackable>
+        <Title>LibreLink Up Client</Title>
+        <Authors>GlucoPilot</Authors>
+        <Copyright>GlucoPilot</Copyright>
+        <Description>LibreLink Up Client.</Description>
+        <PackageProjectUrl>https://www.glucopilot.co.uk/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/glucopilot/glucopilot/tree/main</RepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
     
     <ItemGroup>
         <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
         <InternalsVisibleTo Include="GlucoPilot.LibreLinkClient.Tests" />
+
+        <None Include=".\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
     </ItemGroup>
     
     <ItemGroup>
