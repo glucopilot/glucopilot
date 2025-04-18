@@ -23,12 +23,12 @@ public sealed record RegisterRequest
     {
         public Validator()
         {
-            RuleFor(x => x.Email).NotEmpty().WithMessage("EMAIL_REQUIRED").EmailAddress().WithMessage("EMAIL_INVALID");
-            RuleFor(x => x.Password).NotEmpty().WithMessage("PASSWORD_REQUIRED").MinimumLength(6)
-                .WithMessage("PASSWORD_MIN_LENGTH");
-            RuleFor(x => x.ConfirmPassword).NotEmpty().WithMessage("CONFIRM_PASSWORD_REQUIRED").Equal(x => x.Password)
-                .WithMessage("CONFIRM_PASSWORD_NOT_MATCH");
-            RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("TERMS_NOT_ACCEPTED");
+            RuleFor(x => x.Email).NotEmpty().WithMessage(Resources.ValidationMessages.EmailRequired).EmailAddress().WithMessage(Resources.ValidationMessages.EmailInvalid);
+            RuleFor(x => x.Password).NotEmpty().WithMessage(Resources.ValidationMessages.PasswordRequired).MinimumLength(6)
+                .WithMessage(Resources.ValidationMessages.PasswordMinLength);
+            RuleFor(x => x.ConfirmPassword).NotEmpty().WithMessage(Resources.ValidationMessages.ConfirmPasswordRequired).Equal(x => x.Password)
+                .WithMessage(Resources.ValidationMessages.ConfirmPasswordNotMatch);
+            RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage(Resources.ValidationMessages.TermsNotAccepted);
         }
     }
 }
