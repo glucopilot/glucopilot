@@ -47,6 +47,7 @@ internal static class Endpoint
         }
 
         meal.Name = request.Name;
+        meal.Updated = DateTimeOffset.UtcNow;
 
         meal.MealIngredients.Clear();
         meal.MealIngredients = request.MealIngredients

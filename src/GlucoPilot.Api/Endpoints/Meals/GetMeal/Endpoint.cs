@@ -48,7 +48,9 @@ internal static class Endpoint
                     Protein = mi.Ingredient.Protein,
                     Fat = mi.Ingredient.Fat,
                     Calories = mi.Ingredient.Calories,
-                    Uom = mi.Ingredient.Uom
+                    Uom = mi.Ingredient.Uom,
+                    Created = mi.Ingredient.Created,
+                    Updated = mi.Ingredient.Updated,
                 } : null,
             }).ToList(),
             TotalCalories = meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Calories * mi.Quantity),
