@@ -96,7 +96,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), AlarmRules = [new AlarmRule() { PatientId = Guid.NewGuid(), TargetDirection = AlarmTargetDirection.GreaterThan, TargetValue = 10}], TargetHigh = 10, TargetLow = 4 };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), AlarmRules = [new AlarmRule() { PatientId = Guid.NewGuid(), TargetDirection = AlarmTargetDirection.GreaterThan, TargetValue = 10 }], TargetHigh = 10, TargetLow = 4 };
         var alarmRule = new AlarmRule { Id = Guid.NewGuid(), PatientId = user.Id, TargetDirection = AlarmTargetDirection.GreaterThan, TargetValue = 10 };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
