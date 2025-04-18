@@ -14,7 +14,7 @@ namespace GlucoPilot.Identity.Tests.Services;
 internal sealed class TokenServiceTests
 {
     private Mock<IOptions<IdentityOptions>> _mockOptions;
-    private Mock<IRepository<RefreshToken>> _mockReopsitory;
+    private Mock<IRepository<User>> _mockUserRepository;
     private TokenService _tokenService;
 
     [SetUp]
@@ -26,8 +26,8 @@ internal sealed class TokenServiceTests
             TokenSigningKey = Guid.NewGuid().ToString(),
             TokenExpirationInMinutes = 30
         });
-        _mockReopsitory = new Mock<IRepository<RefreshToken>>();
-        _tokenService = new TokenService(_mockOptions.Object, _mockReopsitory.Object);
+        _mockUserRepository = new Mock<IRepository<User>>();
+        _tokenService = new TokenService(_mockOptions.Object, _mockUserRepository.Object);
     }
 
     [Test]
@@ -38,8 +38,8 @@ internal sealed class TokenServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(() => new TokenService(null!, _mockReopsitory.Object), Throws.ArgumentNullException);
-            Assert.That(() => new TokenService(nullOption.Object, _mockReopsitory.Object),
+            Assert.That(() => new TokenService(null!, _mockUserRepository.Object), Throws.ArgumentNullException);
+            Assert.That(() => new TokenService(nullOption.Object, _mockUserRepository.Object),
                 Throws.ArgumentNullException);
             Assert.That(() => new TokenService(_mockOptions.Object, null!), Throws.ArgumentNullException);
         });
@@ -79,7 +79,7 @@ internal sealed class TokenServiceTests
             TokenSigningKey = "",
             TokenExpirationInMinutes = 30
         });
-        var tokenService = new TokenService(_mockOptions.Object, _mockReopsitory.Object);
+        var tokenService = new TokenService(_mockOptions.Object, _mockUserRepository.Object);
         var user = new Patient { Id = Guid.NewGuid(), Email = "user@example.com", PasswordHash = "hash" };
 
         Assert.That(() => tokenService.GenerateJwtToken(user), Throws.ArgumentException);
@@ -89,9 +89,8 @@ internal sealed class TokenServiceTests
     public void GenerateRefreshToken_With_Valid_IpAddress_Returns_Valid_RefreshToken()
     {
         var options = Options.Create(new IdentityOptions { RefreshTokenExpirationInDays = 7 });
-        var repositoryMock = new Mock<IRepository<RefreshToken>>();
-        repositoryMock.Setup(r => r.Any(It.IsAny<Expression<Func<RefreshToken, bool>>>())).Returns(false);
-        var tokenService = new TokenService(options, repositoryMock.Object);
+        _mockUserRepository.Setup(r => r.Any(It.IsAny<Expression<Func<User, bool>>>())).Returns(false);
+        var tokenService = new TokenService(options, _mockUserRepository.Object);
 
         var refreshToken = tokenService.GenerateRefreshToken("127.0.0.1");
 
@@ -105,11 +104,10 @@ internal sealed class TokenServiceTests
     public void GenerateRefreshToken_With_Non_Unique_Token_Regenerates_Token()
     {
         var options = Options.Create(new IdentityOptions { RefreshTokenExpirationInDays = 7 });
-        var repositoryMock = new Mock<IRepository<RefreshToken>>();
-        repositoryMock.SetupSequence(r => r.Any(It.IsAny<Expression<Func<RefreshToken, bool>>>()))
+        _mockUserRepository.SetupSequence(r => r.Any(It.IsAny<Expression<Func<User, bool>>>()))
             .Returns(true)
             .Returns(false);
-        var tokenService = new TokenService(options, repositoryMock.Object);
+        var tokenService = new TokenService(options, _mockUserRepository.Object);
 
         var refreshToken = tokenService.GenerateRefreshToken("127.0.0.1");
 

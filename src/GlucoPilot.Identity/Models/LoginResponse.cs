@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace GlucoPilot.Identity.Models;
 
@@ -9,4 +10,7 @@ public sealed record LoginResponse
     public required string Email { get; init; }
     public bool IsVerified { get; init; }
     public GlucoseProvider? GlucoseProvider { get; init; }
+
+    [JsonIgnore]
+    public string? RefreshToken { get; init; }
 }

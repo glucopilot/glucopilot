@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,12 +15,12 @@ namespace GlucoPilot.Identity.Services;
 internal sealed class TokenService : ITokenService
 {
     private readonly IdentityOptions _options;
-    private readonly IRepository<RefreshToken> _refreshTokenRepository;
+    private readonly IRepository<User> _userRepository;
 
-    public TokenService(IOptions<IdentityOptions> options, IRepository<RefreshToken> refreshTokenRepository)
+    public TokenService(IOptions<IdentityOptions> options, IRepository<User> userRepository)
     {
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
-        _refreshTokenRepository = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
     public string GenerateJwtToken(User user)
@@ -50,7 +51,7 @@ internal sealed class TokenService : ITokenService
             CreatedByIp = ipAddress,
         };
 
-        var tokenIsUnique = !_refreshTokenRepository.Any(r => r.Token == refreshToken.Token);
+        var tokenIsUnique = !_userRepository.Any(u => u.RefreshTokens.Any(t => t.Token == refreshToken.Token));
         if (!tokenIsUnique)
         {
             return GenerateRefreshToken(ipAddress);
