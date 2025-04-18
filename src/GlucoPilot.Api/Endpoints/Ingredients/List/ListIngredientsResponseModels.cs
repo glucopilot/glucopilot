@@ -1,9 +1,16 @@
-﻿using GlucoPilot.Data.Enums;
+﻿using GlucoPilot.Api.Models;
+using GlucoPilot.Data.Enums;
 using System;
+using System.Collections.Generic;
 
-namespace GlucoPilot.Api.Endpoints.Ingredients.GetIngredients;
+namespace GlucoPilot.Api.Endpoints.Ingredients.List;
 
-public record IngredientResponse
+public sealed record ListIngredientsResponse : PagedResponse
+{
+    public required ICollection<GetIngredientResponse> Ingredients { get; set; } = [];
+}
+
+public sealed record GetIngredientResponse
 {
     public required Guid Id { get; set; }
     public required string Name { get; set; }

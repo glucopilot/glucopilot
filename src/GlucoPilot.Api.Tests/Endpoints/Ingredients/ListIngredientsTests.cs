@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Ingredients.GetIngredients;
 using GlucoPilot.Api.Endpoints.Ingredients.List;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
