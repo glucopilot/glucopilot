@@ -38,7 +38,7 @@ public static class MealsEndpoints
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
-        
+
         group.MapGet("/nutrition", Nutrition.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

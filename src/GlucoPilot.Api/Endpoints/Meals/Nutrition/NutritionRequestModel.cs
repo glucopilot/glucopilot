@@ -11,7 +11,7 @@ public sealed class NutritionRequestModel
 
     [Required]
     public DateTimeOffset? To { get; set; }
-    
+
     public sealed class Validator : AbstractValidator<NutritionRequestModel>
     {
         public Validator()
