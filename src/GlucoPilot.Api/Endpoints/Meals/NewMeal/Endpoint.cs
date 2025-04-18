@@ -38,7 +38,7 @@ internal static class Endpoint
         };
         newMeal.MealIngredients = request.MealIngredients.Select(x => new MealIngredient()
         {
-            Id = x.Id,
+            Id = Guid.NewGuid(),
             MealId = newMeal.Id,
             IngredientId = x.IngredientId,
             Quantity = x.Quantity,
