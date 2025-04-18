@@ -9,8 +9,7 @@ public sealed class NutritionRequestModel
     [Required]
     public DateTimeOffset From { get; set; }
 
-    [Required]
-    public DateTimeOffset? To { get; set; }
+    public DateTimeOffset To { get; set; } = DateTimeOffset.UtcNow;
 
     public sealed class Validator : AbstractValidator<NutritionRequestModel>
     {
