@@ -9,11 +9,10 @@ public sealed record ListInsulinsRequest : PagedRequest
 {
     public InsulinType? Type { get; init; }
 
-    public sealed class ListInsulinsValidator : AbstractValidator<ListInsulinsRequest>
+    public sealed class ListInsulinsValidator : PagedRequestValidator<ListInsulinsRequest>
     {
-        public ListInsulinsValidator(IOptions<ApiSettings> apiSettings)
+        public ListInsulinsValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
-            Include(new PagedRequestValidator(apiSettings));
             RuleFor(x => x.Type).IsInEnum().When(x => x.Type is not null);
         }
     }

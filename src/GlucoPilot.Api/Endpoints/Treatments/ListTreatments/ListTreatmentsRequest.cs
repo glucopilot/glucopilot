@@ -1,16 +1,14 @@
-﻿using FluentValidation;
-using GlucoPilot.Api.Models;
+﻿using GlucoPilot.Api.Models;
 using Microsoft.Extensions.Options;
 
 namespace GlucoPilot.Api.Endpoints.Treatments.ListTreatments;
 
 public sealed record ListTreatmentsRequest : PagedRequest
 {
-    public sealed class ListTreatmentsRequestValidator : AbstractValidator<ListTreatmentsRequest>
+    public sealed class ListTreatmentsRequestValidator : PagedRequestValidator<ListTreatmentsRequest>
     {
-        public ListTreatmentsRequestValidator(IOptions<ApiSettings> apiSettings)
+        public ListTreatmentsRequestValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
-            Include(new PagedRequestValidator(apiSettings));
         }
     }
 }
