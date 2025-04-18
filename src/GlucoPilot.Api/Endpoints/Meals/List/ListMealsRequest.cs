@@ -6,11 +6,10 @@ namespace GlucoPilot.Api.Endpoints.Meals.List;
 
 public sealed record ListMealsRequest : PagedRequest
 {
-    public sealed class ListMealsValidator : AbstractValidator<ListMealsRequest>
+    public sealed class ListMealsValidator : PagedRequestValidator<ListMealsRequest>
     {
-        public ListMealsValidator(IOptions<ApiSettings> apiSettings)
+        public ListMealsValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
-            Include(new PagedRequestValidator(apiSettings));
         }
     }
 }

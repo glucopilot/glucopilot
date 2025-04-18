@@ -7,11 +7,10 @@ namespace GlucoPilot.Api.Endpoints.Ingredients.List;
 
 public sealed record ListIngredientsRequest : PagedRequest
 {
-    public sealed class ListIngredientsValidator : AbstractValidator<ListIngredientsRequest>
+    public sealed class ListIngredientsValidator : PagedRequestValidator<ListIngredientsRequest>
     {
-        public ListIngredientsValidator(IOptions<ApiSettings> apiSettings)
+        public ListIngredientsValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
-            Include(new PagedRequestValidator(apiSettings));
         }
     }
 }

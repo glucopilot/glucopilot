@@ -12,7 +12,7 @@ public record PagedRequest
     [Required]
     public int PageSize { get; set; }
 
-    public sealed class PagedRequestValidator : AbstractValidator<PagedRequest>
+    public class PagedRequestValidator<T> : AbstractValidator<T> where T : PagedRequest
     {
         public PagedRequestValidator(IOptions<ApiSettings> apiSettings)
         {
