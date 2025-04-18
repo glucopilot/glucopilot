@@ -9,13 +9,13 @@ namespace GlucoPilot.Api.Tests.Validators;
 internal sealed class NutritionValidatorTests
 {
     private NutritionRequestModel.Validator _validator;
-    
+
     [SetUp]
     public void SetUp()
     {
         _validator = new NutritionRequestModel.Validator();
     }
-    
+
     [Test]
     public void Should_Have_Error_When_From_Is_Greater_Than_To()
     {
