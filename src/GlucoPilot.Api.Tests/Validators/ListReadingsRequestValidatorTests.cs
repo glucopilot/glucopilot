@@ -24,7 +24,7 @@ public class ListReadingsRequestValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.From);
     }
-    
+
     [Test]
     public void Should_Not_Have_Error_When_Valid()
     {
