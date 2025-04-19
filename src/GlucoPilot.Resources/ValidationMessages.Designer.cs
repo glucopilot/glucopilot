@@ -61,6 +61,33 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CALORIES_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string CaloriesGreaterThanZero {
+            get {
+                return ResourceManager.GetString("CaloriesGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CANNOT_BE_FUTURE_DATE.
+        /// </summary>
+        public static string CannotBeFutureDate {
+            get {
+                return ResourceManager.GetString("CannotBeFutureDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CARBS_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string CarbsGreaterThanZero {
+            get {
+                return ResourceManager.GetString("CarbsGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CONFIRM_PASSWORD_NOT_MATCH.
         /// </summary>
         public static string ConfirmPasswordNotMatch {
@@ -75,6 +102,24 @@ namespace GlucoPilot.Resources {
         public static string ConfirmPasswordRequired {
             get {
                 return ResourceManager.GetString("ConfirmPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CREATED_DATE_REQUIRED.
+        /// </summary>
+        public static string CreatedDateRequired {
+            get {
+                return ResourceManager.GetString("CreatedDateRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DURATION_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string DurationGreaterThanZero {
+            get {
+                return ResourceManager.GetString("DurationGreaterThanZero", resourceCulture);
             }
         }
         
@@ -97,6 +142,114 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FAT_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string FatGreaterThanZero {
+            get {
+                return ResourceManager.GetString("FatGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INGREDIENT_ID_INVALID.
+        /// </summary>
+        public static string IngredientIdInvalid {
+            get {
+                return ResourceManager.GetString("IngredientIdInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INGREDIENTS_NOT_EMPTY.
+        /// </summary>
+        public static string IngredientsNotEmpty {
+            get {
+                return ResourceManager.GetString("IngredientsNotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INJECTION_ID_REQUIRED_WHEN_ALL_NULL.
+        /// </summary>
+        public static string InjectionIdRequiredWhenAllNull {
+            get {
+                return ResourceManager.GetString("InjectionIdRequiredWhenAllNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSULIN_ID_INVALID.
+        /// </summary>
+        public static string InsulinIdInvalid {
+            get {
+                return ResourceManager.GetString("InsulinIdInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSULIN_TYPE_INVALID.
+        /// </summary>
+        public static string InsulinTypeInvalid {
+            get {
+                return ResourceManager.GetString("InsulinTypeInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INTERVAL_INVALID.
+        /// </summary>
+        public static string IntervalInvalid {
+            get {
+                return ResourceManager.GetString("IntervalInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LEVEL_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string LevelGreaterThanZero {
+            get {
+                return ResourceManager.GetString("LevelGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MEAL_ID_INJECTION_ID_MUST_BE_PROVIDED.
+        /// </summary>
+        public static string MealdInjectionIdMustBeProvided {
+            get {
+                return ResourceManager.GetString("MealdInjectionIdMustBeProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MEAL_ID_INVALID.
+        /// </summary>
+        public static string MealIdInvalid {
+            get {
+                return ResourceManager.GetString("MealIdInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MEAL_ID_REQUIRED_WHEN_ALL_NULL.
+        /// </summary>
+        public static string MealIdRequiredWhenAllNull {
+            get {
+                return ResourceManager.GetString("MealIdRequiredWhenAllNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NAME_REQUIRED.
+        /// </summary>
+        public static string NameRequired {
+            get {
+                return ResourceManager.GetString("NameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PASSWORD_MIN_LENGTH.
         /// </summary>
         public static string PasswordMinLength {
@@ -115,6 +268,60 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PATIENT_ID_REQUIRED.
+        /// </summary>
+        public static string PatientIdRequired {
+            get {
+                return ResourceManager.GetString("PatientIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PEAKTIME_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string PeaktimeGreaterThanZero {
+            get {
+                return ResourceManager.GetString("PeaktimeGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PROTEIN_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string ProteinGreaterThanZero {
+            get {
+                return ResourceManager.GetString("ProteinGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to QUANTITY_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string QuantityGreaterThanZero {
+            get {
+                return ResourceManager.GetString("QuantityGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to READING_ID_REQUIRED_WHEN_ALL_NULL.
+        /// </summary>
+        public static string ReadingIdRequiredWhenAllNull {
+            get {
+                return ResourceManager.GetString("ReadingIdRequiredWhenAllNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SCALE_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string ScaleGreaterThanZero {
+            get {
+                return ResourceManager.GetString("ScaleGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TERMS_NOT_ACCEPTED.
         /// </summary>
         public static string TermsNotAccepted {
@@ -124,11 +331,29 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TO_BEFORE_FROM.
+        /// </summary>
+        public static string ToBeforeFrom {
+            get {
+                return ResourceManager.GetString("ToBeforeFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TOKEN_REQUIRED.
         /// </summary>
         public static string TokenRequired {
             get {
                 return ResourceManager.GetString("TokenRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UNITS_GREATER_THAN_ZERO.
+        /// </summary>
+        public static string UnitsGreaterThanZero {
+            get {
+                return ResourceManager.GetString("UnitsGreaterThanZero", resourceCulture);
             }
         }
     }

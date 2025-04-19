@@ -17,13 +17,13 @@ public record UpdateInjectionRequest
         {
             RuleFor(x => x.InsulinId)
                 .NotEmpty()
-                .WithMessage("InsulinId is required.");
+                .WithMessage(Resources.ValidationMessages.InsulinIdInvalid);
             RuleFor(x => x.Units)
                 .GreaterThan(0)
-                .WithMessage("Units must be greater than 0.");
+                .WithMessage(Resources.ValidationMessages.UnitsGreaterThanZero);
             RuleFor(x => x.Type)
                 .IsInEnum()
-                .WithMessage("Type must be a valid InsulinType.");
+                .WithMessage(Resources.ValidationMessages.InsulinTypeInvalid);
         }
     }
 }

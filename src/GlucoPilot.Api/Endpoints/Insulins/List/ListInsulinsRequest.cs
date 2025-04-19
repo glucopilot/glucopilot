@@ -13,7 +13,7 @@ public sealed record ListInsulinsRequest : PagedRequest
     {
         public ListInsulinsValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
-            RuleFor(x => x.Type).IsInEnum().When(x => x.Type is not null);
+            RuleFor(x => x.Type).IsInEnum().When(x => x.Type is not null).WithMessage(Resources.ValidationMessages.InsulinTypeInvalid);
         }
     }
 }

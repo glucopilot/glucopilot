@@ -19,19 +19,19 @@ public record NewIngredientRequest
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
-                .WithMessage("NAME_IS_REQUIRED");
+                .WithMessage(Resources.ValidationMessages.NameRequired);
             RuleFor(x => x.Carbs)
                 .GreaterThan(0)
-                .WithMessage("CARBS_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.CarbsGreaterThanZero);
             RuleFor(x => x.Protein)
                 .GreaterThan(0)
-                .WithMessage("PROTEIN_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.ProteinGreaterThanZero);
             RuleFor(x => x.Fat)
                 .GreaterThan(0)
-                .WithMessage("FAT_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.FatGreaterThanZero);
             RuleFor(x => x.Calories)
                 .GreaterThan(0)
-                .WithMessage("CALORIES_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.CaloriesGreaterThanZero);
         }
     }
 }

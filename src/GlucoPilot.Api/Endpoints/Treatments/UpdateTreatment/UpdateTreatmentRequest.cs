@@ -17,15 +17,15 @@ namespace GlucoPilot.Api.Endpoints.Treatments.UpdateTreatment
                 {
                     RuleFor(x => x.InjectionId)
                         .NotNull()
-                        .WithMessage("InjectionId cannot be null if all other properties are null.");
+                        .WithMessage(Resources.ValidationMessages.InjectionIdRequiredWhenAllNull);
 
                     RuleFor(x => x.ReadingId)
                         .NotNull()
-                        .WithMessage("ReadingId cannot be null if all other properties are null.");
+                        .WithMessage(Resources.ValidationMessages.ReadingIdRequiredWhenAllNull);
 
                     RuleFor(x => x.MealId)
                         .NotNull()
-                        .WithMessage("MealId cannot be null if all other properties are null.");
+                        .WithMessage(Resources.ValidationMessages.MealIdRequiredWhenAllNull);
                 });
             }
         }

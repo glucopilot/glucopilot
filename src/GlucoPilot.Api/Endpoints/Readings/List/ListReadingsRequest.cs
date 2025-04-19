@@ -19,8 +19,8 @@ namespace GlucoPilot.Api.Endpoints.Readings.List
     {
         public ListReadingValidator()
         {
-            RuleFor(x => x.From).LessThan(x => x.To).WithMessage("TO_BEFORE_FROM");
-            RuleFor(x => x.MinuteInterval).GreaterThan(0).WithMessage("INTERVAL_INVALID").LessThan(60).WithMessage("INTERVAL_INVALID");
+            RuleFor(x => x.From).LessThan(x => x.To).WithMessage(Resources.ValidationMessages.ToBeforeFrom);
+            RuleFor(x => x.MinuteInterval).GreaterThan(0).WithMessage(Resources.ValidationMessages.IntervalInvalid).LessThan(60).WithMessage(Resources.ValidationMessages.IntervalInvalid);
         }
     }
 }

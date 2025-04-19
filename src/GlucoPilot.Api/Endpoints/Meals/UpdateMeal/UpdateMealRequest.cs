@@ -14,7 +14,7 @@ public sealed record UpdateMealRequest
     {
         public UpdateMealRequestValidator()
         {
-            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Name).NotEmpty().WithMessage(Resources.ValidationMessages.NameRequired);
             RuleForEach(x => x.MealIngredients).SetValidator(new NewMealIngredientRequest.NewMealIngredientValidator());
         }
     }
@@ -30,9 +30,9 @@ public sealed record NewMealIngredientRequest
     {
         public NewMealIngredientValidator()
         {
-            RuleFor(x => x.Id).NotEmpty();
-            RuleFor(x => x.IngredientId).NotEmpty();
-            RuleFor(x => x.Quantity).GreaterThan(0);
+            RuleFor(x => x.Id).NotEmpty().WithMessage(Resources.ValidationMessages.MealIdInvalid);
+            RuleFor(x => x.IngredientId).NotEmpty().WithMessage(Resources.ValidationMessages.IngredientIdInvalid);
+            RuleFor(x => x.Quantity).GreaterThan(0).WithMessage(Resources.ValidationMessages.QuantityGreaterThanZero);
         }
     }
 }

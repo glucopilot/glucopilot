@@ -27,8 +27,8 @@ public sealed record NewMealIngredientRequest
     {
         public NewMealIngredientValidator()
         {
-            RuleFor(x => x.IngredientId).NotEmpty();
-            RuleFor(x => x.Quantity).GreaterThan(0);
+            RuleFor(x => x.IngredientId).NotEmpty().WithMessage(Resources.ValidationMessages.IngredientIdInvalid);
+            RuleFor(x => x.Quantity).GreaterThan(0).WithMessage(Resources.ValidationMessages.QuantityGreaterThanZero);
         }
     }
 }

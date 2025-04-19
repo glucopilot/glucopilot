@@ -12,7 +12,7 @@ public sealed record GetIngredientsRequest
     {
         public ListIngredientsValidator()
         {
-            RuleFor(x => x.Ingredients).NotEmpty();
+            RuleFor(x => x.Ingredients).NotEmpty().WithMessage(Resources.ValidationMessages.IngredientsNotEmpty);
         }
     }
 }

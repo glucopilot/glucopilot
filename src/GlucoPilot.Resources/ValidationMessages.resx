@@ -141,4 +141,79 @@
   <data name="TokenRequired" xml:space="preserve">
     <value>TOKEN_REQUIRED</value>
   </data>
+  <data name="InjectionIdRequiredWhenAllNull" xml:space="preserve">
+    <value>INJECTION_ID_REQUIRED_WHEN_ALL_NULL</value>
+  </data>
+  <data name="ReadingIdRequiredWhenAllNull" xml:space="preserve">
+    <value>READING_ID_REQUIRED_WHEN_ALL_NULL</value>
+  </data>
+  <data name="MealdInjectionIdMustBeProvided" xml:space="preserve">
+    <value>MEAL_ID_INJECTION_ID_MUST_BE_PROVIDED</value>
+  </data>
+  <data name="CannotBeFutureDate" xml:space="preserve">
+    <value>CANNOT_BE_FUTURE_DATE</value>
+  </data>
+  <data name="LevelGreaterThanZero" xml:space="preserve">
+    <value>LEVEL_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="ToBeforeFrom" xml:space="preserve">
+    <value>TO_BEFORE_FROM</value>
+  </data>
+  <data name="IntervalInvalid" xml:space="preserve">
+    <value>INTERVAL_INVALID</value>
+  </data>
+  <data name="MealIdRequiredWhenAllNull" xml:space="preserve">
+    <value>MEAL_ID_REQUIRED_WHEN_ALL_NULL</value>
+  </data>
+  <data name="IngredientIdInvalid" xml:space="preserve">
+    <value>INGREDIENT_ID_INVALID</value>
+  </data>
+  <data name="QuantityGreaterThanZero" xml:space="preserve">
+    <value>QUANTITY_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="MealIdInvalid" xml:space="preserve">
+    <value>MEAL_ID_INVALID</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>NAME_REQUIRED</value>
+  </data>
+  <data name="PatientIdRequired" xml:space="preserve">
+    <value>PATIENT_ID_REQUIRED</value>
+  </data>
+  <data name="InsulinTypeInvalid" xml:space="preserve">
+    <value>INSULIN_TYPE_INVALID</value>
+  </data>
+  <data name="DurationGreaterThanZero" xml:space="preserve">
+    <value>DURATION_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="ScaleGreaterThanZero" xml:space="preserve">
+    <value>SCALE_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="PeaktimeGreaterThanZero" xml:space="preserve">
+    <value>PEAKTIME_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="InsulinIdInvalid" xml:space="preserve">
+    <value>INSULIN_ID_INVALID</value>
+  </data>
+  <data name="UnitsGreaterThanZero" xml:space="preserve">
+    <value>UNITS_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="CreatedDateRequired" xml:space="preserve">
+    <value>CREATED_DATE_REQUIRED</value>
+  </data>
+  <data name="IngredientsNotEmpty" xml:space="preserve">
+    <value>INGREDIENTS_NOT_EMPTY</value>
+  </data>
+  <data name="CarbsGreaterThanZero" xml:space="preserve">
+    <value>CARBS_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="ProteinGreaterThanZero" xml:space="preserve">
+    <value>PROTEIN_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="FatGreaterThanZero" xml:space="preserve">
+    <value>FAT_GREATER_THAN_ZERO</value>
+  </data>
+  <data name="CaloriesGreaterThanZero" xml:space="preserve">
+    <value>CALORIES_GREATER_THAN_ZERO</value>
+  </data>
 </root>
