@@ -32,7 +32,7 @@ public class UpdateTreatmentRequestValidatorTests
         {
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
-            x => x.ErrorMessage =="INJECTION_ID_REQUIRED_WHEN_ALL_NULL"));
+            x => x.ErrorMessage == "INJECTION_ID_REQUIRED_WHEN_ALL_NULL"));
             Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
                 x => x.ErrorMessage == "MEAL_ID_REQUIRED_WHEN_ALL_NULL"));
             Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
