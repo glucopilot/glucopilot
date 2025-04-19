@@ -17,22 +17,22 @@ public record UpdateInsulinRequest
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
-                .WithMessage("Name is required");
+                .WithMessage(Resources.ValidationMessages.NameRequired);
             RuleFor(x => x.Type)
                 .IsInEnum()
-                .WithMessage("Type must be a valid InsulinType enum value");
+                .WithMessage(Resources.ValidationMessages.InsulinTypeInvalid);
             RuleFor(x => x.Duration)
                 .GreaterThan(0)
                 .When(x => x.Duration.HasValue)
-                .WithMessage("Duration must be greater than 0");
+                .WithMessage(Resources.ValidationMessages.DurationGreaterThanZero);
             RuleFor(x => x.Scale)
                 .GreaterThan(0)
                 .When(x => x.Scale.HasValue)
-                .WithMessage("Scale must be greater than 0");
+                .WithMessage(Resources.ValidationMessages.ScaleGreaterThanZero);
             RuleFor(x => x.PeakTime)
                 .GreaterThan(0)
                 .When(x => x.PeakTime.HasValue)
-                .WithMessage("PeakTime must be greater than 0");
+                .WithMessage(Resources.ValidationMessages.PeaktimeGreaterThanZero);
         }
     }
 }

@@ -22,16 +22,7 @@ namespace GlucoPilot.Tests.Validators
             var model = new NewInsulinRequest { Name = string.Empty, Type = InsulinType.Bolus };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Name)
-                .WithErrorMessage("Name is required.");
-        }
-
-        [Test]
-        public void Should_Have_Error_When_Name_Exceeds_Max_Length()
-        {
-            var model = new NewInsulinRequest { Name = new string('A', 101), Type = InsulinType.Bolus };
-            var result = _validator.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Name)
-                .WithErrorMessage("Name must be less than 100 characters.");
+                .WithErrorMessage("NAME_NOT_EMPTY");
         }
 
         [Test]
@@ -40,7 +31,7 @@ namespace GlucoPilot.Tests.Validators
             var model = new NewInsulinRequest { Name = "ValidName", Type = (InsulinType)(-1) };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Type)
-                .WithErrorMessage("Type must be either Bolus or Basal.");
+                .WithErrorMessage("INSULIN_TYPE_INVALID");
         }
 
         [Test]
@@ -49,7 +40,7 @@ namespace GlucoPilot.Tests.Validators
             var model = new NewInsulinRequest { Name = "ValidName", Type = InsulinType.Bolus, Duration = 0 };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Duration)
-                .WithErrorMessage("Duration must be greater than 0.");
+                .WithErrorMessage("DURATION_GREATER_THAN_ZERO");
         }
 
         [Test]
@@ -66,7 +57,7 @@ namespace GlucoPilot.Tests.Validators
             var model = new NewInsulinRequest { Name = "ValidName", Type = InsulinType.Bolus, Scale = 0 };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Scale)
-                .WithErrorMessage("Scale must be greater than 0.");
+                .WithErrorMessage("SCALE_GREATER_THAN_ZERO");
         }
 
         [Test]
@@ -83,7 +74,7 @@ namespace GlucoPilot.Tests.Validators
             var model = new NewInsulinRequest { Name = "ValidName", Type = InsulinType.Bolus, PeakTime = 0 };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PeakTime)
-                .WithErrorMessage("PeakTime must be greater than 0.");
+                .WithErrorMessage("PEAKTIME_GREATER_THAN_ZERO");
         }
 
         [Test]

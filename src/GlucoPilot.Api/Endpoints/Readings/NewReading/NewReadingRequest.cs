@@ -13,7 +13,7 @@ public sealed class NewReadingValidator : AbstractValidator<NewReadingRequest>
 {
     public NewReadingValidator()
     {
-        RuleFor(x => x.Created).LessThanOrEqualTo(_ => DateTimeOffset.UtcNow);
-        RuleFor(x => x.GlucoseLevel).GreaterThan(0);
+        RuleFor(x => x.Created).LessThanOrEqualTo(_ => DateTimeOffset.UtcNow).WithMessage(Resources.ValidationMessages.CannotBeFutureDate);
+        RuleFor(x => x.GlucoseLevel).GreaterThan(0).WithMessage(Resources.ValidationMessages.LevelGreaterThanZero);
     }
 }

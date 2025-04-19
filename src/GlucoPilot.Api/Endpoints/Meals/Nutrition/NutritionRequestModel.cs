@@ -15,7 +15,7 @@ public sealed class NutritionRequestModel
     {
         public Validator()
         {
-            RuleFor(x => x.From).LessThan(x => x.To).WithMessage("TO_BEFORE_FROM");
+            RuleFor(x => x.From).LessThan(x => x.To).WithMessage(Resources.ValidationMessages.ToBeforeFrom);
         }
     }
 }

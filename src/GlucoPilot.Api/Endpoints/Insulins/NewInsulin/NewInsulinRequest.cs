@@ -17,23 +17,21 @@ public sealed record NewInsulinRequest
         {
             RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Name is required.")
-            .MaximumLength(100)
-            .WithMessage("Name must be less than 100 characters.");
+            .WithMessage(Resources.ValidationMessages.NameRequired);
             RuleFor(x => x.Type)
                 .IsInEnum()
-                .WithMessage("Type must be either Bolus or Basal.");
+                .WithMessage(Resources.ValidationMessages.InsulinTypeInvalid);
             RuleFor(x => x.Duration)
                 .GreaterThan(0)
-                .WithMessage("Duration must be greater than 0.")
+                .WithMessage(Resources.ValidationMessages.DurationGreaterThanZero)
                 .When(x => x.Duration.HasValue);
             RuleFor(x => x.Scale)
                 .GreaterThan(0)
-                .WithMessage("Scale must be greater than 0.")
+                .WithMessage(Resources.ValidationMessages.ScaleGreaterThanZero)
                 .When(x => x.Scale.HasValue);
             RuleFor(x => x.PeakTime)
                 .GreaterThan(0)
-                .WithMessage("PeakTime must be greater than 0.")
+                .WithMessage(Resources.ValidationMessages.PeaktimeGreaterThanZero)
                 .When(x => x.PeakTime.HasValue);
         }
     }

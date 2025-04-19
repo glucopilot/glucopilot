@@ -19,19 +19,19 @@ public sealed record UpdateIngredientRequest
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
-                .WithMessage("NAME_IS_REQUIRED");
+                .WithMessage(Resources.ValidationMessages.NameRequired);
             RuleFor(x => x.Carbs)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage("CARBS_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.CarbsGreaterThanZero);
             RuleFor(x => x.Protein)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage("PROTEIN_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.ProteinGreaterThanZero);
             RuleFor(x => x.Fat)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage("FAT_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.FatGreaterThanZero);
             RuleFor(x => x.Calories)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage("CALORIES_GREATER_THAN_ZERO");
+                .WithMessage(Resources.ValidationMessages.CaloriesGreaterThanZero);
         }
     }
 }

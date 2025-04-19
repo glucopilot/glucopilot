@@ -28,7 +28,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Injections
 
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.InsulinId)
-                .WithErrorMessage("InsulinId is required.");
+                .WithErrorMessage("INSULIN_ID_INVALID");
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Injections
 
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Units)
-                .WithErrorMessage("Units must be greater than 0.");
+                .WithErrorMessage("UNITS_GREATER_THAN_ZERO");
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Injections
             };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Created)
-                .WithErrorMessage("Created date is required.");
+                .WithErrorMessage("CREATED_DATE_REQUIRED");
         }
     }
 }

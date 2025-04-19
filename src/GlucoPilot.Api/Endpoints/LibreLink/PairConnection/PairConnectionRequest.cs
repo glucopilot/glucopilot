@@ -11,7 +11,7 @@ public sealed record PairConnectionRequest
     {
         public PairConnectionRequestValidator()
         {
-            RuleFor(x => x.PatientId).NotEmpty();
+            RuleFor(x => x.PatientId).NotEmpty().WithMessage(Resources.ValidationMessages.PatientIdRequired);
         }
     }
 }

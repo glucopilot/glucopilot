@@ -16,7 +16,7 @@ public record NewTreatmentRequest
         {
             RuleFor(request => request)
                 .Must(request => request.MealId != null || request.InjectionId != null)
-                .WithMessage("At least one of MealId, InjectionId must be provided.");
+                .WithMessage(Resources.ValidationMessages.MealdInjectionIdMustBeProvided);
         }
     }
 }
