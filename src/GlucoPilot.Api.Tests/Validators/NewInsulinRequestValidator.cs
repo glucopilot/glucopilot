@@ -22,7 +22,7 @@ namespace GlucoPilot.Tests.Validators
             var model = new NewInsulinRequest { Name = string.Empty, Type = InsulinType.Bolus };
             var result = _validator.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Name)
-                .WithErrorMessage("NAME_NOT_EMPTY");
+                .WithErrorMessage("NAME_REQUIRED");
         }
 
         [Test]

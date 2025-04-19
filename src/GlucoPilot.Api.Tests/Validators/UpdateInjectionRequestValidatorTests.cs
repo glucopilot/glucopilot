@@ -27,7 +27,7 @@ public class UpdateInjectionRequestValidatorTests
 
         var result = _validator.TestValidate(request);
 
-        result.ShouldHaveValidationErrorFor(x => x.InsulinId).WithErrorMessage("InsulinId is required.");
+        result.ShouldHaveValidationErrorFor(x => x.InsulinId).WithErrorMessage("INSULIN_ID_INVALID");
     }
 
     [Test]
@@ -42,7 +42,7 @@ public class UpdateInjectionRequestValidatorTests
 
         var result = _validator.TestValidate(request);
 
-        result.ShouldHaveValidationErrorFor(x => x.Units).WithErrorMessage("Units must be greater than 0.");
+        result.ShouldHaveValidationErrorFor(x => x.Units).WithErrorMessage("UNITS_GREATER_THAN_ZERO");
     }
 
     [Test]
@@ -57,7 +57,7 @@ public class UpdateInjectionRequestValidatorTests
 
         var result = _validator.TestValidate(request);
 
-        result.ShouldHaveValidationErrorFor(x => x.Type).WithErrorMessage("Type must be a valid InsulinType.");
+        result.ShouldHaveValidationErrorFor(x => x.Type).WithErrorMessage("INSULIN_TYPE_INVALID");
     }
 
     [Test]
