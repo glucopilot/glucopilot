@@ -20,7 +20,7 @@ public record NewIngredientRequest
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage(Resources.ValidationMessages.NameRequired);
-            RuleFor(x => x.Carbs)   
+            RuleFor(x => x.Carbs)
                 .GreaterThan(0)
                 .WithMessage(Resources.ValidationMessages.CarbsGreaterThanZero);
             RuleFor(x => x.Protein)
