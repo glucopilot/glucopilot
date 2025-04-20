@@ -17,7 +17,7 @@ internal static class Endpoint
 {
     internal static async Task<Results<Ok<ListSensorsResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
         [AsParameters] ListSensorsRequest request,
-        [FromServices] IValidator<PagedRequest> validator,
+        [FromServices] IValidator<ListSensorsRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Sensor> sensorRepository,
         CancellationToken cancellationToken)
