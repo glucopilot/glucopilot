@@ -34,7 +34,7 @@ public class ListSensorsEndpointTests
     [Test]
     public async Task HandleAsync_Should_Return_ValidationProblem_When_Request_Is_Invalid()
     {
-        var request = new PagedRequest { Page = 0, PageSize = 10 };
+        var request = new ListSensorsRequest { Page = 0, PageSize = 10 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(new[]
@@ -50,7 +50,7 @@ public class ListSensorsEndpointTests
     [Test]
     public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
     {
-        var request = new PagedRequest { Page = 0, PageSize = 10 };
+        var request = new ListSensorsRequest { Page = 0, PageSize = 10 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -65,7 +65,7 @@ public class ListSensorsEndpointTests
     [Test]
     public async Task HandleAsync_Should_Return_Ok_With_Empty_Sensors_When_No_Sensors_Exist()
     {
-        var request = new PagedRequest { Page = 0, PageSize = 10 };
+        var request = new ListSensorsRequest { Page = 0, PageSize = 10 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
@@ -94,7 +94,7 @@ public class ListSensorsEndpointTests
     [Test]
     public async Task HandleAsync_Should_Return_Ok_With_Sensors_When_Sensors_Exist()
     {
-        var request = new PagedRequest { Page = 0, PageSize = 10 };
+        var request = new ListSensorsRequest { Page = 0, PageSize = 10 };
         var userId = Guid.NewGuid();
         var sensors = new List<Sensor>
         {
