@@ -1,6 +1,6 @@
 using System;
 using FluentValidation.TestHelper;
-using GlucoPilot.Api.Endpoints.Meals.Nutrition;
+using GlucoPilot.Api.Endpoints.Treatments.Nutrition;
 using NUnit.Framework;
 
 namespace GlucoPilot.Api.Tests.Validators;

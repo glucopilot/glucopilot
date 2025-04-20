@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 
-namespace GlucoPilot.Api.Endpoints.Meals.Nutrition;
+namespace GlucoPilot.Api.Endpoints.Treatments.Nutrition;
 
 public sealed class NutritionRequestModel
 {

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
-using GlucoPilot.Api.Endpoints.Meals.Nutrition;
+using GlucoPilot.Api.Endpoints.Treatments.Nutrition;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
@@ -15,9 +15,9 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
-using Endpoint = GlucoPilot.Api.Endpoints.Meals.Nutrition.Endpoint;
+using Endpoint = GlucoPilot.Api.Endpoints.Treatments.Nutrition.Endpoint;
 
-namespace GlucoPilot.Api.Tests.Endpoints.Meals
+namespace GlucoPilot.Api.Tests.Endpoints.Treatments
 {
     [TestFixture]
     public class NutritionTests
@@ -77,7 +77,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
 
             _validatorMock
                 .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+                .ReturnsAsync(new ValidationResult());
 
             _currentUserMock
                 .Setup(c => c.GetUserId())
@@ -140,7 +140,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
 
             _validatorMock
                 .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+                .ReturnsAsync(new ValidationResult());
 
             _currentUserMock
                 .Setup(c => c.GetUserId())
