@@ -16,8 +16,8 @@ namespace GlucoPilot.Api.Endpoints.Sensors.List;
 internal static class Endpoint
 {
     internal static async Task<Results<Ok<ListSensorsResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
-        [AsParameters] PagedRequest request,
-        [FromServices] IValidator<PagedRequest> validator,
+        [AsParameters] ListSensorsRequest request,
+        [FromServices] IValidator<ListSensorsRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Sensor> sensorRepository,
         CancellationToken cancellationToken)
