@@ -1,4 +1,4 @@
-namespace GlucoPilot.Api.Endpoints.Meals.Nutrition;
+namespace GlucoPilot.Api.Endpoints.Treatments.Nutrition;
 
 public sealed class NutritionResponseModel
 {

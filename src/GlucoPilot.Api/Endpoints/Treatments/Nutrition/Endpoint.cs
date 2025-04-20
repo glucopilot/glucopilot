@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace GlucoPilot.Api.Endpoints.Meals.Nutrition;
+namespace GlucoPilot.Api.Endpoints.Treatments.Nutrition;
 
 internal static class Endpoint
 {
