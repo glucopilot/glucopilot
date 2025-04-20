@@ -17,7 +17,7 @@ using Moq;
 using NUnit.Framework;
 using Endpoint = GlucoPilot.Api.Endpoints.Treatments.Nutrition.Endpoint;
 
-namespace GlucoPilot.Api.Tests.Endpoints.Meals
+namespace GlucoPilot.Api.Tests.Endpoints.Treatments
 {
     [TestFixture]
     public class NutritionTests
@@ -77,7 +77,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
 
             _validatorMock
                 .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+                .ReturnsAsync(new ValidationResult());
 
             _currentUserMock
                 .Setup(c => c.GetUserId())
@@ -140,7 +140,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Meals
 
             _validatorMock
                 .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+                .ReturnsAsync(new ValidationResult());
 
             _currentUserMock
                 .Setup(c => c.GetUserId())
