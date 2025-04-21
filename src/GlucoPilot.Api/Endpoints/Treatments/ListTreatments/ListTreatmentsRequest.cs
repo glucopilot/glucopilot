@@ -11,7 +11,7 @@ public sealed record ListTreatmentsRequest : PagedRequest
     public DateTimeOffset? To { get; set; }
 
     public sealed class ListTreatmentsRequestValidator : PagedRequestValidator<ListTreatmentsRequest>
-    {      
+    {
         public ListTreatmentsRequestValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
             RuleFor(request => request)
