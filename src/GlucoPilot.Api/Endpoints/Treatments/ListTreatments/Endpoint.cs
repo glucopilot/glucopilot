@@ -28,11 +28,20 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
 
+        if (request.From is null)
+        {
+            request.From = DateTimeOffset.MinValue;
+        }
+        if (request.To is null)
+        {
+            request.To = DateTimeOffset.MaxValue;
+        }
+
         var userId = currentUser.GetUserId();
 
         var treatment = treatmentRepository
             .GetAll(new FindOptions { IsAsNoTracking = true })
-            .Where(t => t.UserId == userId)
+            .Where(t => t.UserId == userId && t.Created >= request.From && t.Created <= request.To)
             .Include(t => t.Meal)
             .ThenInclude(m => m.MealIngredients)
             .ThenInclude(mi => mi.Ingredient)
