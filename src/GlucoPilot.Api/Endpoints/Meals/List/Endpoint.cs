@@ -32,7 +32,14 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var meals = repository.Find(m => m.UserId == userId, new FindOptions { IsAsNoTracking = true })
+        var mealsQuery = repository.Find(m => m.UserId == userId, new FindOptions { IsAsNoTracking = true });
+
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            mealsQuery = mealsQuery.Where(m => m.Name.Contains(request.Search, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var meals = mealsQuery
             .OrderByDescending(m => m.Created)
             .Skip(request.Page * request.PageSize)
             .Take(request.PageSize)
