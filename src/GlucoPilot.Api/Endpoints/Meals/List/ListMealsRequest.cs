@@ -9,7 +9,7 @@ public sealed record ListMealsRequest : PagedRequest
     public string? Search { get; set; }
 
     public sealed class ListMealsValidator : PagedRequestValidator<ListMealsRequest>
-    {     
+    {
         public ListMealsValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
             RuleFor(x => x.Search)
