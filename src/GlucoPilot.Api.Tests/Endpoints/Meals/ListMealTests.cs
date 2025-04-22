@@ -254,4 +254,36 @@ public class ListMealTests
         var ingredientResponse = meal.MealIngredients.First().Ingredient;
         Assert.That(ingredientResponse, Is.Null);
     }
+
+    [Test]
+    public async Task HandleAsync_Should_Filter_Meals_When_Search_Is_Provided()
+    {
+        var userId = Guid.NewGuid();
+        var request = new ListMealsRequest
+        {
+            Search = "Lunch",
+            Page = 0,
+            PageSize = 10
+        };
+
+        var meals = new List<Meal>
+        {
+            new Meal { Id = Guid.NewGuid(), UserId = userId, Name = "Breakfast", Created = DateTimeOffset.UtcNow },
+            new Meal { Id = Guid.NewGuid(), UserId = userId, Name = "Lunch", Created = DateTimeOffset.UtcNow }
+        }.AsQueryable();
+
+        _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new ValidationResult());
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+        _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>()))
+                       .Returns((Expression<Func<Meal, bool>> predicate, FindOptions _) => meals.Where(predicate));
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+
+        _repositoryMock.Verify(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>()), Times.Once);
+
+        var okResult = result.Result as Ok<ListMealsResponse>;
+        Assert.That(okResult, Is.Not.Null);
+        Assert.That(okResult.Value.Meals.Count, Is.EqualTo(1));
+        Assert.That(okResult.Value.Meals.First().Name, Is.EqualTo("Lunch"));
+    }
 }

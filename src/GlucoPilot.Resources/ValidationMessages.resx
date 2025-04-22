@@ -216,4 +216,7 @@
   <data name="CaloriesGreaterThanZero" xml:space="preserve">
     <value>CALORIES_GREATER_THAN_ZERO</value>
   </data>
+  <data name="SearchLengthInvalid" xml:space="preserve">
+    <value>SEARCH_LENGTH_INVALID</value>
+  </data>
 </root>

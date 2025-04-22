@@ -55,4 +55,37 @@ public class ListMealsValidatorTests
         var result = _validator.TestValidate(model);
         result.ShouldNotHaveValidationErrorFor(x => x.PageSize);
     }
+
+    [Test]
+    public void Should_Have_Error_When_Search_Is_Less_Than_3_Characters()
+    {
+        var model = new ListMealsRequest { Search = "ab" };
+        var result = _validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(x => x.Search)
+            .WithErrorMessage("SEARCH_LENGTH_INVALID");
+    }
+
+    [Test]
+    public void Should_Not_Have_Error_When_Search_Is_3_Characters_Or_More()
+    {
+        var model = new ListMealsRequest { Search = "abc" };
+        var result = _validator.TestValidate(model);
+        result.ShouldNotHaveValidationErrorFor(x => x.Search);
+    }
+
+    [Test]
+    public void Should_Not_Have_Error_When_Search_Is_Null()
+    {
+        var model = new ListMealsRequest { Search = null };
+        var result = _validator.TestValidate(model);
+        result.ShouldNotHaveValidationErrorFor(x => x.Search);
+    }
+
+    [Test]
+    public void Should_Not_Have_Error_When_Search_Is_Empty()
+    {
+        var model = new ListMealsRequest { Search = string.Empty };
+        var result = _validator.TestValidate(model);
+        result.ShouldNotHaveValidationErrorFor(x => x.Search);
+    }
 }

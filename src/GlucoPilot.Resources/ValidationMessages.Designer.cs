@@ -322,6 +322,15 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SEARCH_LENGTH_INVALID.
+        /// </summary>
+        public static string SearchLengthInvalid {
+            get {
+                return ResourceManager.GetString("SearchLengthInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TERMS_NOT_ACCEPTED.
         /// </summary>
         public static string TermsNotAccepted {
