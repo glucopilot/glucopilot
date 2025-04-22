@@ -36,7 +36,8 @@ internal static class Endpoint
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
-            mealsQuery = mealsQuery.Where(m => m.Name.Contains(request.Search, StringComparison.OrdinalIgnoreCase));
+            var searchLower = request.Search.ToLower();
+            mealsQuery = mealsQuery.Where(m => m.Name.ToLower().Contains(searchLower));
         }
 
         var meals = mealsQuery
