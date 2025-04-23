@@ -65,10 +65,18 @@ public abstract class User
     /// </summary>
     public bool IsVerified { get; set; }
 
+    /// <summary>
+    /// A collection of user's identity refresh tokens
+    /// </summary>
     public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     /// <summary>
     /// A collection of patients that this user has access to.
     /// </summary>
     public virtual ICollection<Patient> Patients { get; set; } = [];
+    
+    /// <summary>
+    /// The user's settings.
+    /// </summary>
+    public UserSettings? Settings { get; set; } = new UserSettings();
 }
