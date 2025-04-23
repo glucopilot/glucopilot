@@ -8,6 +8,7 @@ using GlucoPilot.Api.Endpoints.Insulins;
 using GlucoPilot.Api.Endpoints.Injections;
 using GlucoPilot.Api.Endpoints.Treatments;
 using GlucoPilot.Api.Endpoints.Sensors;
+using GlucoPilot.Api.Endpoints.Settings;
 
 namespace GlucoPilot.Api.Endpoints;
 
@@ -16,6 +17,7 @@ public static class GlucoPilotEndpoints
 {
     internal static IEndpointRouteBuilder MapGlucoPilotEndpoints(this IEndpointRouteBuilder endpoints)
     {
+        endpoints.MapSettingsEndpoints();
         endpoints.MapReadingsEndpoints();
         endpoints.MapMealsEndpoints();
         endpoints.MapLibreLinkEndpoints();

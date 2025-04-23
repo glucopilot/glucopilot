@@ -129,6 +129,7 @@ public sealed class UserService : IUserService
                 IsVerified = !_options.RequireEmailVerification,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
+                Settings = new UserSettings(),
             };
             user = patient;
 
