@@ -49,22 +49,22 @@ public class Ingredient
     /// <summary>
     /// The number of carbs in an ingredient.
     /// </summary>
-    public int Carbs { get; set; } = 0;
+    public decimal Carbs { get; set; } = 0;
 
     /// <summary>
     /// The amount of protein in an ingredient.
     /// </summary>
-    public int Protein { get; set; } = 0;
+    public decimal Protein { get; set; } = 0;
 
     /// <summary>
     /// The amount of fat in an ingredient.
     /// </summary>
-    public int Fat { get; set; } = 0;
+    public decimal Fat { get; set; } = 0;
 
     /// <summary>
     /// The amount of calories in an ingredient.
     /// </summary>
-    public int Calories { get; set; } = 0;
+    public decimal Calories { get; set; } = 0;
 
     /// <summary>
     /// The unit of measurement of the ingredient that the nutritional values are based on.
