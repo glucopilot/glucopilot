@@ -78,5 +78,5 @@ public abstract class User
     /// <summary>
     /// The user's settings.
     /// </summary>
-    public UserSettings? Settings { get; set; } = new UserSettings();
+    public UserSettings? Settings { get; set; }
 }
