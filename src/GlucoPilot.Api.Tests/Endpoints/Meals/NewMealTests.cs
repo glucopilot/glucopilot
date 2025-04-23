@@ -23,7 +23,7 @@ public class NewMealTests
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IRepository<Meal>> _mealRepositoryMock;
     private Mock<IRepository<Ingredient>> _ingredientRepositoryMock;
-    private Mock<IValidator<NewMealRequest>> _validatorMock;    
+    private Mock<IValidator<NewMealRequest>> _validatorMock;
 
     [SetUp]
     public void SetUp()
