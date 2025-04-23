@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GlucoPilot.AspNetCore.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace GlucoPilot.Api.Endpoints.Settings;
 
+[ExcludeFromCodeCoverage]
 internal static class SettingEndpoints
 {
     internal static IEndpointRouteBuilder MapSettingsEndpoints(this IEndpointRouteBuilder endpoints)

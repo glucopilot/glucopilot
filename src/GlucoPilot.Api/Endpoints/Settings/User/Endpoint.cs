@@ -12,7 +12,7 @@ namespace GlucoPilot.Api.Endpoints.Settings.User;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<UserSettingsResponse>, ValidationProblem, UnauthorizedHttpResult>> HandleAsync(
+    internal static async Task<Results<Ok<UserSettingsResponse>, UnauthorizedHttpResult>> HandleAsync(
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Data.Entities.User> userRepository,
         CancellationToken cancellationToken)
