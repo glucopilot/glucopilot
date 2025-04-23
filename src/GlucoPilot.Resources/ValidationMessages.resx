@@ -204,17 +204,17 @@
   <data name="IngredientsNotEmpty" xml:space="preserve">
     <value>INGREDIENTS_NOT_EMPTY</value>
   </data>
-  <data name="CarbsGreaterThanZero" xml:space="preserve">
-    <value>CARBS_GREATER_THAN_ZERO</value>
+  <data name="CarbsGreaterThanOrEqualToZero" xml:space="preserve">
+    <value>CARBS_GREATER_THAN_OR_EQUAL_TO_ZERO</value>
   </data>
-  <data name="ProteinGreaterThanZero" xml:space="preserve">
-    <value>PROTEIN_GREATER_THAN_ZERO</value>
+  <data name="ProteinGreaterThanOrEqualToZero" xml:space="preserve">
+    <value>PROTEIN_GREATER_THAN_OR_EQUAL_TO_ZERO</value>
   </data>
-  <data name="FatGreaterThanZero" xml:space="preserve">
-    <value>FAT_GREATER_THAN_ZERO</value>
+  <data name="FatGreaterThanOrEqualToZero" xml:space="preserve">
+    <value>FAT_GREATER_THAN_OR_EQUAL_TO_ZERO</value>
   </data>
-  <data name="CaloriesGreaterThanZero" xml:space="preserve">
-    <value>CALORIES_GREATER_THAN_ZERO</value>
+  <data name="CaloriesGreaterThanOrEqualToZero" xml:space="preserve">
+    <value>CALORIES_GREATER_THAN_OR_EQUAL_TO_ZERO</value>
   </data>
   <data name="SearchLengthInvalid" xml:space="preserve">
     <value>SEARCH_LENGTH_INVALID</value>

@@ -2,8 +2,8 @@ namespace GlucoPilot.Api.Endpoints.Treatments.Nutrition;
 
 public sealed class NutritionResponseModel
 {
-    public int TotalCalories { get; init; }
-    public int TotalCarbs { get; init; }
-    public int TotalProtein { get; init; }
-    public int TotalFat { get; init; }
+    public decimal TotalCalories { get; init; }
+    public decimal TotalCarbs { get; init; }
+    public decimal TotalProtein { get; init; }
+    public decimal TotalFat { get; init; }
 }

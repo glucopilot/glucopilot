@@ -18,10 +18,10 @@ public record GetTreatmentMealResponse
 {
     public required Guid Id { get; init; }
     public required string Name { get; init; }
-    public required int TotalCarbs { get; init; }
-    public required int TotalProtein { get; init; }
-    public required int TotalFat { get; init; }
-    public required int TotalCalories { get; init; }
+    public required decimal TotalCarbs { get; init; }
+    public required decimal TotalProtein { get; init; }
+    public required decimal TotalFat { get; init; }
+    public required decimal TotalCalories { get; init; }
 }
 
 public record GetTreatmentInjectionResponse

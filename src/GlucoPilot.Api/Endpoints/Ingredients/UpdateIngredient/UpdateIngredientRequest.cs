@@ -7,10 +7,10 @@ namespace GlucoPilot.Api.Endpoints.Ingredients.UpdateIngredient;
 public sealed record UpdateIngredientRequest
 {
     public required string Name { get; set; }
-    public required int Carbs { get; set; }
-    public required int Protein { get; set; }
-    public required int Fat { get; set; }
-    public required int Calories { get; set; }
+    public required decimal Carbs { get; set; }
+    public required decimal Protein { get; set; }
+    public required decimal Fat { get; set; }
+    public required decimal Calories { get; set; }
     public required UnitOfMeasurement Uom { get; set; }
 
     public sealed class UpdateIngredientRequestValidator : AbstractValidator<UpdateIngredientRequest>
@@ -22,16 +22,16 @@ public sealed record UpdateIngredientRequest
                 .WithMessage(Resources.ValidationMessages.NameRequired);
             RuleFor(x => x.Carbs)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage(Resources.ValidationMessages.CarbsGreaterThanZero);
+                .WithMessage(Resources.ValidationMessages.CarbsGreaterThanOrEqualToZero);
             RuleFor(x => x.Protein)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage(Resources.ValidationMessages.ProteinGreaterThanZero);
+                .WithMessage(Resources.ValidationMessages.ProteinGreaterThanOrEqualToZero);
             RuleFor(x => x.Fat)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage(Resources.ValidationMessages.FatGreaterThanZero);
+                .WithMessage(Resources.ValidationMessages.FatGreaterThanOrEqualToZero);
             RuleFor(x => x.Calories)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage(Resources.ValidationMessages.CaloriesGreaterThanZero);
+                .WithMessage(Resources.ValidationMessages.CaloriesGreaterThanOrEqualToZero);
         }
     }
 }
