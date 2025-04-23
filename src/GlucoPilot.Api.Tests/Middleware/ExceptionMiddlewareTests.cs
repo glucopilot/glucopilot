@@ -88,4 +88,12 @@ internal sealed class ExceptionMiddlewareTests
 
         Assert.That(_httpContext.Response.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
     }
+
+    [Test]
+    public async Task InvokeAsync_With_BadRequestException_ReturnsBadRequestStatusCode()
+    {
+        var next = new RequestDelegate(_ => throw new BadRequestException("Bad request"));
+        await _sut.InvokeAsync(_httpContext, next);
+        Assert.That(_httpContext.Response.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+    }
 }

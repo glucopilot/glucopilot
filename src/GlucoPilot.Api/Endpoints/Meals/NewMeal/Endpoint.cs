@@ -19,7 +19,8 @@ internal static class Endpoint
         [FromBody] NewMealRequest request,
         [FromServices] IValidator<NewMealRequest> validator,
         [FromServices] ICurrentUser currentUser,
-        [FromServices] IRepository<Meal> repository)
+        [FromServices] IRepository<Meal> mealRepository,
+        [FromServices] IRepository<Ingredient> ingredientRepository)
     {
         if (await validator.ValidateAsync(request).ConfigureAwait(false) is
             { IsValid: false } validation)
@@ -28,6 +29,18 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
+
+        var ingredientIds = request.MealIngredients.Select(x => x.IngredientId).ToList();
+        var validIngredientIds = ingredientRepository
+            .Find(x => ingredientIds.Contains(x.Id))
+            .Select(x => x.Id)
+            .ToList();
+
+        var invalidIngredientIds = ingredientIds.Except(validIngredientIds).ToList();
+        if (invalidIngredientIds.Any())
+        {
+            throw new BadRequestException(Resources.ValidationMessages.IngredientIdInvalid);
+        }
 
         var newMeal = new Meal
         {
@@ -44,7 +57,7 @@ internal static class Endpoint
             Quantity = x.Quantity,
         }).ToList();
 
-        repository.Add(newMeal);
+        mealRepository.Add(newMeal);
 
         var response = new NewMealResponse
         {

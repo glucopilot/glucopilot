@@ -13,19 +13,24 @@ using GlucoPilot.Api.Models;
 using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Resources;
+using System.Linq.Expressions;
+using GlucoPilot.Data.Enums;
 
 [TestFixture]
 public class NewMealTests
 {
     private Mock<ICurrentUser> _currentUserMock;
-    private Mock<IRepository<Meal>> _repositoryMock;
+    private Mock<IRepository<Meal>> _mealRepositoryMock;
+    private Mock<IRepository<Ingredient>> _ingredientRepositoryMock;
     private Mock<IValidator<NewMealRequest>> _validatorMock;
 
     [SetUp]
     public void SetUp()
     {
         _currentUserMock = new Mock<ICurrentUser>();
-        _repositoryMock = new Mock<IRepository<Meal>>();
+        _mealRepositoryMock = new Mock<IRepository<Meal>>();
+        _ingredientRepositoryMock = new Mock<IRepository<Ingredient>>();
         _validatorMock = new Mock<IValidator<NewMealRequest>>();
     }
 
@@ -36,7 +41,7 @@ public class NewMealTests
         var validationResult = new ValidationResult(new[] { new ValidationFailure("Name", "Name is required") });
 
         _validatorMock.Setup(x => x.ValidateAsync(request, default)).ReturnsAsync(validationResult);
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object);
 
         Assert.Multiple(() =>
         {
@@ -52,7 +57,7 @@ public class NewMealTests
         _currentUserMock.Setup(x => x.GetUserId()).Throws(new UnauthorizedException("USER_NOT_LOGGED_IN"));
         var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<NewMealIngredientRequest>() };
 
-        Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object),
+        Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object),
             Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
     }
 
@@ -64,9 +69,11 @@ public class NewMealTests
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         var request = new NewMealRequest { Name = "Test Meal", MealIngredients = new List<NewMealIngredientRequest>() };
 
-        _repositoryMock.Setup(x => x.Add(It.IsAny<Meal>()));
+        _mealRepositoryMock.Setup(x => x.Add(It.IsAny<Meal>()));
+        _ingredientRepositoryMock.Setup(x => x.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(new List<Ingredient>().AsQueryable());
 
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object);
 
         Assert.That(result.Result, Is.InstanceOf<Created<NewMealResponse>>());
         var createdResult = result.Result as Created<NewMealResponse>;
@@ -80,7 +87,12 @@ public class NewMealTests
         var mockCurrentUser = new Mock<ICurrentUser>();
         mockCurrentUser.Setup(x => x.GetUserId()).Returns(Guid.NewGuid());
 
+        var ingredientIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+
         var mockRepository = new Mock<IRepository<Meal>>();
+        _ingredientRepositoryMock
+                .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
+                .Returns(ingredientIds.Select(id => new Ingredient { Id = id, Uom = UnitOfMeasurement.Unit, Created = DateTimeOffset.UtcNow, Name = "Ingredient" }).AsQueryable());
 
         var request = new NewMealRequest
         {
@@ -89,23 +101,65 @@ public class NewMealTests
         {
             new NewMealIngredientRequest
             {
-                IngredientId = Guid.NewGuid(),
+                IngredientId = ingredientIds[0],
                 Quantity = 2
             },
             new NewMealIngredientRequest
             {
-                IngredientId = Guid.NewGuid(),
+                IngredientId = ingredientIds[1],
                 Quantity = 3
             }
         }
         };
 
-        await Endpoint.HandleAsync(request, _validatorMock.Object, mockCurrentUser.Object, mockRepository.Object);
+        await Endpoint.HandleAsync(request, _validatorMock.Object, mockCurrentUser.Object, mockRepository.Object, _ingredientRepositoryMock.Object);
 
         mockRepository.Verify(x => x.Add(It.Is<Meal>(meal =>
             meal.MealIngredients.Count == 2 &&
             meal.MealIngredients.Any(mi => mi.Quantity == 2) &&
             meal.MealIngredients.Any(mi => mi.Quantity == 3)
         )), Times.Once);
+    }
+
+    [Test]
+    public async Task HandleAsync_Should_Throw_BadRequestException_When_Invalid_Ingredient_Ids_Provided()
+    {
+        var invalidIngredientId = Guid.NewGuid();
+        var request = new NewMealRequest
+        {
+            Name = "Test Meal",
+            MealIngredients = new List<NewMealIngredientRequest>
+                {
+                    new NewMealIngredientRequest
+                    {
+                        IngredientId = invalidIngredientId,
+                        Quantity = 1
+                    }
+                }
+        };
+
+        var validatorMock = new Mock<IValidator<NewMealRequest>>();
+        validatorMock
+            .Setup(v => v.ValidateAsync(request, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        var currentUserMock = new Mock<ICurrentUser>();
+        currentUserMock
+            .Setup(c => c.GetUserId())
+            .Returns(Guid.NewGuid());
+
+        _ingredientRepositoryMock
+            .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(Enumerable.Empty<Ingredient>().AsQueryable());
+
+        var exception = Assert.ThrowsAsync<BadRequestException>(async () =>
+            await Endpoint.HandleAsync(
+                request,
+                validatorMock.Object,
+                currentUserMock.Object,
+                _mealRepositoryMock.Object,
+                _ingredientRepositoryMock.Object));
+
+        Assert.That(exception.Message, Is.EqualTo("INGREDIENT_ID_INVALID"));
     }
 }
