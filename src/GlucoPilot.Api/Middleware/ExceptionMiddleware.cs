@@ -70,6 +70,10 @@ internal partial class ExceptionMiddleware : IMiddleware
                     context.Response.StatusCode = StatusCodes.Status403Forbidden;
                     messages.Add(e.Message);
                     break;
+                case BadRequestException:
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    messages.Add(e.Message);
+                    break;
                 default:
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     break;
