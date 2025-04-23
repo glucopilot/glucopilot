@@ -6,7 +6,7 @@ public enum GlucoseUnitOfMeasurement
     /// mmol/L
     /// </summary>
     MmolL = 0,
-    
+
     /// <summary>
     /// mg/dL
     /// </summary>

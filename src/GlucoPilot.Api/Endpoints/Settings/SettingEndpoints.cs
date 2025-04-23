@@ -13,7 +13,7 @@ internal static class SettingEndpoints
     {
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/settings")
             .WithTags("Settings");
-        
+
         group.MapGet("/user", User.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)

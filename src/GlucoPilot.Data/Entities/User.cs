@@ -74,7 +74,7 @@ public abstract class User
     /// A collection of patients that this user has access to.
     /// </summary>
     public virtual ICollection<Patient> Patients { get; set; } = [];
-    
+
     /// <summary>
     /// The user's settings.
     /// </summary>
