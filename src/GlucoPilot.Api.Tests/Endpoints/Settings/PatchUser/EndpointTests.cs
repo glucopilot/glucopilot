@@ -97,7 +97,8 @@ public class EndpointTests
         {
             Id = userId,
             Email = "test@nomail.com",
-            PasswordHash = "password", Settings = null
+            PasswordHash = "password",
+            Settings = null
         };
         var request = new UserSettingsPatchRequest();
 
