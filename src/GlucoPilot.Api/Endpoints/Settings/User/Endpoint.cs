@@ -4,6 +4,7 @@ using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
+using GlucoPilot.Identity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +22,11 @@ internal static class Endpoint
 
         var user = await userRepository.FindOneAsync(s => s.Id == userId, new FindOptions { IsAsNoTracking = false, IsIgnoreAutoIncludes = true }, cancellationToken)
             .ConfigureAwait(false);
-
         if (user is null)
         {
             throw new UnauthorizedException("USER_NOT_LOGGED_IN");
         }
+
 
         if (user.Settings is null)
         {
@@ -35,6 +36,8 @@ internal static class Endpoint
 
         var response = new UserSettingsResponse
         {
+            Email = user.Email,
+            GlucoseProvider = (user is Patient patient) ? (GlucoseProvider?)patient.GlucoseProvider : null,
             GlucoseUnitOfMeasurement = (GlucoseUnitOfMeasurement)user.Settings.GlucoseUnitOfMeasurement,
             LowSugarThreshold = user.Settings.LowSugarThreshold,
             HighSugarThreshold = user.Settings.HighSugarThreshold,
