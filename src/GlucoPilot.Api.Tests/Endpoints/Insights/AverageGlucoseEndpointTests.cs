@@ -36,7 +36,7 @@ internal sealed class AverageGlucoseEndpointTests
             new Reading { UserId = userId, Created = DateTimeOffset.UtcNow.AddDays(-2), GlucoseLevel = 120, Direction = ReadingDirection.Steady }
         }.AsQueryable();
 
-       _repositoryMock.Setup(repo => repo.GetAll(It.IsAny<FindOptions>())).Returns(readings);
+        _repositoryMock.Setup(repo => repo.GetAll(It.IsAny<FindOptions>())).Returns(readings);
 
         var request = new AverageGlucoseRequest
         {

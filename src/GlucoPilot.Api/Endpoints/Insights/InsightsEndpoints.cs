@@ -23,7 +23,7 @@ internal static class InsightsEndpoints
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
-        
+
         return endpoints;
     }
 }
