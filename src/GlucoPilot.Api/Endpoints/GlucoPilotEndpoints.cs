@@ -6,6 +6,7 @@ using GlucoPilot.Api.Endpoints.LibreLink;
 using GlucoPilot.Api.Endpoints.Ingredients;
 using GlucoPilot.Api.Endpoints.Insulins;
 using GlucoPilot.Api.Endpoints.Injections;
+using GlucoPilot.Api.Endpoints.Insights;
 using GlucoPilot.Api.Endpoints.Treatments;
 using GlucoPilot.Api.Endpoints.Sensors;
 using GlucoPilot.Api.Endpoints.Settings;
@@ -22,6 +23,7 @@ public static class GlucoPilotEndpoints
         endpoints.MapMealsEndpoints();
         endpoints.MapLibreLinkEndpoints();
         endpoints.MapIngredientsEndpoints();
+        endpoints.MapInsightsEndpoints();
         endpoints.MapInsulinsEndpoints();
         endpoints.MapInjectionsEndpoints();
         endpoints.MapTreatmentsEndpoints();
