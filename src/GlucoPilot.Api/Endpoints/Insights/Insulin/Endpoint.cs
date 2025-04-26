@@ -23,7 +23,7 @@ internal static class Endpoint
         var userId = currentUser.GetUserId();
 
         var to = request.To ?? DateTimeOffset.UtcNow;
-        var from = request.From ?? to.AddHours(-to.Hour).AddMinutes(-to.Minute).AddSeconds(-to.Second);
+        var from = request.From ?? new DateTimeOffset(to.Date, to.Offset);
 
         var treatments = repository.Find(
             t => t.UserId == userId && t.Injection != null && t.Injection.Insulin != null && t.Created >= from &&
