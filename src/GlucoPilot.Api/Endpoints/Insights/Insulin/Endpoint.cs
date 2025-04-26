@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using GlucoPilot.Data.Entities;
@@ -14,13 +15,19 @@ namespace GlucoPilot.Api.Endpoints.Insights.Insulin;
 internal static class Endpoint
 {
     internal static Results<Ok<InsulinInsightsResponse>, UnauthorizedHttpResult> Handle(
+        [AsParameters] InsulinInsightsRequest request,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Treatment> repository,
         CancellationToken cancellationToken)
     {
         var userId = currentUser.GetUserId();
 
-        var treatments = repository.Find(t => t.UserId == userId && t.Injection != null && t.Injection.Insulin != null,
+        var to = request.To ?? DateTimeOffset.UtcNow;
+        var from = request.From ?? to.AddHours(-to.Hour).AddMinutes(-to.Minute).AddSeconds(-to.Second);
+
+        var treatments = repository.Find(
+            t => t.UserId == userId && t.Injection != null && t.Injection.Insulin != null && t.Created >= from &&
+                 t.Created <= to,
             new FindOptions { IsAsNoTracking = true }).Include(t => t.Injection).ThenInclude(i => i!.Insulin);
         var insulinInsights = treatments
             .GroupBy(t => t.Injection!.Insulin!.Type)

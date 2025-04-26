@@ -61,7 +61,13 @@ internal sealed class InsulinEndpointTests
             It.IsAny<FindOptions>()))
             .Returns(treatments);
 
-        var result = Endpoint.Handle(_currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var request = new InsulinInsightsRequest 
+        {
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow
+        };
+        
+        var result = Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.Multiple(() =>
         {
@@ -76,8 +82,13 @@ internal sealed class InsulinEndpointTests
     public void Handle_With_Unauthorized_User_Returns_Unauthorized_Result()
     {
         _currentUserMock.Setup(cu => cu.GetUserId()).Throws<UnauthorizedAccessException>();
+        var request = new InsulinInsightsRequest 
+        {
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow
+        };
 
-        Assert.That(() => Endpoint.Handle(_currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
+        Assert.That(() => Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
             Throws.InstanceOf<UnauthorizedAccessException>());
     }
 
@@ -89,8 +100,14 @@ internal sealed class InsulinEndpointTests
             It.IsAny<Expression<Func<Treatment, bool>>>(),
             It.IsAny<FindOptions>()))
             .Returns(Enumerable.Empty<Treatment>().AsQueryable());
+        
+        var request = new InsulinInsightsRequest 
+        {
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow
+        };
 
-        var result = Endpoint.Handle(_currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.Multiple(() =>
         {
