@@ -67,8 +67,8 @@ internal sealed class InsulinEndpointTests
         {
             Assert.That(result.Result, Is.InstanceOf<Ok<InsulinInsightsResponse>>());
             var response = result.Result as Ok<InsulinInsightsResponse>;
-            Assert.That(response.Value.Basal, Is.EqualTo(10));
-            Assert.That(response.Value.Bolus, Is.EqualTo(20));
+            Assert.That(response.Value.TotalBasalUnits, Is.EqualTo(10));
+            Assert.That(response.Value.TotalBolusUnits, Is.EqualTo(20));
         });
     }
 
@@ -96,8 +96,8 @@ internal sealed class InsulinEndpointTests
         {
             Assert.That(result.Result, Is.InstanceOf<Ok<InsulinInsightsResponse>>());
             var response = result.Result as Ok<InsulinInsightsResponse>; ;
-            Assert.That(response.Value.Basal, Is.EqualTo(0));
-            Assert.That(response.Value.Bolus, Is.EqualTo(0));
+            Assert.That(response.Value.TotalBasalUnits, Is.EqualTo(0));
+            Assert.That(response.Value.TotalBolusUnits, Is.EqualTo(0));
         });
     }
 }

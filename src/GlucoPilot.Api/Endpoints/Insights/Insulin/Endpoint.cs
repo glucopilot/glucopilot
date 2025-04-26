@@ -29,8 +29,8 @@ internal static class Endpoint
 
         var result = new InsulinInsightsResponse
         {
-            Basal = insulinInsights.FirstOrDefault(x => x.Key == InsulinType.Basal)?.Units ?? 0,
-            Bolus = insulinInsights.FirstOrDefault(x => x.Key == InsulinType.Bolus)?.Units ?? 0,
+            TotalBasalUnits = insulinInsights.FirstOrDefault(x => x.Key == InsulinType.Basal)?.Units ?? 0,
+            TotalBolusUnits = insulinInsights.FirstOrDefault(x => x.Key == InsulinType.Bolus)?.Units ?? 0,
         };
 
         return TypedResults.Ok(result);
