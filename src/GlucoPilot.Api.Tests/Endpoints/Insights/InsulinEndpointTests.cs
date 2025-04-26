@@ -84,7 +84,7 @@ internal sealed class InsulinEndpointTests
     [Test]
     public void Handle_With_No_Treatments_Returns_Zero_Units()
     {
-        _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid);
+        _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid());
         _repositoryMock.Setup(repo => repo.Find(
             It.IsAny<Expression<Func<Treatment, bool>>>(),
             It.IsAny<FindOptions>()))
