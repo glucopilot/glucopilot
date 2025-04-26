@@ -95,7 +95,7 @@ internal sealed class InsulinEndpointTests
         Assert.Multiple(() =>
         {
             Assert.That(result.Result, Is.InstanceOf<Ok<InsulinInsightsResponse>>());
-            var response = result.Result as Ok<InsulinInsightsResponse>;;
+            var response = result.Result as Ok<InsulinInsightsResponse>; ;
             Assert.That(response.Value.Basal, Is.EqualTo(0));
             Assert.That(response.Value.Bolus, Is.EqualTo(0));
         });
