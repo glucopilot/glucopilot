@@ -14,7 +14,7 @@ internal static class InsightsEndpoints
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/insights")
             .WithTags("Insights");
 
-        group.MapGet("/insulin", Insulin.Endpoint.HandleAsync)
+        group.MapGet("/insulin", Insulin.Endpoint.Handle)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();

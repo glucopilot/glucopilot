@@ -14,7 +14,7 @@ namespace GlucoPilot.Api.Endpoints.Insights.Insulin;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<InsulinInsightsResponse>, UnauthorizedHttpResult>> HandleAsync(
+    internal static Results<Ok<InsulinInsightsResponse>, UnauthorizedHttpResult> Handle(
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Treatment> repository,
         CancellationToken cancellationToken)
