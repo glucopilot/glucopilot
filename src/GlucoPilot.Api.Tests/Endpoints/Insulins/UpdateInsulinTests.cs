@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Endpoints.Insulins.UpdateInsulin;
+using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
-using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -90,7 +90,7 @@ public class UpdateInsulinTests
         var id = Guid.NewGuid();
         var userId = Guid.NewGuid();
         var request = new UpdateInsulinRequest { Name = "Updated Name", Type = InsulinType.Basal, Duration = 24, Scale = 1.5, PeakTime = 12 };
-        var insulin = new Insulin { Id = id, UserId = userId, Name = "Old Name", Type = InsulinType.Bolus };
+        var insulin = new Insulin { Id = id, UserId = userId, Name = "Old Name", Type = GlucoPilot.Data.Enums.InsulinType.Bolus };
 
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))

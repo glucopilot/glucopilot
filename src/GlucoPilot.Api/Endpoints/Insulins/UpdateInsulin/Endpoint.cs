@@ -38,7 +38,7 @@ internal static class Endpoint
         }
 
         insulin.Name = request.Name;
-        insulin.Type = request.Type;
+        insulin.Type = (Data.Enums.InsulinType)request.Type;
         insulin.Duration = request.Duration;
         insulin.Scale = request.Scale;
         insulin.PeakTime = request.PeakTime;
@@ -50,7 +50,7 @@ internal static class Endpoint
         {
             Id = insulin.Id,
             Name = insulin.Name,
-            Type = insulin.Type,
+            Type = (Models.InsulinType)insulin.Type,
             Duration = insulin.Duration,
             Scale = insulin.Scale,
             PeakTime = insulin.PeakTime,

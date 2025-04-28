@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using GlucoPilot.Data.Enums;
+using GlucoPilot.Api.Models;
 
 namespace GlucoPilot.Api.Endpoints.Insulins.NewInsulin;
 

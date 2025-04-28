@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Injections.NewInjection;
-using GlucoPilot.Data.Enums;
+using GlucoPilot.Api.Models;
 using System;
 
 namespace GlucoPilot.Api.Endpoints.Injections.UpdateInjection;

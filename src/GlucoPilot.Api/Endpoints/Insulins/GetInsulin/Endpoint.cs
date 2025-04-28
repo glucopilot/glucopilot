@@ -33,7 +33,7 @@ internal static class Endpoint
             Id = insulin.Id,
             Name = insulin.Name,
             Created = insulin.Created,
-            Type = insulin.Type,
+            Type = (Models.InsulinType)insulin.Type,
             Duration = insulin.Duration,
             Scale = insulin.Scale,
             PeakTime = insulin.PeakTime,

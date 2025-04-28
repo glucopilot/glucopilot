@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Endpoints.Insulins.NewInsulin;
+using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
-using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -94,7 +94,7 @@ namespace GlucoPilot.Tests.Endpoints.Insulins.NewInsulin
 
             _repositoryMock.Verify(r => r.Add(It.Is<Insulin>(i =>
                 i.Name == request.Name &&
-                i.Type == request.Type &&
+                i.Type == (Data.Enums.InsulinType)request.Type &&
                 i.Duration == request.Duration &&
                 i.Scale == request.Scale &&
                 i.UserId == userId
