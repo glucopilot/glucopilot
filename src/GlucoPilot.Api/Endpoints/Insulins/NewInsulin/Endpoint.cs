@@ -31,7 +31,7 @@ internal static class Endpoint
         var insulin = new Insulin
         {
             Name = request.Name,
-            Type = request.Type,
+            Type = (Data.Enums.InsulinType)request.Type,
             Duration = request.Duration,
             Scale = request.Scale,
             PeakTime = request.PeakTime,

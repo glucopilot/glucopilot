@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Insulins.GetInsulin;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +29,7 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var insulins = repository.Find(i => i.UserId == userId && (request.Type == null || i.Type == request.Type), new FindOptions { IsAsNoTracking = true })
+        var insulins = repository.Find(i => i.UserId == userId && (request.Type == null || i.Type == (Data.Enums.InsulinType)request.Type), new FindOptions { IsAsNoTracking = true })
             .OrderByDescending(i => i.Created)
             .Skip(request.Page * request.PageSize)
             .Take(request.PageSize)
@@ -40,7 +38,7 @@ internal static class Endpoint
                 Id = i.Id,
                 Created = i.Created,
                 Name = i.Name,
-                Type = i.Type,
+                Type = (Models.InsulinType)i.Type,
                 Duration = i.Duration,
                 Scale = i.Scale,
                 PeakTime = i.PeakTime,
@@ -48,7 +46,7 @@ internal static class Endpoint
             })
             .ToList();
 
-        var totalInsulins = await repository.CountAsync(i => i.UserId == userId && (request.Type == null || i.Type == request.Type), cancellationToken).ConfigureAwait(false);
+        var totalInsulins = await repository.CountAsync(i => i.UserId == userId && (request.Type == null || i.Type == (Data.Enums.InsulinType)request.Type), cancellationToken).ConfigureAwait(false);
         var numberOfPages = (int)Math.Ceiling(totalInsulins / (double)request.PageSize);
 
         var response = new ListInsulinsResponse

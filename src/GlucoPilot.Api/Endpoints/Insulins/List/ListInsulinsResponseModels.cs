@@ -1,5 +1,4 @@
 ﻿using GlucoPilot.Api.Models;
-using GlucoPilot.Data.Enums;
 using System;
 using System.Collections.Generic;
 
