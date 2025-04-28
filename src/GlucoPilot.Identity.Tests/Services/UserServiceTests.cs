@@ -148,7 +148,11 @@ internal sealed class UserServiceTests
 
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new CareGiver
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), Created = DateTimeOffset.UtcNow, RefreshTokens =
+        {
+            Email = "test@example.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"),
+            Created = DateTimeOffset.UtcNow,
+            RefreshTokens =
             []
         };
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),

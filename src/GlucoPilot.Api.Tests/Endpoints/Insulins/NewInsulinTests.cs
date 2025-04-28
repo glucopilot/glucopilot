@@ -81,7 +81,7 @@ public class NewInsulinTests
             Scale = 1.2,
             PeakTime = 2.0
         };
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());

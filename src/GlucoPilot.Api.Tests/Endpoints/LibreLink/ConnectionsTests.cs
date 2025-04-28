@@ -61,7 +61,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-                { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
@@ -90,7 +90,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-                { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
@@ -119,7 +119,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-                { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
@@ -161,7 +161,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-                { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))

@@ -83,7 +83,7 @@ public class UpdateInsulinTests
         var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (Models.InsulinType)(-1), Units = 1 };
         var userId = Guid.NewGuid();
         var injection = new Injection
-            { Id = Guid.NewGuid(), UserId = userId, InsulinId = request.InsulinId, Units = 1 };
+        { Id = Guid.NewGuid(), UserId = userId, InsulinId = request.InsulinId, Units = 1 };
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _injectionRepositoryMock
             .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Injection, bool>>>(), It.IsAny<FindOptions>(),
