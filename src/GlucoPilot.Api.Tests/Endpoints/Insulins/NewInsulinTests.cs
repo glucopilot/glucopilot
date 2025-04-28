@@ -81,14 +81,7 @@ public class NewInsulinTests
             Scale = 1.2,
             PeakTime = 2.0
         };
-
-            _repositoryMock.Verify(r => r.Add(It.Is<Insulin>(i =>
-                i.Name == request.Name &&
-                i.Type == (Data.Enums.InsulinType)request.Type &&
-                i.Duration == request.Duration &&
-                i.Scale == request.Scale &&
-                i.UserId == userId
-            )), Times.Once);
+        
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
