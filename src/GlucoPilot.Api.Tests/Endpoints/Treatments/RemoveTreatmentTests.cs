@@ -53,7 +53,7 @@ public class RemoveTreatmentTests
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _treatmentRepositoryMock
             .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Treatment, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Treatment?)null);
+            .ReturnsAsync((Treatment)null);
 
         Assert.That(async () => await Endpoint.HandleAsync(treatmentId, _currentUserMock.Object, _treatmentRepositoryMock.Object, CancellationToken.None),
             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("TREATMENT_NOT_FOUND"));

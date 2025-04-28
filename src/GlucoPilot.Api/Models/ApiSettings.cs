@@ -1,7 +1,6 @@
-﻿namespace GlucoPilot.Api.Models
+﻿namespace GlucoPilot.Api.Models;
+
+public class ApiSettings
 {
-    public class ApiSettings
-    {
-        public int MaxPageSize { get; set; }
-    }
+    public int MaxPageSize { get; set; }
 }

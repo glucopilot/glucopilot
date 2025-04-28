@@ -1,6 +1,5 @@
-﻿namespace GlucoPilot.LibreLinkClient.Models
+﻿namespace GlucoPilot.LibreLinkClient.Models;
+
+public sealed record GraphResponse : LibreLinkResponse<GraphInformation>
 {
-    public sealed record GraphResponse : LibreLinkResponse<GraphInformation>
-    {
-    }
 }

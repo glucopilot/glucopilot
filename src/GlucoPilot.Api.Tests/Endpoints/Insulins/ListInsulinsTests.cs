@@ -1,23 +1,24 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentValidation;
+using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Insulins.List;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using GlucoPilot.Data.Enums;
-using System.Linq.Expressions;
-using FluentValidation.Results;
-using GlucoPilot.AspNetCore.Exceptions;
+using Moq;
+using NUnit.Framework;
+
+namespace GlucoPilot.Api.Tests.Endpoints.Insulins;
 
 [TestFixture]
-public class EndpointTests
+public class ListInsulinsTests
 {
     private Mock<IValidator<ListInsulinsRequest>> _validatorMock;
     private Mock<ICurrentUser> _currentUserMock;
@@ -41,7 +42,7 @@ public class EndpointTests
         ]);
 
         _validatorMock
-            .Setup(v => v.ValidateAsync(request, default))
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(validationResult);
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
@@ -50,17 +51,17 @@ public class EndpointTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
+    public void HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
     {
         var request = new ListInsulinsRequest();
         _validatorMock
-            .Setup(v => v.ValidateAsync(request, default))
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
         _currentUserMock
             .Setup(c => c.GetUserId())
             .Throws<UnauthorizedAccessException>();
 
-        Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
+        Assert.That(() => Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
             Throws.InstanceOf<UnauthorizedAccessException>());
     }
 
@@ -82,7 +83,7 @@ public class EndpointTests
         };
 
         _validatorMock
-            .Setup(v => v.ValidateAsync(request, default))
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
         _currentUserMock
             .Setup(c => c.GetUserId())

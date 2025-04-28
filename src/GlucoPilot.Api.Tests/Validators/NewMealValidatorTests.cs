@@ -1,12 +1,10 @@
-﻿using FluentValidation.TestHelper;
-using GlucoPilot.Api.Endpoints.Meals.NewMeal;
-using GlucoPilot.Api.Models;
-using GlucoPilot.Data.Entities;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FluentValidation.TestHelper;
+using GlucoPilot.Api.Endpoints.Meals.NewMeal;
+using NUnit.Framework;
 
-namespace GlucoPilot.Api.Tests.Endpoints.Meals;
+namespace GlucoPilot.Api.Tests.Validators;
 
 [TestFixture]
 public class NewMealValidatorTests

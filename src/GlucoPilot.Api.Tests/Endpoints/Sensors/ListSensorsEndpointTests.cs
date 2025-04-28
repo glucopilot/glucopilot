@@ -37,10 +37,9 @@ public class ListSensorsEndpointTests
         var request = new ListSensorsRequest { Page = 0, PageSize = 10 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult(new[]
-            {
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult([
                 new FluentValidation.Results.ValidationFailure("Page", "Page is required")
-            }));
+            ]));
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _sensorRepositoryMock.Object, CancellationToken.None);
 
@@ -118,7 +117,10 @@ public class ListSensorsEndpointTests
 
         Assert.That(result.Result, Is.TypeOf<Ok<ListSensorsResponse>>());
         var response = (result.Result as Ok<ListSensorsResponse>)?.Value;
-        Assert.That(response?.Sensors.Count, Is.EqualTo(sensors.Count));
-        Assert.That(response?.NumberOfPages, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(response?.Sensors.Count, Is.EqualTo(sensors.Count));
+            Assert.That(response?.NumberOfPages, Is.EqualTo(1));
+        });
     }
 }

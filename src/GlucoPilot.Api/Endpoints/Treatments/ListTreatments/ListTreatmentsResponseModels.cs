@@ -7,7 +7,7 @@ namespace GlucoPilot.Api.Endpoints.Treatments.ListTreatments;
 
 public record ListTreatmentsResponse : PagedResponse
 {
-    public required ICollection<ListTreatmentResponse> Treatments { get; init; } = Array.Empty<ListTreatmentResponse>();
+    public required ICollection<ListTreatmentResponse> Treatments { get; init; } = [];
 }
 
 public record ListTreatmentResponse

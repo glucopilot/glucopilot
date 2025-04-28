@@ -1,9 +1,10 @@
-﻿using FluentValidation.TestHelper;
-using GlucoPilot.Api.Endpoints.Meals.UpdateMeal;
-using GlucoPilot.Api.Models;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FluentValidation.TestHelper;
+using GlucoPilot.Api.Endpoints.Meals.UpdateMeal;
+using NUnit.Framework;
+
+namespace GlucoPilot.Api.Tests.Validators;
 
 [TestFixture]
 public class UpdateMealRequestValidatorTests
@@ -52,14 +53,14 @@ public class UpdateMealRequestValidatorTests
             Id = Guid.NewGuid(),
             Name = "Valid Meal Name",
             MealIngredients = new List<NewMealIngredientRequest>
-        {
-            new NewMealIngredientRequest
             {
-                Id = Guid.NewGuid(),
-                IngredientId = Guid.Empty,
-                Quantity = 1
+                new NewMealIngredientRequest
+                {
+                    Id = Guid.NewGuid(),
+                    IngredientId = Guid.Empty,
+                    Quantity = 1
+                }
             }
-        }
         };
 
         var result = _validator.TestValidate(request);

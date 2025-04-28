@@ -7,7 +7,7 @@ namespace GlucoPilot.Api.Endpoints.Ingredients.GetIngredients;
 
 public sealed record GetIngredientsRequest
 {
-    public required ICollection<Guid> Ids { get; set; } = Array.Empty<Guid>();
+    public required ICollection<Guid> Ids { get; set; } = [];
     public sealed class ListIngredientsValidator : AbstractValidator<ListIngredientsResponse>
     {
         public ListIngredientsValidator()

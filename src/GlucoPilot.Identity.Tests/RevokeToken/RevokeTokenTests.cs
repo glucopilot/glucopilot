@@ -48,7 +48,7 @@ internal sealed class RevokeTokenTests
         var request = new RevokeTokenRequest { Token = null };
         var validatorMock = new Mock<IValidator<RevokeTokenRequest>>();
         validatorMock.Setup(v => v.ValidateAsync(It.IsAny<RevokeTokenRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult(new[] { new ValidationFailure("Token", "Token is required") }));
+            .ReturnsAsync(new ValidationResult([new ValidationFailure("Token", "Token is required")]));
         var currentUserMock = new Mock<ICurrentUser>();
         var userServiceMock = new Mock<IUserService>();
         var identityOptions = Options.Create(new IdentityOptions { RefreshTokenCookieName = "RefreshToken" });

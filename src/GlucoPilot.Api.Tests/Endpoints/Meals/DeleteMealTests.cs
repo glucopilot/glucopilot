@@ -1,4 +1,8 @@
-﻿using GlucoPilot.Api.Endpoints.Meals.RemoveMeal;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using GlucoPilot.Api.Endpoints.Meals.RemoveMeal;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -6,10 +10,8 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+
+namespace GlucoPilot.Api.Tests.Endpoints.Meals;
 
 [TestFixture]
 public class RemoveMealTests
@@ -51,7 +53,7 @@ public class RemoveMealTests
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _mealRepositoryMock
             .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Meal?)null);
+            .ReturnsAsync((Meal)null);
 
         Assert.That(async () => await Endpoint.HandleAsync(mealId, _mealRepositoryMock.Object, _currentUserMock.Object, CancellationToken.None),
             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("MEAL_NOT_FOUND"));

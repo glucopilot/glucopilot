@@ -1,19 +1,21 @@
-﻿using NUnit.Framework;
-using Moq;
-using GlucoPilot.Api.Endpoints.Insulins.GetInsulin;
-using GlucoPilot.Data.Repository;
-using GlucoPilot.Identity.Authentication;
-using GlucoPilot.Data.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System;
+﻿using System;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Api.Endpoints.Insulins.GetInsulin;
 using GlucoPilot.AspNetCore.Exceptions;
+using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
-using System.Linq.Expressions;
+using GlucoPilot.Data.Repository;
+using GlucoPilot.Identity.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Moq;
+using NUnit.Framework;
+
+namespace GlucoPilot.Api.Tests.Endpoints.Insulins;
 
 [TestFixture]
-public class Endpoint_Tests
+public class GetInsulinTests
 {
     private Mock<IRepository<Insulin>> _insulinRepositoryMock;
     private Mock<ICurrentUser> _currentUserMock;
@@ -44,15 +46,20 @@ public class Endpoint_Tests
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         _insulinRepositoryMock
-            .Setup(x => x.FindOneAsync(It.IsAny<Expression<Func<Insulin, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.FindOneAsync(It.IsAny<Expression<Func<Insulin, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(insulin);
 
-        var result = await Endpoint.HandleAsync(insulinId, _currentUserMock.Object, _insulinRepositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(insulinId, _currentUserMock.Object, _insulinRepositoryMock.Object,
+            CancellationToken.None);
 
         var okResult = result.Result as Ok<GetInsulinResponse>;
-        Assert.That(okResult, Is.TypeOf<Ok<GetInsulinResponse>>());
-        Assert.That(okResult!.Value.Id, Is.EqualTo(insulinId));
-        Assert.That(okResult!.Value.Name, Is.EqualTo("Test Insulin"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(okResult, Is.TypeOf<Ok<GetInsulinResponse>>());
+            Assert.That(okResult!.Value.Id, Is.EqualTo(insulinId));
+            Assert.That(okResult!.Value.Name, Is.EqualTo("Test Insulin"));
+        });
     }
 
     [Test]
@@ -63,10 +70,13 @@ public class Endpoint_Tests
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         _insulinRepositoryMock
-            .Setup(x => x.FindOneAsync(It.IsAny<Expression<Func<Insulin, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Insulin?)null);
+            .Setup(x => x.FindOneAsync(It.IsAny<Expression<Func<Insulin, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Insulin)null);
 
-        Assert.That(async () => await Endpoint.HandleAsync(insulinId, _currentUserMock.Object, _insulinRepositoryMock.Object, CancellationToken.None),
+        Assert.That(
+            async () => await Endpoint.HandleAsync(insulinId, _currentUserMock.Object, _insulinRepositoryMock.Object,
+                CancellationToken.None),
             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("INSULIN_NOT_FOUND"));
     }
 
@@ -78,7 +88,9 @@ public class Endpoint_Tests
             .Setup(c => c.GetUserId())
             .Throws<UnauthorizedAccessException>();
 
-        Assert.That(async () => await Endpoint.HandleAsync(insulinId, _currentUserMock.Object, _insulinRepositoryMock.Object, CancellationToken.None),
+        Assert.That(
+            async () => await Endpoint.HandleAsync(insulinId, _currentUserMock.Object, _insulinRepositoryMock.Object,
+                CancellationToken.None),
             Throws.InstanceOf<UnauthorizedAccessException>());
     }
 }

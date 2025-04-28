@@ -68,7 +68,7 @@ public abstract class User
     /// <summary>
     /// A collection of user's identity refresh tokens
     /// </summary>
-    public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public List<RefreshToken> RefreshTokens { get; set; } = [];
 
     /// <summary>
     /// A collection of patients that this user has access to.

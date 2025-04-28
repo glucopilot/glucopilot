@@ -24,7 +24,7 @@ internal sealed class EndpointTests
         var request = new IsVerifiedRequest { Email = "invalid-email" };
         var validatorMock = new Mock<IValidator<IsVerifiedRequest>>();
         validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult(new[] { new ValidationFailure("Email", "Invalid email") }));
+            .ReturnsAsync(new ValidationResult([new ValidationFailure("Email", "Invalid email")]));
         var userRepositoryMock = new Mock<IRepository<User>>();
         var identityOptions = Options.Create(new IdentityOptions { RequireEmailVerification = true });
 

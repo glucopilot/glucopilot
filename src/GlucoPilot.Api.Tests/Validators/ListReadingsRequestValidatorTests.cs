@@ -1,9 +1,9 @@
-﻿using FluentValidation.TestHelper;
+﻿using System;
+using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.Readings.List;
 using NUnit.Framework;
-using System;
 
-namespace GlucoPilot.Api.Tests.Models;
+namespace GlucoPilot.Api.Tests.Validators;
 
 [TestFixture]
 public class ListReadingsRequestValidatorTests

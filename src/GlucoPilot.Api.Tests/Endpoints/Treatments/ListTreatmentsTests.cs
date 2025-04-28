@@ -38,10 +38,9 @@ public class ListTreatmentsTests
         var request = new ListTreatmentsRequest { Page = 1, PageSize = 10 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
-            .ReturnsAsync(new ValidationResult(new[]
-            {
-                    new ValidationFailure("Page", "Page is required.")
-            }));
+            .ReturnsAsync(new ValidationResult([
+                new ValidationFailure("Page", "Page is required.")
+            ]));
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _treatmentRepositoryMock.Object, CancellationToken.None);
 

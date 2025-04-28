@@ -1,21 +1,21 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Meals.NewMeal;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GlucoPilot.AspNetCore.Exceptions;
-using GlucoPilot.Api.Models;
-using System.Linq;
-using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Resources;
-using System.Linq.Expressions;
-using GlucoPilot.Data.Enums;
+using Moq;
+using NUnit.Framework;
+
+namespace GlucoPilot.Api.Tests.Endpoints.Meals;
 
 [TestFixture]
 public class NewMealTests
@@ -38,7 +38,7 @@ public class NewMealTests
     public async Task HandleAsync_Should_Throw_ValidationProblem_When_Validation_Fails()
     {
         var request = new NewMealRequest { Name = "", MealIngredients = new List<NewMealIngredientRequest>() };
-        var validationResult = new ValidationResult(new[] { new ValidationFailure("Name", "Name is required") });
+        var validationResult = new ValidationResult([new ValidationFailure("Name", "Name is required")]);
 
         _validatorMock.Setup(x => x.ValidateAsync(request, default)).ReturnsAsync(validationResult);
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _mealRepositoryMock.Object, _ingredientRepositoryMock.Object);
@@ -91,25 +91,25 @@ public class NewMealTests
 
         var mockRepository = new Mock<IRepository<Meal>>();
         _ingredientRepositoryMock
-                .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
-                .Returns(ingredientIds.Select(id => new Ingredient { Id = id, Uom = UnitOfMeasurement.Unit, Created = DateTimeOffset.UtcNow, Name = "Ingredient" }).AsQueryable());
+            .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(ingredientIds.Select(id => new Ingredient { Id = id, Uom = UnitOfMeasurement.Unit, Created = DateTimeOffset.UtcNow, Name = "Ingredient" }).AsQueryable());
 
         var request = new NewMealRequest
         {
             Name = "Test Meal",
             MealIngredients = new List<NewMealIngredientRequest>
-        {
-            new NewMealIngredientRequest
             {
-                IngredientId = ingredientIds[0],
-                Quantity = 2
-            },
-            new NewMealIngredientRequest
-            {
-                IngredientId = ingredientIds[1],
-                Quantity = 3
+                new NewMealIngredientRequest
+                {
+                    IngredientId = ingredientIds[0],
+                    Quantity = 2
+                },
+                new NewMealIngredientRequest
+                {
+                    IngredientId = ingredientIds[1],
+                    Quantity = 3
+                }
             }
-        }
         };
 
         await Endpoint.HandleAsync(request, _validatorMock.Object, mockCurrentUser.Object, mockRepository.Object, _ingredientRepositoryMock.Object);
@@ -129,13 +129,13 @@ public class NewMealTests
         {
             Name = "Test Meal",
             MealIngredients = new List<NewMealIngredientRequest>
+            {
+                new NewMealIngredientRequest
                 {
-                    new NewMealIngredientRequest
-                    {
-                        IngredientId = invalidIngredientId,
-                        Quantity = 1
-                    }
+                    IngredientId = invalidIngredientId,
+                    Quantity = 1
                 }
+            }
         };
 
         var validatorMock = new Mock<IValidator<NewMealRequest>>();

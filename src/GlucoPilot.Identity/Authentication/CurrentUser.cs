@@ -21,7 +21,7 @@ internal sealed class CurrentUser : ICurrentUser, ICurrentUserInitializer
 
     public bool IsAuthenticated() => _user?.Identity?.IsAuthenticated ?? false;
 
-    public IEnumerable<Claim> GetClaimsIdentity() => _user?.Claims ?? Array.Empty<Claim>();
+    public IEnumerable<Claim> GetClaimsIdentity() => _user?.Claims ?? [];
 
     public void SetCurrentUser(ClaimsPrincipal user)
     {
