@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.Insulins.UpdateInsulin;
-using GlucoPilot.Data.Enums;
+using GlucoPilot.Api.Models;
 using NUnit.Framework;
 
 namespace GlucoPilot.Api.Tests.Validators;

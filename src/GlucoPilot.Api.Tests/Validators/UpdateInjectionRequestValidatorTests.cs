@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.Injections.UpdateInjection;
-using GlucoPilot.Data.Enums;
+using GlucoPilot.Api.Models;
 using NUnit.Framework;
 using System;
 

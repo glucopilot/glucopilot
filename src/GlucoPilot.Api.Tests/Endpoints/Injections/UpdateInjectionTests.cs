@@ -35,7 +35,7 @@ public class UpdateInsulinTests
     [Test]
     public async Task HandleAsync_Returns_ValidationProblem_When_Request_Is_Invalid()
     {
-        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (InsulinType)(-1), Units = 1 };
+        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (Models.InsulinType)(-1), Units = 1 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult
@@ -58,7 +58,7 @@ public class UpdateInsulinTests
     [Test]
     public async Task HandleAsync_Throws_NotFoundException_When_Injection_Not_Found()
     {
-        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (InsulinType)(-1), Units = 1 };
+        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (Models.InsulinType)(-1), Units = 1 };
         var userId = Guid.NewGuid();
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _injectionRepositoryMock
@@ -79,7 +79,7 @@ public class UpdateInsulinTests
     [Test]
     public async Task HandleAsync_Throws_NotFoundException_When_Insulin_Not_Found()
     {
-        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (InsulinType)(-1), Units = 1 };
+        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (Models.InsulinType)(-1), Units = 1 };
         var userId = Guid.NewGuid();
         var injection = new Injection { Id = Guid.NewGuid(), UserId = userId, InsulinId = request.InsulinId, Units = 1 };
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
@@ -109,7 +109,7 @@ public class UpdateInsulinTests
         var insulinId = Guid.NewGuid();
         var injection = new Injection { Id = injectionId, UserId = userId, Units = 10, InsulinId = insulinId };
         var insulin = new Insulin { Id = insulinId, UserId = userId, Name = "Test Insulin", Type = InsulinType.Bolus };
-        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (InsulinType)(-1), Units = 1 };
+        var request = new UpdateInjectionRequest() { InsulinId = Guid.NewGuid(), Type = (Models.InsulinType)(-1), Units = 1 };
 
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _injectionRepositoryMock
