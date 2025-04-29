@@ -95,9 +95,12 @@ internal sealed class TokenServiceTests
         var refreshToken = tokenService.GenerateRefreshToken("127.0.0.1");
 
         Assert.That(refreshToken, Is.Not.Null);
-        Assert.That(refreshToken.Token, Is.Not.Null.And.Not.Empty);
-        Assert.That(refreshToken.Expires, Is.GreaterThan(DateTimeOffset.UtcNow));
-        Assert.That(refreshToken.CreatedByIp, Is.EqualTo("127.0.0.1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(refreshToken.Token, Is.Not.Null.And.Not.Empty);
+            Assert.That(refreshToken.Expires, Is.GreaterThan(DateTimeOffset.UtcNow));
+            Assert.That(refreshToken.CreatedByIp, Is.EqualTo("127.0.0.1"));
+        });
     }
 
     [Test]
@@ -112,8 +115,11 @@ internal sealed class TokenServiceTests
         var refreshToken = tokenService.GenerateRefreshToken("127.0.0.1");
 
         Assert.That(refreshToken, Is.Not.Null);
-        Assert.That(refreshToken.Token, Is.Not.Null.And.Not.Empty);
-        Assert.That(refreshToken.Expires, Is.GreaterThan(DateTimeOffset.UtcNow));
-        Assert.That(refreshToken.CreatedByIp, Is.EqualTo("127.0.0.1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(refreshToken.Token, Is.Not.Null.And.Not.Empty);
+            Assert.That(refreshToken.Expires, Is.GreaterThan(DateTimeOffset.UtcNow));
+            Assert.That(refreshToken.CreatedByIp, Is.EqualTo("127.0.0.1"));
+        });
     }
 }

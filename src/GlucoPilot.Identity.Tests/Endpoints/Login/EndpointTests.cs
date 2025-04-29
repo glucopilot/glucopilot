@@ -41,19 +41,21 @@ internal sealed class EndpointTests
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _userServiceMock.Object, _identityOptions, _httpContext, CancellationToken.None);
 
-        Assert.That(result.Result, Is.InstanceOf<Ok<LoginResponse>>());
-        Assert.That(((Ok<LoginResponse>)result.Result).Value, Is.EqualTo(loginResponse));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Result, Is.InstanceOf<Ok<LoginResponse>>());
+            Assert.That(((Ok<LoginResponse>)result.Result).Value, Is.EqualTo(loginResponse));
+        });
     }
 
     [Test]
     public async Task HandleAsync_With_Invalid_Request_Returns_Validation_Problem()
     {
         var request = new LoginRequest { Email = "", Password = "" };
-        var validationResult = new FluentValidation.Results.ValidationResult(new[]
-        {
+        var validationResult = new FluentValidation.Results.ValidationResult([
             new FluentValidation.Results.ValidationFailure("Email", "Email is required"),
             new FluentValidation.Results.ValidationFailure("Password", "Password is required")
-        });
+        ]);
 
         _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
                       .ReturnsAsync(validationResult);
@@ -62,8 +64,11 @@ internal sealed class EndpointTests
 
         Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
         var problemDetails = ((ValidationProblem)result.Result).ProblemDetails;
-        Assert.That(problemDetails.Errors.ContainsKey("Email"), Is.True);
-        Assert.That(problemDetails.Errors.ContainsKey("Password"), Is.True);
+        Assert.Multiple(() =>
+        {
+            Assert.That(problemDetails.Errors.ContainsKey("Email"), Is.True);
+            Assert.That(problemDetails.Errors.ContainsKey("Password"), Is.True);
+        });
     }
 
     [Test]
@@ -79,7 +84,10 @@ internal sealed class EndpointTests
 
         await Endpoint.HandleAsync(request, _validatorMock.Object, _userServiceMock.Object, _identityOptions, _httpContext, CancellationToken.None);
 
-        Assert.That(_httpContext.Response.Headers.ContainsKey("Set-Cookie"), Is.True);
-        Assert.That(_httpContext.Response.Headers["Set-Cookie"].ToString(), Does.Contain("RefreshToken=refreshToken"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(_httpContext.Response.Headers.ContainsKey("Set-Cookie"), Is.True);
+            Assert.That(_httpContext.Response.Headers["Set-Cookie"].ToString(), Does.Contain("RefreshToken=refreshToken"));
+        });
     }
 }

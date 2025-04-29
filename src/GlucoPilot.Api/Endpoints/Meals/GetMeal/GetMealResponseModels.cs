@@ -14,7 +14,7 @@ public record GetMealResponse
     public required decimal TotalCarbs { get; set; }
     public required decimal TotalProtein { get; set; }
     public required decimal TotalFat { get; set; }
-    public List<MealIngredientResponse>? MealIngredients { get; set; } = new();
+    public List<MealIngredientResponse>? MealIngredients { get; set; } = [];
 }
 
 public record MealIngredientResponse

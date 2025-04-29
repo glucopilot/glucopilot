@@ -100,7 +100,7 @@ public class SyncServiceTests
 
         Assert.DoesNotThrow(() => _sut.GetType()
             .GetMethod("DoWork", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-            ?.Invoke(_sut, new[] { invalidState }));
+            ?.Invoke(_sut, [invalidState]));
 
         _logger.Verify(
         x => x.Log(

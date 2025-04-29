@@ -1,4 +1,11 @@
-﻿using FluentValidation;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
+using GlucoPilot.Api.Endpoints.Injections.ListInjections;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
@@ -6,14 +13,8 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Endpoints.Injections.ListInjections.Tests;
+namespace GlucoPilot.Api.Tests.Endpoints.Injections;
 
 [TestFixture]
 public class ListInjectionsTests
@@ -36,18 +37,18 @@ public class ListInjectionsTests
         var request = new ListInjectionsRequest { Page = 0, PageSize = 10 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult(new[]
-            {
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult([
                 new FluentValidation.Results.ValidationFailure("Page", "Page must be greater than 0")
-            }));
+            ]));
 
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object,
+            _repositoryMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.TypeOf<ValidationProblem>());
     }
 
     [Test]
-    public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
+    public void HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
     {
         var request = new ListInjectionsRequest { Page = 0, PageSize = 10 };
         _validatorMock
@@ -57,7 +58,9 @@ public class ListInjectionsTests
             .Setup(c => c.GetUserId())
             .Throws<UnauthorizedAccessException>();
 
-        Assert.That(async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
+        Assert.That(
+            () => Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object,
+                _repositoryMock.Object, CancellationToken.None),
             Throws.InstanceOf<UnauthorizedAccessException>());
     }
 
@@ -101,11 +104,15 @@ public class ListInjectionsTests
             .Setup(r => r.CountAsync(It.IsAny<Expression<Func<Injection, bool>>>(), CancellationToken.None))
             .ReturnsAsync(2);
 
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object,
+            _repositoryMock.Object, CancellationToken.None);
 
         var okResult = result.Result as Ok<ListInjectionsResponse>;
-        Assert.That(okResult, Is.TypeOf<Ok<ListInjectionsResponse>>());
-        Assert.That(okResult?.Value.NumberOfPages, Is.EqualTo(1));
-        Assert.That(okResult?.Value.Injections.Count, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(okResult, Is.TypeOf<Ok<ListInjectionsResponse>>());
+            Assert.That(okResult?.Value.NumberOfPages, Is.EqualTo(1));
+            Assert.That(okResult?.Value.Injections.Count, Is.EqualTo(2));
+        });
     }
 }

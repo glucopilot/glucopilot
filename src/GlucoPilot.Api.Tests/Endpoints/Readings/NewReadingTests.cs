@@ -66,10 +66,9 @@ public class NewReadingTests
             GlucoseLevel = -5.0
         };
 
-        var validationResult = new ValidationResult(new[]
-        {
+        var validationResult = new ValidationResult([
             new ValidationFailure("GlucoseLevel", "Glucose level must be greater than 0.")
-        });
+        ]);
         _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
 

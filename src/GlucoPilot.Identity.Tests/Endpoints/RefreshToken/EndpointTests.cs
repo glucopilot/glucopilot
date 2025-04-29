@@ -27,8 +27,11 @@ internal sealed class EndpointTests
         var result =
             await Endpoint.HandleAsync(userServiceMock.Object, identityOptions, context, CancellationToken.None);
 
-        Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
-        Assert.That(result.Value, Is.EqualTo(tokenResponse));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(result.Value, Is.EqualTo(tokenResponse));
+        });
     }
 
     [Test]
@@ -44,8 +47,11 @@ internal sealed class EndpointTests
         var result =
             await Endpoint.HandleAsync(userServiceMock.Object, identityOptions, context, CancellationToken.None);
 
-        Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
-        Assert.That(result.Value, Is.EqualTo(tokenResponse));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+            Assert.That(result.Value, Is.EqualTo(tokenResponse));
+        });
     }
 
     [Test]
@@ -62,7 +68,10 @@ internal sealed class EndpointTests
 
         await Endpoint.HandleAsync(userServiceMock.Object, identityOptions, context, CancellationToken.None);
 
-        Assert.That(context.Response.Headers.ContainsKey("Set-Cookie"), Is.True);
-        Assert.That(context.Response.Headers["Set-Cookie"].ToString(), Does.Contain("new-refresh-token"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(context.Response.Headers.ContainsKey("Set-Cookie"), Is.True);
+            Assert.That(context.Response.Headers["Set-Cookie"].ToString(), Does.Contain("new-refresh-token"));
+        });
     }
 }

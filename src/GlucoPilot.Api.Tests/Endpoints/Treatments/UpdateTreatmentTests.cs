@@ -233,10 +233,9 @@ public class UpdateTreatmentTests
         var request = new UpdateTreatmentRequest();
         var userId = Guid.NewGuid();
 
-        var validationResult = new ValidationResult(new[]
-        {
+        var validationResult = new ValidationResult([
             new ValidationFailure("", "Validation error message")
-        });
+        ]);
 
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))

@@ -1,9 +1,10 @@
 ﻿using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.Meals.List;
+using GlucoPilot.Api.Models;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
-namespace GlucoPilot.Api.Models.Tests;
+namespace GlucoPilot.Api.Tests.Validators;
 
 [TestFixture]
 public class ListMealsValidatorTests

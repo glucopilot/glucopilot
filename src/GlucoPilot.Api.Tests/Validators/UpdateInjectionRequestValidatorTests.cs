@@ -1,8 +1,10 @@
-﻿using FluentValidation.TestHelper;
+﻿using System;
+using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.Injections.UpdateInjection;
 using GlucoPilot.Api.Models;
 using NUnit.Framework;
-using System;
+
+namespace GlucoPilot.Api.Tests.Validators;
 
 [TestFixture]
 public class UpdateInjectionRequestValidatorTests

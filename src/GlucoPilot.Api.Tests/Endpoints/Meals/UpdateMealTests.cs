@@ -1,19 +1,20 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Meals.UpdateMeal;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using GlucoPilot.Api.Models;
-using GlucoPilot.AspNetCore.Exceptions;
-using System.Linq.Expressions;
-using FluentValidation;
-using FluentValidation.Results;
+using Moq;
+using NUnit.Framework;
+
+namespace GlucoPilot.Api.Tests.Endpoints.Meals;
 
 [TestFixture]
 public class UpdateMealTests
@@ -42,10 +43,9 @@ public class UpdateMealTests
             MealIngredients = new List<NewMealIngredientRequest>()
         };
 
-        var validationResult = new ValidationResult(new[]
-        {
+        var validationResult = new ValidationResult([
             new ValidationFailure("Name", "Name is required.")
-        });
+        ]);
 
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))

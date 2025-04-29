@@ -1,4 +1,8 @@
-﻿using FluentValidation;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
 using GlucoPilot.Api.Endpoints.Insulins.UpdateInsulin;
 using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
@@ -8,10 +12,8 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+
+namespace GlucoPilot.Api.Tests.Endpoints.Insulins;
 
 [TestFixture]
 public class UpdateInsulinTests
@@ -34,7 +36,8 @@ public class UpdateInsulinTests
         var request = new UpdateInsulinRequest { Name = "", Type = InsulinType.Bolus };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult(new[] { new FluentValidation.Results.ValidationFailure("Name", "Name is required") }));
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult([new FluentValidation.Results.ValidationFailure("Name", "Name is required")
+            ]));
 
         var result = await Endpoint.HandleAsync(
             Guid.NewGuid(),
@@ -48,7 +51,7 @@ public class UpdateInsulinTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Logged_In()
+    public void HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Logged_In()
     {
         var id = Guid.NewGuid();
         var request = new UpdateInsulinRequest { Name = "Test", Type = InsulinType.Bolus };
@@ -60,12 +63,12 @@ public class UpdateInsulinTests
             .Throws(new UnauthorizedAccessException("User is not logged in"));
 
 
-        Assert.That(async () => await Endpoint.HandleAsync(id, request, _validatorMock.Object, _currentUserMock.Object, _insulinRepositoryMock.Object, CancellationToken.None),
+        Assert.That(() => Endpoint.HandleAsync(id, request, _validatorMock.Object, _currentUserMock.Object, _insulinRepositoryMock.Object, CancellationToken.None),
             Throws.Exception.TypeOf<UnauthorizedAccessException>());
     }
 
     [Test]
-    public async Task HandleAsync_Should_Return_NotFound_When_Insulin_Does_Not_Exist()
+    public void HandleAsync_Should_Return_NotFound_When_Insulin_Does_Not_Exist()
     {
         var id = Guid.NewGuid();
         var request = new UpdateInsulinRequest { Name = "Test", Type = InsulinType.Bolus };
@@ -77,10 +80,10 @@ public class UpdateInsulinTests
             .Returns(Guid.NewGuid());
         _insulinRepositoryMock
             .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Insulin, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Insulin?)null);
+            .ReturnsAsync((Insulin)null);
 
 
-        Assert.That(async () => await Endpoint.HandleAsync(id, request, _validatorMock.Object, _currentUserMock.Object, _insulinRepositoryMock.Object, CancellationToken.None),
+        Assert.That(() => Endpoint.HandleAsync(id, request, _validatorMock.Object, _currentUserMock.Object, _insulinRepositoryMock.Object, CancellationToken.None),
             Throws.Exception.TypeOf<NotFoundException>());
     }
 

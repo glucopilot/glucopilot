@@ -84,10 +84,9 @@ internal sealed class ListTests
         };
 
         _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult(new[]
-            {
-                    new ValidationFailure(nameof(ListReadingsRequest.To), "'To' must not be empty.")
-            }));
+            .ReturnsAsync(new ValidationResult([
+                new ValidationFailure(nameof(ListReadingsRequest.To), "'To' must not be empty.")
+            ]));
 
         var reading = new Reading
         {

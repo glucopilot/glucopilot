@@ -1,4 +1,9 @@
-﻿using GlucoPilot.Api.Endpoints.LibreLink.Connections;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using GlucoPilot.Api.Endpoints.LibreLink.Connections;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -8,163 +13,171 @@ using GlucoPilot.LibreLinkClient.Exceptions;
 using GlucoPilot.LibreLinkClient.Models;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 using AuthTicket = GlucoPilot.Data.Entities.AuthTicket;
 using LibreAuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
-namespace GlucoPilot.Tests.Endpoints.LibreLink.Connections
+namespace GlucoPilot.Api.Tests.Endpoints.LibreLink;
+
+[TestFixture]
+public class ConnectionsTests
 {
-    [TestFixture]
-    public class ConnectionsTests
+    private Mock<ICurrentUser> _currentUserMock;
+    private Mock<ILibreLinkClient> _libreLinkClientMock;
+    private Mock<IRepository<Patient>> _patientRepositoryMock;
+
+    [SetUp]
+    public void SetUp()
     {
-        private Mock<ICurrentUser> _currentUserMock;
-        private Mock<ILibreLinkClient> _libreLinkClientMock;
-        private Mock<IRepository<Patient>> _patientRepositoryMock;
+        _currentUserMock = new Mock<ICurrentUser>();
+        _libreLinkClientMock = new Mock<ILibreLinkClient>();
+        _patientRepositoryMock = new Mock<IRepository<Patient>>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _currentUserMock = new Mock<ICurrentUser>();
-            _libreLinkClientMock = new Mock<ILibreLinkClient>();
-            _patientRepositoryMock = new Mock<IRepository<Patient>>();
-        }
+    [Test]
+    public void HandleAsync_Patient_Not_Found_Returns_Not_Found()
+    {
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(Guid.NewGuid());
+        _patientRepositoryMock.Setup(r =>
+                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns((Patient)null);
 
-        [Test]
-        public void HandleAsync_Patient_Not_Found_Returns_Not_Found()
-        {
-
-            _currentUserMock.Setup(c => c.GetUserId()).Returns(Guid.NewGuid());
-            _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-                .Returns((Patient)null);
-
-            Assert.That(() => Endpoint.HandleAsync(
+        Assert.That(() => Endpoint.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
-        }
+                CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
+    }
 
-        [Test]
-        public void HandleAsync_Authentication_Expired_Throws_Exception()
+    [Test]
+    public void HandleAsync_Authentication_Expired_Throws_Exception()
+    {
+        var userId = Guid.NewGuid();
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+
+        var patient = new Patient
         {
-            var userId = Guid.NewGuid();
-            _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "hashed-password",
+            AuthTicket = new AuthTicket
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+        };
+        _patientRepositoryMock.Setup(r =>
+                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(patient);
 
-            var patient = new Patient
-            {
-                Id = userId,
-                Email = "test@test.com",
-                PasswordHash = "hashed-password",
-                AuthTicket = new AuthTicket { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
-            };
-            _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-                .Returns(patient);
+        _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
 
-            _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
-
-            Assert.That(() => Endpoint.HandleAsync(
+        Assert.That(() => Endpoint.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("LIBRE_LINK_AUTH_EXPIRED"));
-        }
+                CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("LIBRE_LINK_AUTH_EXPIRED"));
+    }
 
-        [Test]
-        public void HandleAsync_Not_Authentication_Throws_Exception()
+    [Test]
+    public void HandleAsync_Not_Authentication_Throws_Exception()
+    {
+        var userId = Guid.NewGuid();
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+
+        var patient = new Patient
         {
-            var userId = Guid.NewGuid();
-            _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "hashed-password",
+            AuthTicket = new AuthTicket
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+        };
+        _patientRepositoryMock.Setup(r =>
+                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(patient);
 
-            var patient = new Patient
-            {
-                Id = userId,
-                Email = "test@test.com",
-                PasswordHash = "hashed-password",
-                AuthTicket = new AuthTicket { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
-            };
-            _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-                .Returns(patient);
+        _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new LibreLinkNotAuthenticatedException());
 
-            _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new LibreLinkNotAuthenticatedException());
-
-            Assert.That(() => Endpoint.HandleAsync(
+        Assert.That(() => Endpoint.HandleAsync(
                 _currentUserMock.Object,
                 _libreLinkClientMock.Object,
                 _patientRepositoryMock.Object,
-                CancellationToken.None), Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("LIBRE_LINK_NOT_AUTHENTICATED"));
-        }
+                CancellationToken.None),
+            Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("LIBRE_LINK_NOT_AUTHENTICATED"));
+    }
 
-        [Test]
-        public async Task HandleAsync_Valid_Request_Returns_Ok_With_Connections()
+    [Test]
+    public async Task HandleAsync_Valid_Request_Returns_Ok_With_Connections()
+    {
+        var userId = Guid.NewGuid();
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+
+        var patient = new Patient
         {
-            var userId = Guid.NewGuid();
-            _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "hashed-password",
+            AuthTicket = new AuthTicket
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+        };
+        _patientRepositoryMock.Setup(r =>
+                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(patient);
 
-            var patient = new Patient
-            {
-                Id = userId,
-                Email = "test@test.com",
-                PasswordHash = "hashed-password",
-                AuthTicket = new AuthTicket { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
-            };
-            _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-                .Returns(patient);
+        var connections = new List<ConnectionData>
+        {
+            new ConnectionData { PatientId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" },
+            new ConnectionData { PatientId = Guid.NewGuid(), FirstName = "Jane", LastName = "Smith" }
+        };
+        _libreLinkClientMock.Setup(c => c.GetConnectionsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(connections);
 
-            var connections = new List<ConnectionData>
-            {
-                new ConnectionData { PatientId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" },
-                new ConnectionData { PatientId = Guid.NewGuid(), FirstName = "Jane", LastName = "Smith" }
-            };
-            _libreLinkClientMock.Setup(c => c.GetConnectionsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(connections);
+        var result = await Endpoint.HandleAsync(
+            _currentUserMock.Object,
+            _libreLinkClientMock.Object,
+            _patientRepositoryMock.Object,
+            CancellationToken.None);
 
-            var result = await Endpoint.HandleAsync(
-                _currentUserMock.Object,
-                _libreLinkClientMock.Object,
-                _patientRepositoryMock.Object,
-                CancellationToken.None);
-
-            var okResult = result.Value;
+        var okResult = result.Value;
+        Assert.Multiple(() =>
+        {
             Assert.That(okResult, Is.Not.Null);
-            Assert.That(okResult.Count, Is.EqualTo(2));
+            Assert.That(okResult, Has.Count.EqualTo(2));
             Assert.That(okResult[0].PatientId, Is.EqualTo(connections[0].PatientId));
             Assert.That(okResult[1].PatientId, Is.EqualTo(connections[1].PatientId));
-        }
+        });
+    }
 
-        [Test]
-        public async Task HandleAsync_Valid_Request_Returns_Ok_With_Empty_List_When_No_Connections()
+    [Test]
+    public async Task HandleAsync_Valid_Request_Returns_Ok_With_Empty_List_When_No_Connections()
+    {
+        var userId = Guid.NewGuid();
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+
+        var patient = new Patient
         {
-            var userId = Guid.NewGuid();
-            _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "hashed-password",
+            AuthTicket = new AuthTicket
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+        };
+        _patientRepositoryMock.Setup(r =>
+                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(patient);
 
-            var patient = new Patient
-            {
-                Id = userId,
-                Email = "test@test.com",
-                PasswordHash = "hashed-password",
-                AuthTicket = new AuthTicket { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
-            };
-            _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-                .Returns(patient);
+        _libreLinkClientMock.Setup(c => c.GetConnectionsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync((List<ConnectionData>)null);
 
-            _libreLinkClientMock.Setup(c => c.GetConnectionsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync((List<ConnectionData>)null);
+        var result = await Endpoint.HandleAsync(
+            _currentUserMock.Object,
+            _libreLinkClientMock.Object,
+            _patientRepositoryMock.Object,
+            CancellationToken.None);
 
-            var result = await Endpoint.HandleAsync(
-                _currentUserMock.Object,
-                _libreLinkClientMock.Object,
-                _patientRepositoryMock.Object,
-                CancellationToken.None);
-
-            var okResult = result.Value;
-            Assert.That(okResult, Is.Not.Null);
-            Assert.That(okResult.Count, Is.EqualTo(0));
-        }
+        var okResult = result.Value;
+        Assert.That(okResult, Is.Not.Null);
+        Assert.That(okResult, Is.Empty);
     }
 }

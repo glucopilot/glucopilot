@@ -1,9 +1,9 @@
-﻿using FluentValidation.TestHelper;
+﻿using System;
+using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.LibreLink.PairConnection;
 using NUnit.Framework;
-using System;
 
-namespace GlucoPilot.Tests.Endpoints.LibreLink.PairConnection;
+namespace GlucoPilot.Api.Tests.Validators;
 
 public class PairConnectionRequestValidatorTests
 {

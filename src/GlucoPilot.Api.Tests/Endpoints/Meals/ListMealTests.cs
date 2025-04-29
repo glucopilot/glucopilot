@@ -96,7 +96,7 @@ public class ListMealTests
         Assert.Multiple(() =>
         {
             Assert.That(okResult, Is.InstanceOf<Ok<ListMealsResponse>>());
-            Assert.That(okResult.Value.Meals.Count, Is.EqualTo(2));
+            Assert.That(okResult.Value.Meals, Has.Count.EqualTo(2));
             Assert.That(okResult.Value.Meals.ElementAt(0).Id, Is.EqualTo(meals[0].Id));
             Assert.That(okResult.Value.Meals.ElementAt(1).Id, Is.EqualTo(meals[1].Id));
             Assert.That(okResult.Value.NumberOfPages, Is.EqualTo(1));
@@ -173,7 +173,7 @@ public class ListMealTests
         Assert.That(okResult, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(okResult.Value.Meals.Count, Is.EqualTo(2));
+            Assert.That(okResult.Value.Meals, Has.Count.EqualTo(2));
             Assert.That(okResult.Value.Meals.ElementAt(0).Name, Is.EqualTo("Meal1"));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalCalories, Is.EqualTo(400));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalCarbs, Is.EqualTo(40));
@@ -249,8 +249,11 @@ public class ListMealTests
 
         Assert.That(response, Is.Not.Null);
         var meal = response.Meals.First();
-        Assert.That(meal.Name, Is.EqualTo("Test Meal"));
-        Assert.That(meal.MealIngredients.Count, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(meal.Name, Is.EqualTo("Test Meal"));
+            Assert.That(meal.MealIngredients, Has.Count.EqualTo(1));
+        });
         var ingredientResponse = meal.MealIngredients.First().Ingredient;
         Assert.That(ingredientResponse, Is.Null);
     }
@@ -283,7 +286,7 @@ public class ListMealTests
 
         var okResult = result.Result as Ok<ListMealsResponse>;
         Assert.That(okResult, Is.Not.Null);
-        Assert.That(okResult.Value.Meals.Count, Is.EqualTo(1));
+        Assert.That(okResult.Value.Meals, Has.Count.EqualTo(1));
         Assert.That(okResult.Value.Meals.First().Name, Is.EqualTo("Lunch"));
     }
 }

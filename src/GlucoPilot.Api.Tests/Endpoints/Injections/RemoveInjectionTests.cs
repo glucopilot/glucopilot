@@ -1,4 +1,8 @@
-﻿using GlucoPilot.Api.Endpoints.Injections.RemoveInjection;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using GlucoPilot.Api.Endpoints.Injections.RemoveInjection;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -6,12 +10,8 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Tests.Endpoints.Injections.RemoveInjection.Tests;
+namespace GlucoPilot.Api.Tests.Endpoints.Injections;
 
 [TestFixture]
 public class RemoveInjectionTests
@@ -53,9 +53,9 @@ public class RemoveInjectionTests
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _repositoryMock
             .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Injection, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Injection?)null);
+            .ReturnsAsync((Injection)null);
 
-        Assert.That(async () => await Endpoint.HandleAsync(injectionId, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
+        Assert.That(() => Endpoint.HandleAsync(injectionId, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
             Throws.TypeOf<NotFoundException>().With.Message.EqualTo("INJECTION_NOT_FOUND"));
     }
 
@@ -64,7 +64,7 @@ public class RemoveInjectionTests
     {
         _currentUserMock.Setup(c => c.GetUserId()).Throws<UnauthorizedAccessException>();
 
-        Assert.That(async () => await Endpoint.HandleAsync(Guid.NewGuid(), _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
+        Assert.That(() => Endpoint.HandleAsync(Guid.NewGuid(), _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
             Throws.TypeOf<UnauthorizedAccessException>());
     }
 }

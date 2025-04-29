@@ -4,68 +4,67 @@ using GlucoPilot.Api.Models;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
-namespace GlucoPilot.Api.Tests.Endpoints.Insulins
+namespace GlucoPilot.Api.Tests.Validators;
+
+[TestFixture]
+public class ListInsulinsValidatorTests
 {
-    [TestFixture]
-    public class ListInsulinsValidatorTests
+    private readonly ListInsulinsRequest.ListInsulinsValidator _validator;
+
+    public ListInsulinsValidatorTests()
     {
-        private readonly ListInsulinsRequest.ListInsulinsValidator _validator;
+        var apiSettings = Options.Create(new ApiSettings { MaxPageSize = 100 });
+        _validator = new ListInsulinsRequest.ListInsulinsValidator(apiSettings);
+    }
 
-        public ListInsulinsValidatorTests()
+    [Test]
+    public void Should_HaveValidationError_When_PageSizeIsMissing()
+    {
+        var request = new ListInsulinsRequest { Page = 1 };
+
+        var result = _validator.TestValidate(request);
+        result.ShouldHaveValidationErrorFor(x => x.PageSize);
+    }
+
+    [Test]
+    public void Should_HaveValidationError_When_TypeIsInvalid()
+    {
+        var request = new ListInsulinsRequest
         {
-            var apiSettings = Options.Create(new ApiSettings { MaxPageSize = 100 });
-            _validator = new ListInsulinsRequest.ListInsulinsValidator(apiSettings);
-        }
+            Page = 1,
+            PageSize = 10,
+            Type = (InsulinType)(-1)
+        };
 
-        [Test]
-        public void Should_HaveValidationError_When_PageSizeIsMissing()
+        var result = _validator.TestValidate(request);
+        result.ShouldHaveValidationErrorFor(x => x.Type);
+    }
+
+    [Test]
+    public void Should_NotHaveValidationError_When_TypeIsNull()
+    {
+        var request = new ListInsulinsRequest
         {
-            var request = new ListInsulinsRequest { Page = 1 };
+            Page = 1,
+            PageSize = 10,
+            Type = null
+        };
 
-            var result = _validator.TestValidate(request);
-            result.ShouldHaveValidationErrorFor(x => x.PageSize);
-        }
+        var result = _validator.TestValidate(request);
+        result.ShouldNotHaveValidationErrorFor(x => x.Type);
+    }
 
-        [Test]
-        public void Should_HaveValidationError_When_TypeIsInvalid()
+    [Test]
+    public void Should_NotHaveValidationError_When_TypeIsValid()
+    {
+        var request = new ListInsulinsRequest
         {
-            var request = new ListInsulinsRequest
-            {
-                Page = 1,
-                PageSize = 10,
-                Type = (InsulinType)(-1)
-            };
+            Page = 1,
+            PageSize = 10,
+            Type = InsulinType.Bolus
+        };
 
-            var result = _validator.TestValidate(request);
-            result.ShouldHaveValidationErrorFor(x => x.Type);
-        }
-
-        [Test]
-        public void Should_NotHaveValidationError_When_TypeIsNull()
-        {
-            var request = new ListInsulinsRequest
-            {
-                Page = 1,
-                PageSize = 10,
-                Type = null
-            };
-
-            var result = _validator.TestValidate(request);
-            result.ShouldNotHaveValidationErrorFor(x => x.Type);
-        }
-
-        [Test]
-        public void Should_NotHaveValidationError_When_TypeIsValid()
-        {
-            var request = new ListInsulinsRequest
-            {
-                Page = 1,
-                PageSize = 10,
-                Type = InsulinType.Bolus
-            };
-
-            var result = _validator.TestValidate(request);
-            result.ShouldNotHaveValidationErrorFor(x => x.Type);
-        }
+        var result = _validator.TestValidate(request);
+        result.ShouldNotHaveValidationErrorFor(x => x.Type);
     }
 }

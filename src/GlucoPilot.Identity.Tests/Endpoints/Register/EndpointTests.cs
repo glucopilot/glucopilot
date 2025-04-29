@@ -11,62 +11,64 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Endpoint = GlucoPilot.Identity.Endpoints.Register.Endpoint;
 
-namespace GlucoPilot.Identity.Tests.Endpoints.Register
+namespace GlucoPilot.Identity.Tests.Endpoints.Register;
+
+[TestFixture]
+internal sealed class EndpointTests
 {
-    [TestFixture]
-    internal sealed class EndpointTests
+    [Test]
+    public async Task HandleAsync_WithValidRequest_ReturnsOkResult()
     {
-        [Test]
-        public async Task HandleAsync_WithValidRequest_ReturnsOkResult()
+        var request = new RegisterRequest
         {
-            var request = new RegisterRequest
-            {
-                Email = "test@example.com",
-                Password = "password",
-                ConfirmPassword = "password",
-                AcceptedTerms = true,
-                FirstName = "fisrt name",
-                LastName = "last name",
-            };
-            var response = new RegisterResponse
-            {
-                Id = Guid.NewGuid(),
-                Email = "test@example.com",
-                Created = DateTimeOffset.UtcNow,
-                AcceptedTerms = true
-            };
-            var validatorMock = new Mock<IValidator<RegisterRequest>>();
-            validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ValidationResult());
-            var userServiceMock = new Mock<IUserService>();
-            userServiceMock.Setup(us => us.RegisterAsync(request, It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
+            Email = "test@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = true,
+            FirstName = "fisrt name",
+            LastName = "last name",
+        };
+        var response = new RegisterResponse
+        {
+            Id = Guid.NewGuid(),
+            Email = "test@example.com",
+            Created = DateTimeOffset.UtcNow,
+            AcceptedTerms = true
+        };
+        var validatorMock = new Mock<IValidator<RegisterRequest>>();
+        validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+        var userServiceMock = new Mock<IUserService>();
+        userServiceMock.Setup(us => us.RegisterAsync(request, It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
 
-            var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, new DefaultHttpContext(), CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, new DefaultHttpContext(), CancellationToken.None);
 
+        Assert.Multiple(() =>
+        {
             Assert.That(result.Result, Is.InstanceOf<Ok<RegisterResponse>>());
             Assert.That((result.Result as Ok<RegisterResponse>).Value, Is.EqualTo(response));
-        }
+        });
+    }
 
-        [Test]
-        public async Task HandleAsync_WithInvalidRequest_ReturnsValidationProblem()
+    [Test]
+    public async Task HandleAsync_WithInvalidRequest_ReturnsValidationProblem()
+    {
+        var request = new RegisterRequest
         {
-            var request = new RegisterRequest
-            {
-                Email = "test@example.com",
-                Password = "password",
-                ConfirmPassword = "password",
-                AcceptedTerms = false
-            };
-            var validationFailures = new List<ValidationFailure> { new ValidationFailure("AcceptedTerms", "Invalid AcceptedTerms") };
-            var validatorMock = new Mock<IValidator<RegisterRequest>>();
-            validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ValidationResult(validationFailures));
-            var userServiceMock = new Mock<IUserService>();
+            Email = "test@example.com",
+            Password = "password",
+            ConfirmPassword = "password",
+            AcceptedTerms = false
+        };
+        var validationFailures = new List<ValidationFailure> { new ValidationFailure("AcceptedTerms", "Invalid AcceptedTerms") };
+        var validatorMock = new Mock<IValidator<RegisterRequest>>();
+        validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult(validationFailures));
+        var userServiceMock = new Mock<IUserService>();
 
-            var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, new DefaultHttpContext(), CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, new DefaultHttpContext(), CancellationToken.None);
 
-            Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
-        }
+        Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
     }
 }
