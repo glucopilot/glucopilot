@@ -16,7 +16,7 @@ using NUnit.Framework;
 namespace GlucoPilot.Api.Tests.Endpoints.Injections;
 
 [TestFixture]
-public class UpdateInsulinTests
+public class UpdateInjectionTests
 {
     private Mock<IValidator<UpdateInjectionRequest>> _validatorMock;
     private Mock<ICurrentUser> _currentUserMock;
