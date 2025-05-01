@@ -22,6 +22,7 @@ internal static class Endpoint
         [FromServices] IRepository<Reading> readingRepository,
         [FromServices] IRepository<Meal> mealRepository,
         [FromServices] IRepository<Injection> injectionRepository,
+        [FromServices] IRepository<Insulin> insulinRepository,
         CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
@@ -34,16 +35,25 @@ internal static class Endpoint
 
         Injection? injection = null;
 
-        if (request.InjectionId is not null)
+        if (request.Injection is not null)
         {
-            injection = await injectionRepository
-                .FindOneAsync(i => i.Id == request.InjectionId && i.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (injection is null)
+            var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.Injection.InsulinId && (i.UserId == userId || i.UserId == null), new FindOptions { IsAsNoTracking = true }).ConfigureAwait(false);
+            if (insulin is null)
             {
-                throw new NotFoundException("INJECTION_NOT_FOUND");
+                throw new NotFoundException("INSULIN_NOT_FOUND");
             }
+
+            injection = new Injection
+            {
+                UserId = userId,
+                Created = request.Injection.Created,
+                InsulinId = request.Injection.InsulinId,
+                Units = request.Injection.Units,
+            };
+
+            injectionRepository.Add(injection);
+
+            injection.Insulin = insulin;
         }
 
         Meal? meal = null;
