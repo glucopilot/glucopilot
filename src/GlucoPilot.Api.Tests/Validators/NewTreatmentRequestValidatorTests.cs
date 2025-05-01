@@ -22,7 +22,7 @@ public class NewTreatmentRequestValidatorTests
         var request = new NewTreatmentRequest
         {
             MealId = null,
-            InjectionId = null
+            Injection = null
         };
 
         var result = _validator.TestValidate(request);
@@ -36,7 +36,7 @@ public class NewTreatmentRequestValidatorTests
         var request = new NewTreatmentRequest
         {
             MealId = Guid.NewGuid(),
-            InjectionId = null
+            Injection = null
         };
 
         var result = _validator.TestValidate(request);
@@ -50,7 +50,12 @@ public class NewTreatmentRequestValidatorTests
         var request = new NewTreatmentRequest
         {
             MealId = null,
-            InjectionId = Guid.NewGuid()
+            Injection = new NewInjection
+            {
+                InsulinId = Guid.NewGuid(),
+                Units = 1,
+                Created = DateTimeOffset.UtcNow
+            }
         };
 
         var result = _validator.TestValidate(request);
@@ -64,7 +69,12 @@ public class NewTreatmentRequestValidatorTests
         var request = new NewTreatmentRequest
         {
             MealId = Guid.NewGuid(),
-            InjectionId = Guid.NewGuid()
+            Injection = new NewInjection
+            {
+                InsulinId = Guid.NewGuid(),
+                Units = 1,
+                Created = DateTimeOffset.UtcNow
+            }
         };
 
         var result = _validator.TestValidate(request);
