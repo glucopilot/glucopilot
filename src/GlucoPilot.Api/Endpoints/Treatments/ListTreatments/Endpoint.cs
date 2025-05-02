@@ -42,6 +42,7 @@ internal static class Endpoint
         var treatment = treatmentRepository
             .GetAll(new FindOptions { IsAsNoTracking = true })
             .Where(t => t.UserId == userId && t.Created >= request.From && t.Created <= request.To)
+            .OrderByDescending(t => t.Created)
             .Include(t => t.Meal)
             .ThenInclude(m => m.MealIngredients)
             .ThenInclude(mi => mi.Ingredient)
@@ -78,6 +79,7 @@ internal static class Endpoint
                         Id = t.Injection.Id,
                         InsulinName = t.Injection.Insulin?.Name ?? "",
                         Units = t.Injection?.Units ?? 0,
+                        Created = t.Injection?.Created ?? DateTimeOffset.MinValue,
                     }
                     : null,
                 Reading = t.Reading is not null
