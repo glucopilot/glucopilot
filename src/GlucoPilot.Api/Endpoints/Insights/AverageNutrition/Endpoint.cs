@@ -72,7 +72,7 @@ internal static class Endpoint
                         I.hour_start;
                     """;
 
-        var nutrition = repository.FromSqlRaw<Nutrition>
+        var nutrition = repository.FromSqlRaw<AverageNutrition>
             (query, new FindOptions { IsAsNoTracking = true }, request.Range.Hours, request.From, request.To,
                 userId)
             .AsEnumerable()
@@ -88,7 +88,7 @@ internal static class Endpoint
         });
     }
 
-    private record Nutrition
+    internal record AverageNutrition
     {
         public decimal Calories { get; init; }
         public decimal Carbs { get; init; }

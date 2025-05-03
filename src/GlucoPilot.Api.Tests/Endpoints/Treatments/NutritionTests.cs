@@ -20,7 +20,7 @@ using Endpoint = GlucoPilot.Api.Endpoints.Treatments.Nutrition.Endpoint;
 namespace GlucoPilot.Api.Tests.Endpoints.Treatments;
 
 [TestFixture]
-public class NutritionTests
+public class AverageNutritionTests
 {
     private Mock<IValidator<NutritionRequestModel>> _validatorMock;
     private Mock<ICurrentUser> _currentUserMock;
