@@ -99,7 +99,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         return Get(findOptions).FromSqlRaw(sql, parameters);
     }
-    
+
     public IQueryable<TModel> FromSqlRaw<TModel>(string sql, FindOptions? findOptions = null, params object[] parameters)
         where TModel : class
     {
