@@ -100,6 +100,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         return Get(findOptions).FromSqlRaw(sql, parameters);
     }
 
+    public IQueryable<TModel> FromSqlRaw<TModel>(string sql, FindOptions? findOptions = null, params object[] parameters)
+        where TModel : class
+    {
+        return _glucoPilotDbContext.Database.SqlQueryRaw<TModel>(sql, parameters);
+    }
+
     public void Update(TEntity entity)
     {
         _glucoPilotDbContext.Set<TEntity>().Update(entity);
