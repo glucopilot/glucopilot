@@ -73,7 +73,7 @@ internal static class Endpoint
                     """;
 
         var nutrition = repository.FromSqlRaw<AverageNutrition>
-            (query, new FindOptions { IsAsNoTracking = true }, request.Range.Hours, request.From, request.To,
+            (query, new FindOptions { IsAsNoTracking = true }, request.Range.Hours, from, to,
                 userId)
             .AsEnumerable()
             .DefaultIfEmpty()
