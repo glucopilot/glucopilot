@@ -72,7 +72,7 @@ internal static class Endpoint
                         I.hour_start;
                     """;
 
-        var nutirtion = repository.FromSqlRaw<Nutrition>
+        var nutrition = repository.FromSqlRaw<Nutrition>
             (query, new FindOptions { IsAsNoTracking = true }, request.Range.Hours, request.From, request.To,
                 userId)
             .AsEnumerable()
@@ -81,10 +81,10 @@ internal static class Endpoint
 
         return TypedResults.Ok(new AverageNutritionResponse
         {
-            Calories = nutirtion.Average(n => n?.Calories ?? 0),
-            Carbs = nutirtion.Average(n => n?.Carbs ?? 0),
-            Protein = nutirtion.Average(n => n?.Protein ?? 0),
-            Fat = nutirtion.Average(n => n?.Fat ?? 0)
+            Calories = nutrition.Average(n => n?.Calories ?? 0),
+            Carbs = nutrition.Average(n => n?.Carbs ?? 0),
+            Protein = nutrition.Average(n => n?.Protein ?? 0),
+            Fat = nutrition.Average(n => n?.Fat ?? 0)
         });
     }
 
