@@ -11,7 +11,6 @@ using GlucoPilot.Identity.Models;
 using GlucoPilot.Identity.Templates;
 using GlucoPilot.Mail;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using static BCrypt.Net.BCrypt;
 

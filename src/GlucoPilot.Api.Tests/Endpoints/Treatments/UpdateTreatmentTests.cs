@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -39,7 +38,7 @@ public class UpdateTreatmentTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Throw_NotFoundException_When_Treatment_Not_Found()
+    public void HandleAsync_Should_Throw_NotFoundException_When_Treatment_Not_Found()
     {
         var id = Guid.NewGuid();
         var request = new UpdateTreatmentRequest();
@@ -71,7 +70,7 @@ public class UpdateTreatmentTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Throw_NotFoundException_When_Reading_Not_Found()
+    public void HandleAsync_Should_Throw_NotFoundException_When_Reading_Not_Found()
     {
         var id = Guid.NewGuid();
         var request = new UpdateTreatmentRequest { ReadingId = Guid.NewGuid() };
@@ -108,7 +107,7 @@ public class UpdateTreatmentTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Throw_NotFoundException_When_Meal_Not_Found()
+    public void HandleAsync_Should_Throw_NotFoundException_When_Meal_Not_Found()
     {
         var id = Guid.NewGuid();
         var request = new UpdateTreatmentRequest { MealId = Guid.NewGuid() };
@@ -145,7 +144,7 @@ public class UpdateTreatmentTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Throw_NotFoundException_When_Injection_Not_Found()
+    public void HandleAsync_Should_Throw_NotFoundException_When_Injection_Not_Found()
     {
         var id = Guid.NewGuid();
         var request = new UpdateTreatmentRequest { InjectionId = Guid.NewGuid() };
@@ -260,7 +259,7 @@ public class UpdateTreatmentTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Throw_Exception_When_User_Is_Not_Authenticated()
+    public void HandleAsync_Should_Throw_Exception_When_User_Is_Not_Authenticated()
     {
         var id = Guid.NewGuid();
         var request = new UpdateTreatmentRequest();

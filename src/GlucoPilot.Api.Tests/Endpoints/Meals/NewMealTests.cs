@@ -122,7 +122,7 @@ public class NewMealTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Throw_BadRequestException_When_Invalid_Ingredient_Ids_Provided()
+    public void HandleAsync_Should_Throw_BadRequestException_When_Invalid_Ingredient_Ids_Provided()
     {
         var invalidIngredientId = Guid.NewGuid();
         var request = new NewMealRequest

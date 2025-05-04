@@ -13,7 +13,7 @@ namespace GlucoPilot.Api.Tests.Middleware;
 [TestFixture]
 internal sealed class ExceptionMiddlewareTests
 {
-    private HttpContext _httpContext;
+    private DefaultHttpContext _httpContext;
     private Mock<ICurrentUser> _currentUser;
     private Mock<ILogger<ExceptionMiddleware>> _logger;
 

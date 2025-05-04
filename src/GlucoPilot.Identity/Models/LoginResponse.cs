@@ -1,4 +1,3 @@
-using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using System;
 using System.Collections.Generic;

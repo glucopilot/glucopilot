@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -61,7 +60,7 @@ internal sealed class RevokeTokenTests
     }
 
     [Test]
-    public async Task HandleAsync_With_Unauthorized_User_Throws_UnauthorizedException()
+    public void HandleAsync_With_Unauthorized_User_Throws_UnauthorizedException()
     {
         var request = new RevokeTokenRequest { Token = "validToken" };
         var validatorMock = new Mock<IValidator<RevokeTokenRequest>>();

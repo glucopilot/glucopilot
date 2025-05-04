@@ -1,7 +1,5 @@
 ﻿using GlucoPilot.Data.Enums;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace GlucoPilot.Api.Endpoints.Readings.List;
 

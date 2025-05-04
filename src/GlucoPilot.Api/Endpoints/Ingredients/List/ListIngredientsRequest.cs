@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Meals.List;
-using GlucoPilot.Api.Models;
+﻿using GlucoPilot.Api.Models;
 using Microsoft.Extensions.Options;
 
 namespace GlucoPilot.Api.Endpoints.Ingredients.List;

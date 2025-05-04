@@ -1,5 +1,4 @@
-﻿using GlucoPilot.Api.Models;
-using GlucoPilot.Data.Entities;
+﻿using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,7 @@ namespace GlucoPilot.Api.Endpoints.Meals.GetMeal;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<GetMealResponse>, NotFound, UnauthorizedHttpResult>> HandleAsync(
+    internal static Task<Results<Ok<GetMealResponse>, NotFound, UnauthorizedHttpResult>> HandleAsync(
         [FromRoute] Guid id,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Meal> repository)
@@ -28,7 +27,7 @@ internal static class Endpoint
 
         if (meal is null)
         {
-            return TypedResults.NotFound();
+            return Task.FromResult<Results<Ok<GetMealResponse>, NotFound, UnauthorizedHttpResult>>(TypedResults.NotFound());
         }
 
         var response = new GetMealResponse
@@ -58,6 +57,6 @@ internal static class Endpoint
             TotalProtein = meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Protein * mi.Quantity),
             TotalFat = meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Fat * mi.Quantity)
         };
-        return TypedResults.Ok(response);
+        return Task.FromResult<Results<Ok<GetMealResponse>, NotFound, UnauthorizedHttpResult>>(TypedResults.Ok(response));
     }
 }

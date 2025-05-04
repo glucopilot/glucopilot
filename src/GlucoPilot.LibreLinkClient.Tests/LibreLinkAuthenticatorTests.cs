@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text.Json;
-using GlucoPilot.LibreLinkClient;
 using GlucoPilot.LibreLinkClient.Exceptions;
 using GlucoPilot.LibreLinkClient.Models;
 using Moq;

@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Injections.GetInjection;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
@@ -23,7 +21,7 @@ internal static class Endpoint
         [FromServices] IRepository<Injection> repository,
         CancellationToken cancellationToken)
     {
-        if (await validator.ValidateAsync(request).ConfigureAwait(false) is
+        if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());

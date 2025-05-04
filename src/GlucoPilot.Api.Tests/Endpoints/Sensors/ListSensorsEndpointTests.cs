@@ -47,7 +47,7 @@ public class ListSensorsEndpointTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
+    public void HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
     {
         var request = new ListSensorsRequest { Page = 0, PageSize = 10 };
         _validatorMock

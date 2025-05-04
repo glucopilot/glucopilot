@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Ingredients.NewIngredient;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -31,7 +30,7 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
-        var meal = await mealRepository.FindOneAsync(m => m.Id == request.Id && m.UserId == userId, new FindOptions() { IsAsNoTracking = true }).ConfigureAwait(false);
+        var meal = await mealRepository.FindOneAsync(m => m.Id == request.Id && m.UserId == userId, new FindOptions() { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
 
         if (meal is null)
         {

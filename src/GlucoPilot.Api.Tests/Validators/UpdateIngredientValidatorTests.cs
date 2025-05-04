@@ -2,11 +2,6 @@
 using GlucoPilot.Api.Endpoints.Ingredients.UpdateIngredient;
 using GlucoPilot.Data.Enums;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GlucoPilot.Api.Tests.Validators;
 
