@@ -40,7 +40,7 @@ internal static class Endpoint
             UserId = userId,
         };
 
-        ingredientRepository.Add(ingredient);
+        await ingredientRepository.AddAsync(ingredient, cancellationToken).ConfigureAwait(false);
 
         var response = new NewIngredientResponse
         {

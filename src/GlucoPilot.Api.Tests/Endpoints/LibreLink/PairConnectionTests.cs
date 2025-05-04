@@ -52,9 +52,9 @@ public class PairConnectionTests
         var request = new PairConnectionRequest { PatientId = patientId };
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
-        _patientRepositoryMock.Setup(x =>
-                x.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
         _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync([new ConnectionData { PatientId = patientId, FirstName = "Firstname", LastName = "LastName" }
             ]);
@@ -127,9 +127,9 @@ public class PairConnectionTests
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
-        _patientRepositoryMock.Setup(x =>
-                x.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
         _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
@@ -157,9 +157,9 @@ public class PairConnectionTests
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
-        _patientRepositoryMock.Setup(x =>
-                x.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
         _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
             .ThrowsAsync(new LibreLinkNotAuthenticatedException());
 

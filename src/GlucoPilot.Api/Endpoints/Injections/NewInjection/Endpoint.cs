@@ -43,7 +43,7 @@ internal static class Endpoint
             Units = request.Units,
         };
 
-        injectionsRepository.Add(newInjection);
+        await injectionsRepository.AddAsync(newInjection, cancellationToken).ConfigureAwait(false);
 
         var response = new NewInjectionResponse
         {

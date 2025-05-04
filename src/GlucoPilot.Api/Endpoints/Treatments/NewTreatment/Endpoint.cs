@@ -51,7 +51,7 @@ internal static class Endpoint
                 Units = request.Injection.Units,
             };
 
-            injectionRepository.Add(injection);
+            await injectionRepository.AddAsync(injection, cancellationToken).ConfigureAwait(false);
 
             injection.Insulin = insulin;
         }

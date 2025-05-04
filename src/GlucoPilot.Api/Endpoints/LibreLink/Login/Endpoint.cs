@@ -34,13 +34,16 @@ internal static class Endpoint
 
         try
         {
-            var patient = patientRepository.FindOne(p => p.Id == userId);
+            var patient = await patientRepository
+                .FindOneAsync(p => p.Id == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken)
+                .ConfigureAwait(false);
             if (patient is null)
             {
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");
             }
 
-            if (patient.AuthTicket is not null && DateTimeOffset.FromUnixTimeSeconds(patient.AuthTicket.Expires) > DateTimeOffset.UtcNow)
+            if (patient.AuthTicket is not null &&
+                DateTimeOffset.FromUnixTimeSeconds(patient.AuthTicket.Expires) > DateTimeOffset.UtcNow)
             {
                 return TypedResults.Ok(new LoginResponse
                 {
@@ -50,7 +53,8 @@ internal static class Endpoint
                 });
             }
 
-            var authTicket = await libreLinkClient.LoginAsync(request.Username, request.Password, cancellationToken).ConfigureAwait(false);
+            var authTicket = await libreLinkClient.LoginAsync(request.Username, request.Password, cancellationToken)
+                .ConfigureAwait(false);
 
             if (patient.AuthTicket is null || patient.AuthTicket.Token != authTicket.Token)
             {

@@ -64,8 +64,8 @@ public class ConnectionsTests
             { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
-                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+                r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
 
         _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
@@ -93,8 +93,8 @@ public class ConnectionsTests
             { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
-                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+                r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
 
         _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new LibreLinkNotAuthenticatedException());
@@ -122,8 +122,8 @@ public class ConnectionsTests
             { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
-                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+                r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
 
         var connections = new List<ConnectionData>
         {
@@ -164,8 +164,8 @@ public class ConnectionsTests
             { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
         _patientRepositoryMock.Setup(r =>
-                r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+                r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
 
         _libreLinkClientMock.Setup(c => c.GetConnectionsAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync((List<ConnectionData>)null);

@@ -92,13 +92,13 @@ public class NewInsulinTests
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _repositoryMock.Object, _currentUserMock.Object, CancellationToken.None);
 
-        _repositoryMock.Verify(r => r.Add(It.Is<Insulin>(i =>
+        _repositoryMock.Verify(r => r.AddAsync(It.Is<Insulin>(i =>
             i.Name == request.Name &&
             i.Type == (Data.Enums.InsulinType)request.Type &&
             i.Duration == request.Duration &&
             i.Scale == request.Scale &&
             i.UserId == userId
-        )), Times.Once);
+        ), It.IsAny<CancellationToken>()), Times.Once);
 
         Assert.That(result.Result, Is.TypeOf<Created<NewInsulinResponse>>());
         var okResult = result.Result as Created<NewInsulinResponse>;

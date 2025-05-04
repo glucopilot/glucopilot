@@ -29,7 +29,7 @@ internal static class Endpoint
             throw new NotFoundException("TREATMENT_NOT_FOUND");
         }
 
-        treatmentRepository.Delete(treatment);
+        await treatmentRepository.DeleteAsync(treatment, cancellationToken).ConfigureAwait(false);
 
         return TypedResults.NoContent();
     }

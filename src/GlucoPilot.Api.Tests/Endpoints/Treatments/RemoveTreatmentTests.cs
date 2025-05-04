@@ -41,7 +41,7 @@ public class RemoveTreatmentTests
         var result = await Endpoint.HandleAsync(treatmentId, _currentUserMock.Object, _treatmentRepositoryMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.InstanceOf<NoContent>());
-        _treatmentRepositoryMock.Verify(r => r.Delete(treatment), Times.Once);
+        _treatmentRepositoryMock.Verify(r => r.DeleteAsync(treatment, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]

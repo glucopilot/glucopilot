@@ -32,7 +32,9 @@ internal static class Endpoint
             return TypedResults.NoContent();
         }
 
-        var user = userRepository.FindOne(u => u.Email == request.Email);
+        var user = await userRepository
+            .FindOneAsync(u => u.Email == request.Email, new FindOptions { IsAsNoTracking = true }, cancellationToken)
+            .ConfigureAwait(false);
         if (user is null)
         {
             throw new ForbiddenException("USER_NOT_VERIFIED");
@@ -42,6 +44,7 @@ internal static class Endpoint
         {
             return TypedResults.NoContent();
         }
+
         throw new ForbiddenException("USER_NOT_VERIFIED");
     }
 }

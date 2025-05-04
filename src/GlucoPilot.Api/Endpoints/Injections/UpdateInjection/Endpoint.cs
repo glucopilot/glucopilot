@@ -48,7 +48,7 @@ internal static class Endpoint
         injection.InsulinId = request.InsulinId;
         injection.Updated = DateTimeOffset.UtcNow;
 
-        injectionRepository.Update(injection);
+        await injectionRepository.UpdateAsync(injection, cancellationToken).ConfigureAwait(false);
 
         var response = new UpdateInjectionResponse
         {
