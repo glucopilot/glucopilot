@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace GlucoPilot.Data.Entities;
 
@@ -65,6 +66,26 @@ public class Treatment
             }
 
             throw new InvalidOperationException("Invalid treatment type");
+        }
+    }
+
+    /// <summary>
+    /// The ratio of insulin to carbs for the meal associated with this treatment.
+    /// </summary>
+    [NotMapped]
+    public decimal? InsulinToCarbRatio
+    {
+        get
+        {
+            if (Meal?.MealIngredients is null || Injection is null || Injection.Units.Equals(0))
+            {
+                return null;
+            }
+
+            var carbs = Meal.MealIngredients.Sum(mi => mi.Ingredient?.Carbs ?? 0);
+            var insulin = (decimal)Injection.Units;
+
+            return carbs / insulin;
         }
     }
 
