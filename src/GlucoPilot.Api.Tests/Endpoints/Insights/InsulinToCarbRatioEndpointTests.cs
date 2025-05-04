@@ -85,8 +85,8 @@ internal sealed class InsulinToCarbRatioEndpointTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.Result, Is.InstanceOf<Ok<double?>>());
-            Assert.That(((Ok<double?>)result.Result).Value, Is.EqualTo(5)); // Average insulin to carb ratio: (50/10 + 100/20) / 2 = 5
+            Assert.That(result.Result, Is.InstanceOf<Ok<decimal?>>());
+            Assert.That(((Ok<decimal?>)result.Result).Value, Is.EqualTo(5)); // Average insulin to carb ratio: (50/10 + 100/20) / 2 = 5
         });
     }
 
@@ -94,10 +94,9 @@ internal sealed class InsulinToCarbRatioEndpointTests
     public async Task HandleAsync_With_Invalid_Request_Returns_Validation_Problem()
     {
         _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<InsulinToCarbRatioRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult(new[]
-            {
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult([
                 new FluentValidation.Results.ValidationFailure("From", "From date is required")
-            }));
+            ]));
 
         var request = new InsulinToCarbRatioRequest();
 
@@ -142,8 +141,8 @@ internal sealed class InsulinToCarbRatioEndpointTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.Result, Is.InstanceOf<Ok<double?>>());
-            Assert.That(((Ok<double?>)result.Result).Value, Is.Null);
+            Assert.That(result.Result, Is.InstanceOf<Ok<decimal?>>());
+            Assert.That(((Ok<decimal?>)result.Result).Value, Is.Null);
         });
     }
 }

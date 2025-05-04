@@ -73,17 +73,17 @@ public class Treatment
     /// The ratio of insulin to carbs for the meal associated with this treatment.
     /// </summary>
     [NotMapped]
-    public double? InsulinToCarbRatio
+    public decimal? InsulinToCarbRatio
     {
         get
         {
-            if (Meal?.MealIngredients is null || Injection is null || Injection.Units == 0)
+            if (Meal?.MealIngredients is null || Injection is null || Injection.Units.Equals(0))
             {
                 return null;
             }
 
-            var carbs = (double)Meal.MealIngredients.Sum(mi => mi.Ingredient?.Carbs ?? 0);
-            var insulin = Injection.Units;
+            var carbs = Meal.MealIngredients.Sum(mi => mi.Ingredient?.Carbs ?? 0);
+            var insulin = (decimal)Injection.Units;
 
             return carbs / insulin;
         }

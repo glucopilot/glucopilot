@@ -14,7 +14,7 @@ namespace GlucoPilot.Api.Endpoints.Insights.InsulinToCarbRatio;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok<double?>, ValidationProblem, UnauthorizedHttpResult>> HandleAsync(
+    internal static async Task<Results<Ok<decimal?>, ValidationProblem, UnauthorizedHttpResult>> HandleAsync(
         [AsParameters] InsulinToCarbRatioRequest request,
         [FromServices] IValidator<InsulinToCarbRatioRequest> validator,
         [FromServices] ICurrentUser currentUser,
