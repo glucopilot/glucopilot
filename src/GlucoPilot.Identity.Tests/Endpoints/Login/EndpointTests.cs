@@ -87,7 +87,7 @@ internal sealed class EndpointTests
         Assert.Multiple(() =>
         {
             Assert.That(_httpContext.Response.Headers.ContainsKey("Set-Cookie"), Is.True);
-            Assert.That(_httpContext.Response.Headers["Set-Cookie"].ToString(), Does.Contain("RefreshToken=refreshToken"));
+            Assert.That(_httpContext.Response.Headers.SetCookie.ToString(), Does.Contain("RefreshToken=refreshToken"));
         });
     }
 }

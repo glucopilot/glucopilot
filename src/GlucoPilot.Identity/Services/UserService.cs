@@ -193,7 +193,7 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<TokenResponse> RefreshTokenAsync(string? token, string ipAddress, CancellationToken cancellationToken)
+    public async Task<TokenResponse> RefreshTokenAsync(string? token, string ipAddress, CancellationToken cancellationToken = default)
     {
         var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);
         var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
@@ -228,7 +228,7 @@ public sealed class UserService : IUserService
         return response;
     }
 
-    public async Task<User> FindByRefreshTokenAsync(string? token, CancellationToken cancellationToken)
+    public async Task<User> FindByRefreshTokenAsync(string? token, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -245,7 +245,7 @@ public sealed class UserService : IUserService
         return user;
     }
 
-    public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
+    public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken = default)
     {
         var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);
         if (user is null)

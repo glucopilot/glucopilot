@@ -50,15 +50,22 @@ public class Treatment
         get
         {
             if (MealId is not null && InjectionId is null)
+            {
                 return TreatmentType.Correction;
-            else if (MealId is not null && InjectionId is not null)
+            }
+
+            if (MealId is not null && InjectionId is not null)
+            {
                 return TreatmentType.Meal;
-            else if (MealId is null && InjectionId is not null)
+            }
+
+            if (MealId is null && InjectionId is not null)
+            {
                 return TreatmentType.Injection;
-            else
-                throw new InvalidOperationException("Invalid treatment type");
+            }
+
+            throw new InvalidOperationException("Invalid treatment type");
         }
-        set { }
     }
 
     /// <summary>

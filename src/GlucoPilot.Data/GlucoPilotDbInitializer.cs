@@ -20,7 +20,7 @@ public sealed class GlucoPilotDbInitializer
     public async Task InitialiseDbAsync(CancellationToken cancellationToken)
     {
         var pendingMigrations = (await _db.Database.GetPendingMigrationsAsync(cancellationToken).ConfigureAwait(false)).ToArray();
-        if (pendingMigrations.Any())
+        if (pendingMigrations.Length != 0)
         {
             await _db.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
         }

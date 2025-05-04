@@ -51,7 +51,7 @@ internal sealed class EndpointTests
     }
 
     [Test]
-    public async Task HandleAsync_WithUnverifiedUser_ThrowsForbiddenException()
+    public void HandleAsync_WithUnverifiedUser_ThrowsForbiddenException()
     {
         var request = new IsVerifiedRequest { Email = "user@example.com" };
         var validatorMock = new Mock<IValidator<IsVerifiedRequest>>();

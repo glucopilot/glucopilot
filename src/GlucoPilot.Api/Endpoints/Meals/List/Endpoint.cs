@@ -34,7 +34,9 @@ internal static class Endpoint
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
             var searchLower = request.Search.ToLowerInvariant();
+#pragma warning disable CA1862 // EF cannot use a query with a .Contains(StringComparison) within it.
             mealsQuery = mealsQuery.Where(m => m.Name.ToLower().Contains(searchLower));
+#pragma warning restore CA1862 // EF cannot use a query with a .Contains(StringComparison) within it.
         }
 
         var meals = mealsQuery

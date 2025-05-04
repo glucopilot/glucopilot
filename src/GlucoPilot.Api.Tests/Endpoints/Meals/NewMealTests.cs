@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
@@ -114,11 +115,11 @@ public class NewMealTests
 
         await Endpoint.HandleAsync(request, _validatorMock.Object, mockCurrentUser.Object, mockRepository.Object, _ingredientRepositoryMock.Object);
 
-        mockRepository.Verify(x => x.Add(It.Is<Meal>(meal =>
+        mockRepository.Verify(x => x.AddAsync(It.Is<Meal>(meal =>
             meal.MealIngredients.Count == 2 &&
             meal.MealIngredients.Any(mi => mi.Quantity == 2) &&
             meal.MealIngredients.Any(mi => mi.Quantity == 3)
-        )), Times.Once);
+        ), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]

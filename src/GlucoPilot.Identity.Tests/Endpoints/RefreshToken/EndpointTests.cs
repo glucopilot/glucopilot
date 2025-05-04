@@ -18,7 +18,7 @@ internal sealed class EndpointTests
         var userServiceMock = new Mock<IUserService>();
         var identityOptions = Options.Create(new IdentityOptions { RefreshTokenCookieName = "RefreshToken" });
         var context = new DefaultHttpContext();
-        context.Request.Headers["Cookie"] = $"{identityOptions.Value.RefreshTokenCookieName}=valid-refresh-token";
+        context.Request.Headers.Cookie = $"{identityOptions.Value.RefreshTokenCookieName}=valid-refresh-token";
         var tokenResponse = new TokenResponse { Token = "new-access-token", RefreshToken = "new-refresh-token" };
         userServiceMock.Setup(s =>
                 s.RefreshTokenAsync("valid-refresh-token", It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -60,7 +60,7 @@ internal sealed class EndpointTests
         var userServiceMock = new Mock<IUserService>();
         var identityOptions = Options.Create(new IdentityOptions { RefreshTokenCookieName = "RefreshToken" });
         var context = new DefaultHttpContext();
-        context.Request.Headers["Cookie"] = $"{identityOptions.Value.RefreshTokenCookieName}=valid-refresh-token";
+        context.Request.Headers.Cookie = $"{identityOptions.Value.RefreshTokenCookieName}=valid-refresh-token";
         var tokenResponse = new TokenResponse { Token = "new-access-token", RefreshToken = "new-refresh-token" };
         userServiceMock.Setup(s =>
                 s.RefreshTokenAsync("valid-refresh-token", It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -71,7 +71,7 @@ internal sealed class EndpointTests
         Assert.Multiple(() =>
         {
             Assert.That(context.Response.Headers.ContainsKey("Set-Cookie"), Is.True);
-            Assert.That(context.Response.Headers["Set-Cookie"].ToString(), Does.Contain("new-refresh-token"));
+            Assert.That(context.Response.Headers.SetCookie.ToString(), Does.Contain("new-refresh-token"));
         });
     }
 }
