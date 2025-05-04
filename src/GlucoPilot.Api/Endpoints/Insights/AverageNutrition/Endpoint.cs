@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -12,8 +14,9 @@ namespace GlucoPilot.Api.Endpoints.Insights.AverageNutrition;
 
 internal static class Endpoint
 {
-    internal static Results<Ok<AverageNutritionResponse>, UnauthorizedHttpResult> Handle(
+    internal static async Task<Results<Ok<AverageNutritionResponse>, ValidationProblem, UnauthorizedHttpResult>> HandleAsync(
         [AsParameters] AverageNutritionRequest request,
+        [FromServices] IValidator<AverageNutritionRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Treatment> repository,
         CancellationToken cancellationToken = default)
@@ -22,6 +25,13 @@ internal static class Endpoint
 
         var to = request.To ?? DateTimeOffset.UtcNow;
         var from = request.From ?? to.AddDays(-7);
+        var range = request.Range ?? TimeSpan.FromDays(1);
+
+        var validationResult = await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false);
+        if (!validationResult.IsValid)
+        {
+            return TypedResults.ValidationProblem(validationResult.ToDictionary());
+        }
 
         // Query currently lacks the ability to treat ranges without any meals in as a zero,
         // so averages may be a little off... But if this defaults to a 24-hour range and goes back 
@@ -64,7 +74,7 @@ internal static class Endpoint
                         SUM(MC.TotalFat) AS Fat
                     FROM 
                         Intervals I
-                    JOIN 
+                    JOIN
                         MealCalories MC ON I.MealId = MC.MealId
                     GROUP BY 
                         I.hour_start
@@ -73,7 +83,7 @@ internal static class Endpoint
                     """;
 
         var nutrition = repository.FromSqlRaw<AverageNutrition>
-            (query, new FindOptions { IsAsNoTracking = true }, request.Range.Hours, from, to,
+            (query, new FindOptions { IsAsNoTracking = true }, range.Hours, from, to,
                 userId)
             .AsEnumerable()
             .DefaultIfEmpty()

@@ -248,5 +248,11 @@ namespace GlucoPilot.Resources {
                 return ResourceManager.GetString("SearchLengthInvalid", resourceCulture);
             }
         }
+        
+        public static string RangeGreaterThanZero {
+            get {
+                return ResourceManager.GetString("RangeGreaterThanZero", resourceCulture);
+            }
+        }
     }
 }

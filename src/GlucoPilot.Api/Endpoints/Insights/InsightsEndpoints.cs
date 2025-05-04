@@ -14,17 +14,17 @@ internal static class InsightsEndpoints
         var group = endpoints.NewVersionedApi().MapGroup("api/v{version:apiVersion}/insights")
             .WithTags("Insights");
 
-        group.MapGet("/insulin", Insulin.Endpoint.Handle)
+        group.MapGet("/insulin", Insulin.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
-        group.MapGet("/average-glucose", AverageGlucose.Endpoint.Handle)
+        group.MapGet("/average-glucose", AverageGlucose.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
-        group.MapGet("/average-nutrition", AverageNutrition.Endpoint.Handle)
+        group.MapGet("/average-nutrition", AverageNutrition.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();

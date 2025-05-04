@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Insights.AverageNutrition;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
@@ -15,18 +18,20 @@ namespace GlucoPilot.Api.Tests.Endpoints.Insights;
 [TestFixture]
 internal sealed class AverageNutritionTests
 {
+    private Mock<IValidator<AverageNutritionRequest>> _validatorMock;
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IRepository<Treatment>> _repositoryMock;
 
     [SetUp]
     public void SetUp()
     {
+        _validatorMock = new Mock<IValidator<AverageNutritionRequest>>();
         _currentUserMock = new Mock<ICurrentUser>();
         _repositoryMock = new Mock<IRepository<Treatment>>();
     }
 
     [Test]
-    public void Handle_With_Valid_Request_Returns_Average_Nutrition_Response()
+    public async Task Handle_With_Valid_Request_Returns_Average_Nutrition_Response()
     {
         _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid());
         var nutritionData = new[]
@@ -52,7 +57,11 @@ internal sealed class AverageNutritionTests
             To = DateTimeOffset.UtcNow
         };
 
-        var result = Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object);
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
+            .ReturnsAsync(new ValidationResult());
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
 
         Assert.Multiple(() =>
         {
@@ -66,7 +75,27 @@ internal sealed class AverageNutritionTests
     }
 
     [Test]
-    public void Handle_With_No_Nutrition_Data_Returns_Zero_Averages()
+    public async Task Handle_With_Validation_Error_Returns_Validation_Problem()
+    {
+        var request = new AverageNutritionRequest
+        {
+            From = DateTimeOffset.UtcNow.AddDays(-7),
+            To = DateTimeOffset.UtcNow
+        };
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
+            .ReturnsAsync(new ValidationResult([
+                new ValidationFailure("From", "From date is required")
+            ]));
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
+
+        Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
+    }
+
+    [Test]
+    public async Task Handle_With_No_Nutrition_Data_Returns_Zero_Averages()
     {
         _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid());
         _repositoryMock.Setup(repo => repo.FromSqlRaw<Endpoint.AverageNutrition>(
@@ -80,7 +109,11 @@ internal sealed class AverageNutritionTests
             To = DateTimeOffset.UtcNow
         };
 
-        var result = Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object);
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
+            .ReturnsAsync(new ValidationResult());
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
 
         Assert.Multiple(() =>
         {
@@ -105,11 +138,11 @@ internal sealed class AverageNutritionTests
             To = DateTimeOffset.UtcNow
         };
 
-        Assert.That(() => Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None), Throws.Exception.SameAs(exception));
+        Assert.That(() => Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None), Throws.Exception.SameAs(exception));
     }
 
     [Test]
-    public void Handle_With_Null_Date_Range_Uses_Default_Range()
+    public async Task Handle_With_Null_Date_Range_Uses_Default_Range()
     {
         _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid());
         var nutritionData = new[]
@@ -130,7 +163,11 @@ internal sealed class AverageNutritionTests
 
         var request = new AverageNutritionRequest();
 
-        var result = Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object);
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
+            .ReturnsAsync(new ValidationResult());
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
 
         Assert.Multiple(() =>
         {
