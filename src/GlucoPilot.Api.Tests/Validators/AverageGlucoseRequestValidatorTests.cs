@@ -9,12 +9,12 @@ namespace GlucoPilot.Api.Tests.Validators;
 internal sealed class AverageGlucoseRequestValidatorTests
 {
     private readonly AverageGlucoseRequest.Validator _validator;
-    
+
     public AverageGlucoseRequestValidatorTests()
     {
         _validator = new AverageGlucoseRequest.Validator();
     }
-    
+
     [Test]
     public void Should_Have_Error_When_StartDate_Is_Greater_Than_EndDate()
     {

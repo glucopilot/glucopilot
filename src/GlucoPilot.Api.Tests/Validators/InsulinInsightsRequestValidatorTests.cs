@@ -9,12 +9,12 @@ namespace GlucoPilot.Api.Tests.Validators;
 internal sealed class InsulinInsightsRequestValidatorTests
 {
     private readonly InsulinInsightsRequest.Validator _validator;
-    
+
     public InsulinInsightsRequestValidatorTests()
     {
         _validator = new InsulinInsightsRequest.Validator();
     }
-    
+
     [Test]
     public void Should_Have_Error_When_StartDate_Is_Greater_Than_EndDate()
     {
