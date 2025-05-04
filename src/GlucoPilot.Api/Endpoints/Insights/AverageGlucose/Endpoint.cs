@@ -25,13 +25,13 @@ internal static class Endpoint
 
         var to = request.To ?? DateTimeOffset.UtcNow;
         var from = request.From ?? to.AddDays(-7);
-        
-        var validationResult = await validator .ValidateAsync(request, cancellationToken).ConfigureAwait(false);
+
+        var validationResult = await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false);
         if (!validationResult.IsValid)
         {
             return TypedResults.ValidationProblem(validationResult.ToDictionary());
         }
-        
+
         var average = repository
             .GetAll(new FindOptions { IsAsNoTracking = true })
             .Where(r => r.UserId == userId && r.Created >= from && r.Created <= to)

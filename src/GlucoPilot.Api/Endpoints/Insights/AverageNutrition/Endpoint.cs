@@ -32,7 +32,7 @@ internal static class Endpoint
         {
             return TypedResults.ValidationProblem(validationResult.ToDictionary());
         }
-        
+
         // Query currently lacks the ability to treat ranges without any meals in as a zero,
         // so averages may be a little off... But if this defaults to a 24-hour range and goes back 
         // the last 7 days, it should suffice for now...

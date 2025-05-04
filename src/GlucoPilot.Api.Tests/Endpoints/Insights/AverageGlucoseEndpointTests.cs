@@ -49,7 +49,7 @@ internal sealed class AverageGlucoseEndpointTests
             From = DateTimeOffset.UtcNow.AddDays(-7),
             To = DateTimeOffset.UtcNow
         };
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
@@ -62,7 +62,7 @@ internal sealed class AverageGlucoseEndpointTests
             Assert.That(((Ok<double>)result.Result).Value, Is.EqualTo(110));
         });
     }
-    
+
     [Test]
     public async Task Handle_With_Invalid_Request_Returns_ValidationProblem()
     {
@@ -87,7 +87,7 @@ internal sealed class AverageGlucoseEndpointTests
             From = DateTimeOffset.UtcNow.AddDays(-7),
             To = DateTimeOffset.UtcNow
         };
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
@@ -130,7 +130,7 @@ internal sealed class AverageGlucoseEndpointTests
         _repositoryMock.Setup(repo => repo.GetAll(It.IsAny<FindOptions>())).Returns(readings);
 
         var request = new AverageGlucoseRequest();
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());

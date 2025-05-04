@@ -8,7 +8,7 @@ public sealed class AverageNutritionRequest
     public DateTimeOffset? From { get; set; }
     public DateTimeOffset? To { get; set; }
     public TimeSpan? Range { get; set; }
-    
+
     public sealed class Validator : AbstractValidator<AverageNutritionRequest>
     {
         public Validator()

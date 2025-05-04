@@ -71,7 +71,7 @@ internal sealed class InsulinEndpointTests
             From = DateTimeOffset.UtcNow.AddDays(-1),
             To = DateTimeOffset.UtcNow
         };
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
@@ -86,7 +86,7 @@ internal sealed class InsulinEndpointTests
             Assert.That(response.Value.TotalBolusUnits, Is.EqualTo(20));
         });
     }
-    
+
     [Test]
     public async Task Handle_With_Validation_Error_Returns_Validation_Problem()
     {
@@ -135,7 +135,7 @@ internal sealed class InsulinEndpointTests
             From = DateTimeOffset.UtcNow.AddDays(-1),
             To = DateTimeOffset.UtcNow
         };
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());

@@ -60,7 +60,7 @@ internal sealed class AverageNutritionTests
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
-        
+
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object);
 
         Assert.Multiple(() =>
@@ -73,7 +73,7 @@ internal sealed class AverageNutritionTests
             Assert.That(response.Fat, Is.EqualTo(12.5m));
         });
     }
-    
+
     [Test]
     public async Task Handle_With_Validation_Error_Returns_Validation_Problem()
     {
@@ -108,7 +108,7 @@ internal sealed class AverageNutritionTests
             From = DateTimeOffset.UtcNow.AddDays(-7),
             To = DateTimeOffset.UtcNow
         };
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
@@ -162,7 +162,7 @@ internal sealed class AverageNutritionTests
             It.IsAny<object[]>())).Returns(nutritionData);
 
         var request = new AverageNutritionRequest();
-        
+
         _validatorMock
             .Setup(v => v.ValidateAsync(request, CancellationToken.None))
             .ReturnsAsync(new ValidationResult());
