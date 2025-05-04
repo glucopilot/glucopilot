@@ -12,7 +12,7 @@ public class MailServiceTests
 {
     private static readonly string[] ToAddresses = ["to@example.com"];
     private static readonly string[] FromAddresses = ["from@example.com"];
-    
+
     private Mock<ISmtpClientFactory> _smtpClientFactory;
     private Mock<ISmtpClient> _smtpClient;
     private Mock<IOptions<MailOptions>> _options;
