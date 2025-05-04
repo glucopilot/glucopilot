@@ -74,8 +74,8 @@ internal sealed class EndpointTests
         validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
         var userRepositoryMock = new Mock<IRepository<User>>();
-        userRepositoryMock.Setup(repo => repo.FindOne(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(new Patient { Email = "user@example.com", PasswordHash = "password", IsVerified = true });
+        userRepositoryMock.Setup(repo => repo.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Patient { Email = "user@example.com", PasswordHash = "password", IsVerified = true });
         var identityOptions = Options.Create(new IdentityOptions { RequireEmailVerification = true });
 
         var result = await Endpoint.HandleAsync(request, validatorMock.Object, userRepositoryMock.Object,

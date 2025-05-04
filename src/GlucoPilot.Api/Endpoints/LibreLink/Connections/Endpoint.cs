@@ -23,7 +23,8 @@ internal static class Endpoint
         [FromServices] IRepository<Patient> patientRepository,
         CancellationToken cancellationToken)
     {
-        var patient = patientRepository.FindOne(p => p.Id == currentUser.GetUserId());
+        var patient = await patientRepository.FindOneAsync(p => p.Id == currentUser.GetUserId(),
+            new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
         if (patient is null || patient.AuthTicket is null)
         {
             throw new UnauthorizedException("PATIENT_NOT_FOUND");

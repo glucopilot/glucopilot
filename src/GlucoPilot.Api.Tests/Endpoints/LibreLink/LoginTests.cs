@@ -64,8 +64,9 @@ public class LoginTests
         _libreLinkClientMock
             .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
             .ReturnsAsync(authTicket);
-        _patientRepositoryMock.Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
 
@@ -97,8 +98,8 @@ public class LoginTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _patientRepositoryMock
-            .Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
         _libreLinkClientMock
             .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new LibreLinkAuthenticationFailedException());
@@ -134,8 +135,8 @@ public class LoginTests
             .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
             .ReturnsAsync(authTicket);
         _patientRepositoryMock
-            .Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
 
@@ -188,8 +189,8 @@ public class LoginTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _patientRepositoryMock
-            .Setup(r => r.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(patient);
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _libreLinkClientMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
 

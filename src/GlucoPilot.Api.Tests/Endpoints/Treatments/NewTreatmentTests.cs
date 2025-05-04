@@ -80,11 +80,11 @@ public class NewTreatmentTests
             _insulinRepositoryMock.Object,
             CancellationToken.None);
 
-        _injectionRepositoryMock.Verify(r => r.Add(It.Is<Injection>(i =>
+        _injectionRepositoryMock.Verify(r => r.AddAsync(It.Is<Injection>(i =>
             i.UserId == userId &&
             i.InsulinId == request.Injection.InsulinId &&
             i.Units == request.Injection.Units &&
-            i.Created == request.Injection.Created)), Times.Once);
+            i.Created == request.Injection.Created), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]

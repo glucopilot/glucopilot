@@ -30,7 +30,9 @@ internal static class Endpoint
 
         try
         {
-            var patient = patientRepository.FindOne(p => p.Id == userId);
+            var patient = await patientRepository
+                .FindOneAsync(p => p.Id == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken)
+                .ConfigureAwait(false);
             if (patient is null || string.IsNullOrWhiteSpace(patient.AuthTicket?.Token))
             {
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");

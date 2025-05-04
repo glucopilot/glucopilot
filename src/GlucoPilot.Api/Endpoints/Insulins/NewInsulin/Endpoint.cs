@@ -39,7 +39,7 @@ internal static class Endpoint
             Created = DateTimeOffset.UtcNow,
         };
 
-        insulinsRepository.Add(insulin);
+        await insulinsRepository.AddAsync(insulin, cancellationToken).ConfigureAwait(false);
 
         var response = new NewInsulinResponse
         {
