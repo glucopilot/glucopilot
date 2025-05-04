@@ -36,7 +36,7 @@ internal static class Endpoint
                 new FindOptions { IsAsNoTracking = true }).Include(t => t.Injection).Include(t => t.Meal)
             .ThenInclude(m => m!.MealIngredients).ThenInclude(mi => mi.Ingredient)
             .AsEnumerable()
-            .Average(x  => x.InsulinToCarbRatio);
+            .Average(x => x.InsulinToCarbRatio);
 
         return TypedResults.Ok(insulinToCarbs);
     }

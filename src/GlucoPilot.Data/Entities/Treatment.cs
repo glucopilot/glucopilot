@@ -81,7 +81,7 @@ public class Treatment
             {
                 return null;
             }
-            
+
             var carbs = (double)Meal.MealIngredients.Sum(mi => mi.Ingredient?.Carbs ?? 0);
             var insulin = Injection.Units;
 
