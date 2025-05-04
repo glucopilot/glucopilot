@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
@@ -14,16 +16,24 @@ namespace GlucoPilot.Api.Endpoints.Insights.Insulin;
 
 internal static class Endpoint
 {
-    internal static Results<Ok<InsulinInsightsResponse>, UnauthorizedHttpResult> Handle(
-        [AsParameters] InsulinInsightsRequest request,
-        [FromServices] ICurrentUser currentUser,
-        [FromServices] IRepository<Treatment> repository,
-        CancellationToken cancellationToken)
+    internal static async Task<Results<Ok<InsulinInsightsResponse>, ValidationProblem, UnauthorizedHttpResult>>
+        HandleAsync(
+            [AsParameters] InsulinInsightsRequest request,
+            [FromServices] IValidator<InsulinInsightsRequest> validator,
+            [FromServices] ICurrentUser currentUser,
+            [FromServices] IRepository<Treatment> repository,
+            CancellationToken cancellationToken)
     {
         var userId = currentUser.GetUserId();
 
         var to = request.To ?? DateTimeOffset.UtcNow;
         var from = request.From ?? new DateTimeOffset(to.Date, to.Offset);
+
+        var validationResult = await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false);
+        if (!validationResult.IsValid)
+        {
+            return TypedResults.ValidationProblem(validationResult.ToDictionary());
+        }
 
         var treatments = repository.Find(
             t => t.UserId == userId && t.Injection != null && t.Injection.Insulin != null && t.Created >= from &&

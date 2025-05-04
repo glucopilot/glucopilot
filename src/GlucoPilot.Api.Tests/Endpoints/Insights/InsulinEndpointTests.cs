@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Insights.Insulin;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
@@ -17,18 +20,20 @@ namespace GlucoPilot.Api.Tests.Endpoints.Insights;
 [TestFixture]
 internal sealed class InsulinEndpointTests
 {
+    private Mock<IValidator<InsulinInsightsRequest>> _validatorMock;
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IRepository<Treatment>> _repositoryMock;
 
     [SetUp]
     public void SetUp()
     {
+        _validatorMock = new Mock<IValidator<InsulinInsightsRequest>>();
         _currentUserMock = new Mock<ICurrentUser>();
         _repositoryMock = new Mock<IRepository<Treatment>>();
     }
 
     [Test]
-    public void Handle_With_Valid_User_Returns_Insulin_Insights_Response()
+    public async Task Handle_With_Valid_User_Returns_Insulin_Insights_Response()
     {
         var userId = Guid.NewGuid();
         _currentUserMock.Setup(cu => cu.GetUserId()).Returns(userId);
@@ -66,8 +71,12 @@ internal sealed class InsulinEndpointTests
             From = DateTimeOffset.UtcNow.AddDays(-1),
             To = DateTimeOffset.UtcNow
         };
+        
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
+            .ReturnsAsync(new ValidationResult());
 
-        var result = Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.Multiple(() =>
         {
@@ -76,6 +85,26 @@ internal sealed class InsulinEndpointTests
             Assert.That(response.Value.TotalBasalUnits, Is.EqualTo(10));
             Assert.That(response.Value.TotalBolusUnits, Is.EqualTo(20));
         });
+    }
+    
+    [Test]
+    public async Task Handle_With_Validation_Error_Returns_Validation_Problem()
+    {
+        var request = new InsulinInsightsRequest
+        {
+            From = DateTimeOffset.UtcNow,
+            To = DateTimeOffset.UtcNow.AddDays(-1)
+        };
+
+        _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult(new List<ValidationFailure>
+            {
+                new ValidationFailure(nameof(request.From), "From date must be less than To date.")
+            }));
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+
+        Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
     }
 
     [Test]
@@ -88,12 +117,12 @@ internal sealed class InsulinEndpointTests
             To = DateTimeOffset.UtcNow
         };
 
-        Assert.That(() => Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
+        Assert.That(() => Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None),
             Throws.InstanceOf<UnauthorizedAccessException>());
     }
 
     [Test]
-    public void Handle_With_No_Treatments_Returns_Zero_Units()
+    public async Task Handle_With_No_Treatments_Returns_Zero_Units()
     {
         _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid());
         _repositoryMock.Setup(repo => repo.Find(
@@ -106,8 +135,12 @@ internal sealed class InsulinEndpointTests
             From = DateTimeOffset.UtcNow.AddDays(-1),
             To = DateTimeOffset.UtcNow
         };
+        
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, CancellationToken.None))
+            .ReturnsAsync(new ValidationResult());
 
-        var result = Endpoint.Handle(request, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.Multiple(() =>
         {

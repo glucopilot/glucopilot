@@ -219,4 +219,7 @@
   <data name="SearchLengthInvalid" xml:space="preserve">
     <value>SEARCH_LENGTH_INVALID</value>
   </data>
+  <data name="RangeGreaterThanZero" xml:space="preserve">
+    <value>RANGE_GREATER_THAN_ZERO</value>
+  </data>
 </root>
