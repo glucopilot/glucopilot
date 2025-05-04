@@ -17,6 +17,8 @@ public partial class SyncService : IHostedService, IDisposable
     private readonly ILogger<SyncService> _logger;
     private Timer? _timer;
 
+    private bool _disposed;
+
     public SyncService(IServiceScopeFactory scopeFactory, ILogger<SyncService> logger)
     {
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
@@ -25,8 +27,23 @@ public partial class SyncService : IHostedService, IDisposable
 
     public void Dispose()
     {
-        _timer?.Dispose();
+        Dispose(true);
         GC.SuppressFinalize(this);
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+        
+        if (disposing)
+        {
+            _timer?.Dispose();
+        }
+
+        _disposed = true;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

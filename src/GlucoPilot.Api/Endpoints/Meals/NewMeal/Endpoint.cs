@@ -36,7 +36,7 @@ internal static class Endpoint
             .ToList();
 
         var invalidIngredientIds = ingredientIds.Except(validIngredientIds).ToList();
-        if (invalidIngredientIds.Any())
+        if (invalidIngredientIds.Count != 0)
         {
             throw new BadRequestException(Resources.ValidationMessages.IngredientIdInvalid);
         }
@@ -56,7 +56,7 @@ internal static class Endpoint
             Quantity = x.Quantity,
         }).ToList();
 
-        mealRepository.Add(newMeal);
+        await mealRepository.AddAsync(newMeal).ConfigureAwait(false);
 
         var response = new NewMealResponse
         {

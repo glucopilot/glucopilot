@@ -10,6 +10,9 @@ namespace GlucoPilot.Mail.Tests;
 [TestFixture]
 public class MailServiceTests
 {
+    private static readonly string[] ToAddresses = ["to@example.com"];
+    private static readonly string[] FromAddresses = ["from@example.com"];
+    
     private Mock<ISmtpClientFactory> _smtpClientFactory;
     private Mock<ISmtpClient> _smtpClient;
     private Mock<IOptions<MailOptions>> _options;
@@ -61,8 +64,8 @@ public class MailServiceTests
 
         _smtpClient.Verify(
             client => client.SendAsync(It.Is<MimeMessage>(m =>
-                    m.To.Select(x => x.ToString()).SequenceEqual(new[] { "to@example.com" }) &&
-                    m.From.Select(x => x.ToString()).SequenceEqual(new[] { "from@example.com" }) &&
+                    m.To.Select(x => x.ToString()).SequenceEqual(ToAddresses) &&
+                    m.From.Select(x => x.ToString()).SequenceEqual(FromAddresses) &&
                     m.Subject == "Test Subject" && m.HtmlBody == "Test Body"), It.IsAny<CancellationToken>(),
                 It.IsAny<ITransferProgress>()), Times.Once);
     }
