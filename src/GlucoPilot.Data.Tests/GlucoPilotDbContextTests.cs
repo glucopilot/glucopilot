@@ -1,9 +1,4 @@
-using GlucoPilot.Data.Entities;
-using GlucoPilot.Data.Enums;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using System.Security.Cryptography;
 
 namespace GlucoPilot.Data.Tests;
 

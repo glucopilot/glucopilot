@@ -5,15 +5,12 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.AspNetCore.Exceptions;
-using GlucoPilot.Data;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Models;
 using GlucoPilot.Identity.Services;
 using GlucoPilot.Mail;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
 
@@ -465,7 +462,7 @@ internal sealed class UserServiceTests
     }
 
     [Test]
-    public async Task RefreshTokenAsync_With_Expired_Token_Throws_UnauthorizedException()
+    public void RefreshTokenAsync_With_Expired_Token_Throws_UnauthorizedException()
     {
         var user = new Patient
         {

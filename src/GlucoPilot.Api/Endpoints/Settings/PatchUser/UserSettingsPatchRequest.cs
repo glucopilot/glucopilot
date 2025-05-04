@@ -1,5 +1,3 @@
-using GlucoPilot.Identity.Models;
-
 namespace GlucoPilot.Api.Endpoints.Settings.PatchUser;
 
 public enum GlucoseUnitOfMeasurement

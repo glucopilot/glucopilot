@@ -48,7 +48,7 @@ public class ListTreatmentsTests
     }
 
     [Test]
-    public async Task HandleAsync_Returns_Unauthorized_When_User_Is_Not_Authenticated()
+    public void HandleAsync_Returns_Unauthorized_When_User_Is_Not_Authenticated()
     {
         var request = new ListTreatmentsRequest { Page = 1, PageSize = 10 };
         _validatorMock

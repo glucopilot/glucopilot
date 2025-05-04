@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using GlucoPilot.Data.Enums;
-using System;
 
 namespace GlucoPilot.Api.Endpoints.Ingredients.UpdateIngredient;
 

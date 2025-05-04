@@ -20,11 +20,11 @@ COPY ["GlucoPilot.Mail", "GlucoPilot.Mail"]
 COPY ["GlucoPilot.LibreLinkClient", "GlucoPilot.LibreLinkClient"]
 COPY ["GlucoPilot.Sync.LibreLink", "GlucoPilot.Sync.LibreLink"]
 WORKDIR "/src/GlucoPilot.Api"
-RUN dotnet build "GlucoPilot.Api.csproj" -c $BuildConfiguration -o /app/build
+RUN dotnet build "GlucoPilot.Api.csproj" -c "$BuildConfiguration" -o /app/build
 
 FROM build AS publish
 ARG BuildConfiguration=Release
-RUN dotnet publish "GlucoPilot.Api.csproj" -c $BuildConfiguration -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "GlucoPilot.Api.csproj" -c "$BuildConfiguration" -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

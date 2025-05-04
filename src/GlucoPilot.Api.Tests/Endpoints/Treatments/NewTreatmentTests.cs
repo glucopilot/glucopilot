@@ -138,7 +138,7 @@ public class NewTreatmentTests
     }
 
     [Test]
-    public async Task HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
+    public void HandleAsync_Should_Return_Unauthorized_When_User_Is_Not_Authenticated()
     {
         var request = new NewTreatmentRequest();
         _validatorMock.Setup(v => v.ValidateAsync(request, default))

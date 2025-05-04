@@ -1,5 +1,4 @@
-﻿using GlucoPilot.Data;
-using GlucoPilot.Data.Enums;
+﻿using GlucoPilot.Data.Enums;
 using GlucoPilot.LibreLinkClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,9 +6,7 @@ using Microsoft.Extensions.Logging;
 using GlucoPilot.Data.Entities;
 using AuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 using System.Globalization;
-using Microsoft.EntityFrameworkCore;
 using GlucoPilot.Data.Repository;
-using Microsoft.IdentityModel.Tokens;
 using GlucoPilot.LibreLinkClient.Models;
 
 namespace GlucoPilot.Sync.LibreLink;

@@ -6,7 +6,6 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +21,7 @@ internal static class Endpoint
         [FromServices] IRepository<Insulin> insulinRepository,
         CancellationToken cancellationToken)
     {
-        if (await validator.ValidateAsync(request).ConfigureAwait(false) is
+        if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());
@@ -30,7 +29,7 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.InsulinId && (i.UserId == userId || i.UserId == null), new FindOptions { IsAsNoTracking = true }).ConfigureAwait(false);
+        var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.InsulinId && (i.UserId == userId || i.UserId == null), new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
         if (insulin is null)
         {
             throw new NotFoundException("INSULIN_NOT_FOUND");

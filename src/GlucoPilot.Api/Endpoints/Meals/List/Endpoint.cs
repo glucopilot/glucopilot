@@ -1,7 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Meals.GetMeal;
-using GlucoPilot.Api.Models;
-using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -24,7 +21,7 @@ internal static class Endpoint
         [FromServices] IRepository<Meal> repository,
         CancellationToken cancellationToken)
     {
-        if (await validator.ValidateAsync(request).ConfigureAwait(false) is
+        if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());

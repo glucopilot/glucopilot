@@ -1,5 +1,4 @@
-﻿using GlucoPilot.Api.Endpoints.Insulins.GetInsulin;
-using System;
+﻿using System;
 
 namespace GlucoPilot.Api.Endpoints.Injections.UpdateInjection;
 

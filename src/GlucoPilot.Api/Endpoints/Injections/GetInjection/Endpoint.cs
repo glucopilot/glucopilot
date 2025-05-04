@@ -21,7 +21,7 @@ internal static class Endpoint
     {
         var userId = currentUser.GetUserId();
 
-        var injection = await injectionsRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions { IsAsNoTracking = true }).ConfigureAwait(false);
+        var injection = await injectionsRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
         if (injection is null)
         {
             throw new NotFoundException("INJECTION_NOT_FOUND");

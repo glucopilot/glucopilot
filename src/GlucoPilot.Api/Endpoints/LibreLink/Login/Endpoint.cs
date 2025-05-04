@@ -60,7 +60,7 @@ internal static class Endpoint
                     Expires = authTicket.Expires,
                     Duration = authTicket.Duration,
                 };
-                await patientRepository.UpdateAsync(patient);
+                await patientRepository.UpdateAsync(patient, cancellationToken).ConfigureAwait(false);
             }
 
             var response = new LoginResponse
