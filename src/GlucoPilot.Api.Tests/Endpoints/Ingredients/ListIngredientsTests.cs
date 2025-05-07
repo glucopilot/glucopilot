@@ -11,7 +11,6 @@ using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
-using MailKit.Search;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
