@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Ingredients.List;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
@@ -37,8 +38,8 @@ public class ListIngredientsTests
         var request = new ListIngredientsRequest { Page = 0, PageSize = 10 };
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult([
-                new FluentValidation.Results.ValidationFailure("Page", "Page must be greater than 0")
+            .ReturnsAsync(new ValidationResult([
+                new ValidationFailure("Page", "Page must be greater than 0")
             ]));
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
@@ -59,7 +60,7 @@ public class ListIngredientsTests
 
         _validatorMock
             .Setup(v => v.ValidateAsync(request, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            .ReturnsAsync(new ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _repositoryMock
             .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
@@ -73,5 +74,40 @@ public class ListIngredientsTests
         Assert.That(result.Result, Is.InstanceOf<Ok<ListIngredientsResponse>>());
         var okResult = result.Result as Ok<ListIngredientsResponse>;
         Assert.That(okResult?.Value.Ingredients.Count, Is.EqualTo(2));
+    }
+
+    [Test]
+    public async Task HandleAsync_ReturnsFilteredIngredients_WhenSearchIsProvided()
+    {
+        var userId = Guid.NewGuid();
+        var ingredients = new List<Ingredient>
+            {
+                new Ingredient { Id = Guid.NewGuid(), UserId = userId, Name = "Apple Pie", Uom = UnitOfMeasurement.Grams, Created = DateTimeOffset.UtcNow },
+                new Ingredient { Id = Guid.NewGuid(), UserId = userId, Name = "Banana Bread", Uom = UnitOfMeasurement.Grams, Created = DateTimeOffset.UtcNow },
+                new Ingredient { Id = Guid.NewGuid(), UserId = userId, Name = "Green Apple", Uom = UnitOfMeasurement.Grams, Created = DateTimeOffset.UtcNow }
+            }.AsQueryable();
+
+        var request = new ListIngredientsRequest
+        {
+            Search = "apple",
+            Page = 0,
+            PageSize = 10
+        };
+
+        _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new ValidationResult());
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+        _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
+                       .Returns((Expression<Func<Ingredient, bool>> predicate, FindOptions _) => ingredients.Where(predicate));
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+
+        _repositoryMock.Verify(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()), Times.Once);
+
+        Assert.That(result.Result, Is.InstanceOf<Ok<ListIngredientsResponse>>());
+        var response = (result.Result as Ok<ListIngredientsResponse>).Value;
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Ingredients.Count, Is.EqualTo(2));
+        Assert.That(response.Ingredients.All(i => i.Name.Contains("apple", StringComparison.OrdinalIgnoreCase)), Is.True);
     }
 }
