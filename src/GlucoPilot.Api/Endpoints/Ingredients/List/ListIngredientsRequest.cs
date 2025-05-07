@@ -8,7 +8,7 @@ public sealed record ListIngredientsRequest : PagedRequest
 {
     public string? Search { get; set; } = null;
     public sealed class ListIngredientsValidator : PagedRequestValidator<ListIngredientsRequest>
-    {     
+    {
         public ListIngredientsValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings)
         {
             RuleFor(x => x.Search)
