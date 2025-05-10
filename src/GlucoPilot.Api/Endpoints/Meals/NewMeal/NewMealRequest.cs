@@ -21,7 +21,7 @@ public record NewMealRequest
 public sealed record NewMealIngredientRequest
 {
     public required Guid IngredientId { get; set; }
-    public required int Quantity { get; set; }
+    public required decimal Quantity { get; set; }
 
     public sealed class NewMealIngredientValidator : AbstractValidator<NewMealIngredientRequest>
     {
