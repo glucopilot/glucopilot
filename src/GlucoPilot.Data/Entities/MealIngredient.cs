@@ -38,6 +38,6 @@ public class MealIngredient
     /// The quantity of the ingredient in the meal.
     /// </summary>
     [Range(0, int.MaxValue)]
-    public required int Quantity { get; set; }
+    public required decimal Quantity { get; set; }
 
 }
