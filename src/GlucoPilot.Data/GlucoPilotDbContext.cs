@@ -18,6 +18,7 @@ public class GlucoPilotDbContext : DbContext
     public DbSet<Treatment> Treatments { get; set; }
     public DbSet<Sensor> Sensors { get; set; }
     public DbSet<AlarmRule> AlarmRules { get; set; }
+    public DbSet<Pen> Pens { get; set; }
 
     public GlucoPilotDbContext(DbContextOptions<GlucoPilotDbContext> options) : base(options)
     {
