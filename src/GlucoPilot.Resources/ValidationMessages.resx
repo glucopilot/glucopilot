@@ -222,4 +222,19 @@
   <data name="RangeGreaterThanZero" xml:space="preserve">
     <value>RANGE_GREATER_THAN_ZERO</value>
   </data>
+  <data name="PenModelInvalid" xml:space="preserve">
+    <value>PEN_MODEL_INVALID</value>
+  </data>
+  <data name="PenColourInvalid" xml:space="preserve">
+    <value>PEN_COLOUR_INVALID</value>
+  </data>
+  <data name="PenSerialRequired" xml:space="preserve">
+    <value>PEN_SERIAL_REQUIRED</value>
+  </data>
+  <data name="PenSerialTooLong" xml:space="preserve">
+    <value>PEN_SERIAL_TOO_LONG</value>
+  </data>
+  <data name="PenSerialInvalid" xml:space="preserve">
+    <value>PEN_SERIAL_INVALID</value>
+  </data>
 </root>
