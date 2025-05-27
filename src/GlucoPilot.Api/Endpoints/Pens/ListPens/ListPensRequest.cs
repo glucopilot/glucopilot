@@ -6,7 +6,7 @@ namespace GlucoPilot.Api.Endpoints.Pens.ListPens;
 
 public sealed record ListPensRequest : PagedRequest
 {
-    public sealed class ListPensValidator : PagedRequestValidator<ListMealsRequest>
+    public sealed class ListPensValidator : PagedRequestValidator<ListPensRequest>
     {
         public ListPensValidator(IOptions<ApiSettings> apiSettings) : base(apiSettings) { }
     }

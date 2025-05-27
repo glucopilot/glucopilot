@@ -15,7 +15,7 @@ namespace GlucoPilot.Api.Endpoints.Pens.NewPen
         public string Serial { get; set; } = string.Empty;
         public DateTimeOffset? StartTime { get; set; }
 
-        internal class NewPenRequestValidator : AbstractValidator<NewPenRequest>
+        public sealed class NewPenRequestValidator : AbstractValidator<NewPenRequest>
         {
             public NewPenRequestValidator(ICurrentUser currentUser, IRepository<Insulin> insulinRepository)
             {
