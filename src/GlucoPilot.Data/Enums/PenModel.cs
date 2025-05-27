@@ -2,5 +2,6 @@
 
 public enum PenModel
 {
-    Novepen6 = 0,
+    NovePen6 = 0,
+    NovoPenEchoPlus = 1,
 }

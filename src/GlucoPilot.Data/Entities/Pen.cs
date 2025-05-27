@@ -50,12 +50,18 @@ public class Pen
     public required PenModel Model { get; set; }
 
     /// <summary>
+    /// The colour of the smart pen. This is for the end user to easily recognise which pen is which.
+    /// </summary>
+    public required PenColour Colour { get; set; }
+
+    /// <summary>
     /// The serial number of the smart pen.
     /// </summary>
+    [MaxLength(100)]
     public required string Serial { get; set; }
 
     /// <summary>
-    /// The start time of the pen's usage in Unix timestamp format.
+    /// The start time of the pen's usage.
     /// </summary>
     public DateTimeOffset StartTime { get; set; } = DateTimeOffset.UtcNow;
 }
