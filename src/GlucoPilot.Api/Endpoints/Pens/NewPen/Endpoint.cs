@@ -19,7 +19,6 @@ internal static class Endpoint
         [FromServices] IValidator<NewPenRequest> validator,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Pen> penRepository,
-        [FromServices] IRepository<Insulin> insulinRepository,
         CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request).ConfigureAwait(false) is
@@ -28,12 +27,6 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
         var userId = currentUser.GetUserId();
-
-        var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.InsulinId && (i.UserId == userId || i.UserId == null), new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
-        if (insulin is null)
-        {
-            throw new NotFoundException("INSULIN_NOT_FOUND");
-        }
 
         var newPen = new Pen
         {

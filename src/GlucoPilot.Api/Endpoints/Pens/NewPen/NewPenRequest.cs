@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
 using GlucoPilot.Api.Models;
+using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Repository;
+using GlucoPilot.Identity.Authentication;
 using System;
 
 namespace GlucoPilot.Api.Endpoints.Pens.NewPen
@@ -14,7 +17,7 @@ namespace GlucoPilot.Api.Endpoints.Pens.NewPen
 
         internal class NewPenRequestValidator : AbstractValidator<NewPenRequest>
         {
-            public NewPenRequestValidator()
+            public NewPenRequestValidator(ICurrentUser currentUser, IRepository<Insulin> insulinRepository)
             {
                 RuleFor(x => x.Model)
                     .IsInEnum().WithMessage(Resources.ValidationMessages.PenModelInvalid);
@@ -26,6 +29,12 @@ namespace GlucoPilot.Api.Endpoints.Pens.NewPen
                     .NotEmpty().WithMessage(Resources.ValidationMessages.PenSerialRequired)
                     .Must(s => !string.IsNullOrWhiteSpace(s)).WithMessage(Resources.ValidationMessages.PenSerialInvalid)
                     .MaximumLength(100).WithMessage(Resources.ValidationMessages.PenSerialTooLong);
+
+                RuleFor(x => x.InsulinId)
+                    .MustAsync(async (id, cancellation) => {
+                        return await insulinRepository.FindOneAsync(i => i.Id == id && i.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true }, cancellation).ConfigureAwait(false) is not null;
+                    })
+                    .WithMessage(Resources.ValidationMessages.InsulinNotFound);
             }
         }
     }

@@ -237,4 +237,7 @@
   <data name="PenSerialInvalid" xml:space="preserve">
     <value>PEN_SERIAL_INVALID</value>
   </data>
+  <data name="InsulinNotFound" xml:space="preserve">
+    <value>INSULIN_NOT_FOUND</value>
+  </data>
 </root>

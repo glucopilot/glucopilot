@@ -187,6 +187,15 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSULIN_NOT_FOUND.
+        /// </summary>
+        public static string InsulinNotFound {
+            get {
+                return ResourceManager.GetString("InsulinNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSULIN_TYPE_INVALID.
         /// </summary>
         public static string InsulinTypeInvalid {
