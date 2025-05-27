@@ -31,7 +31,8 @@ namespace GlucoPilot.Api.Endpoints.Pens.NewPen
                     .MaximumLength(100).WithMessage(Resources.ValidationMessages.PenSerialTooLong);
 
                 RuleFor(x => x.InsulinId)
-                    .MustAsync(async (id, cancellation) => {
+                    .MustAsync(async (id, cancellation) =>
+                    {
                         return await insulinRepository.FindOneAsync(i => i.Id == id && i.UserId == currentUser.GetUserId(), new FindOptions { IsAsNoTracking = true }, cancellation).ConfigureAwait(false) is not null;
                     })
                     .WithMessage(Resources.ValidationMessages.InsulinNotFound);
