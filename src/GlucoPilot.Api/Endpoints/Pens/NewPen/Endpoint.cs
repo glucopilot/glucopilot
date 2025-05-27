@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GlucoPilot.Api.Endpoints.Pens.NewPen;
@@ -16,15 +18,23 @@ internal static class Endpoint
         [FromBody] NewPenRequest request,
         [FromServices] IValidator<NewPenRequest> validator,
         [FromServices] ICurrentUser currentUser,
-        [FromServices] IRepository<Pen> penRepository)
+        [FromServices] IRepository<Pen> penRepository,
+        [FromServices] IRepository<Insulin> insulinRepository,
+        CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
-
         var userId = currentUser.GetUserId();
+
+        var insulin = await insulinRepository.FindOneAsync(i => i.Id == request.InsulinId && (i.UserId == userId || i.UserId == null), new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
+        if (insulin is null)
+        {
+            throw new NotFoundException("INSULIN_NOT_FOUND");
+        }
+
         var newPen = new Pen
         {
             UserId = userId,
@@ -34,7 +44,12 @@ internal static class Endpoint
             Colour = (Data.Enums.PenColour)request.Colour,
             Serial = request.Serial,
         };
-        await penRepository.AddAsync(newPen).ConfigureAwait(false);
+        if (request.StartTime.HasValue)
+        {
+            newPen.StartTime = request.StartTime.Value;
+        }
+
+        await penRepository.AddAsync(newPen, cancellationToken).ConfigureAwait(false);
 
         var response = new NewPenResponse
         {
@@ -43,7 +58,8 @@ internal static class Endpoint
             Model = (Models.PenModel)newPen.Model,
             Colour = (Models.PenColour)newPen.Colour,
             Serial = newPen.Serial,
-            Created = newPen.Created
+            Created = newPen.Created,
+            StartTime = newPen.StartTime,
         };
 
         return TypedResults.Created($"/pens/{newPen.Id}", response);
