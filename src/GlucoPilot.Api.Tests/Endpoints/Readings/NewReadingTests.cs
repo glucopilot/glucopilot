@@ -54,7 +54,17 @@ public class NewReadingTests
             .Returns(Task.CompletedTask);
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
-        Assert.That(result.Result, Is.TypeOf<Ok>());
+
+        Assert.That(result.Result, Is.TypeOf<Created<NewReadingResponse>>());
+
+        var okResult = result.Result as Created<NewReadingResponse>;
+        Assert.That(okResult, Is.Not.Null);
+
+        var response = okResult.Value;
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Created, Is.EqualTo(request.Created));
+        Assert.That(response.GlucoseLevel, Is.EqualTo(request.GlucoseLevel));
+        Assert.That(response.Id, Is.Not.EqualTo(Guid.Empty));
     }
 
     [Test]

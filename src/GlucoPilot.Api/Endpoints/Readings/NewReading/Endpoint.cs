@@ -13,7 +13,7 @@ namespace GlucoPilot.Api.Endpoints.Readings.NewReading;
 
 internal static class Endpoint
 {
-    internal static async Task<Results<Ok, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
+    internal static async Task<Results<Created<NewReadingResponse>, UnauthorizedHttpResult, ValidationProblem>> HandleAsync(
         [FromBody] NewReadingRequest request,
         [FromServices] IValidator<NewReadingRequest> validator,
         [FromServices] ICurrentUser currentUser,
@@ -38,6 +38,13 @@ internal static class Endpoint
 
         await repository.AddAsync(reading, cancellationToken).ConfigureAwait(false);
 
-        return TypedResults.Ok();
+        var response = new NewReadingResponse
+        {
+            Id = reading.Id,
+            Created = reading.Created,
+            GlucoseLevel = reading.GlucoseLevel,
+        };
+
+        return TypedResults.Created((string?)null, response);
     }
 }
