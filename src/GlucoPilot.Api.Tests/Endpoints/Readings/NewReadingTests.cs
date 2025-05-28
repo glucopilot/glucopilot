@@ -55,9 +55,9 @@ public class NewReadingTests
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
-        Assert.That(result.Result, Is.TypeOf<Ok<NewReadingResponse>>());
+        Assert.That(result.Result, Is.TypeOf<Created<NewReadingResponse>>());
 
-        var okResult = result.Result as Ok<NewReadingResponse>;
+        var okResult = result.Result as Created<NewReadingResponse>;
         Assert.That(okResult, Is.Not.Null);
 
         var response = okResult.Value;
