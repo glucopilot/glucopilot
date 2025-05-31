@@ -43,6 +43,7 @@ internal static class Endpoint
             var rawReadings = repository.Find(
                     r => r.UserId == userId && r.Created >= request.From && r.Created <= request.To,
                     new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true })
+                .OrderByDescending(r => r.Created)
                 .Select(r => new ReadingsResponse
                 {
                     UserId = r.UserId,
