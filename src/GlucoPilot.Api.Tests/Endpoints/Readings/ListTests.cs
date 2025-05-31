@@ -76,7 +76,7 @@ internal sealed class ListTests
             Assert.That(okResult.Value[0].UserId, Is.EqualTo(_userId));
         });
     }
-    
+
     [Test]
     public async Task HandleAsync_ReturnsOkResult_WhenRequestIsValid_And_Patient_Has_No_Provider()
     {
