@@ -59,7 +59,7 @@ public class ListPensTests
                 Id = Guid.NewGuid(),
                 UserId = _userId,
                 Created = DateTimeOffset.UtcNow,
-                Model = PenModel.NovePen6,
+                Model = PenModel.NovoPen6,
                 Colour = PenColour.Blue,
                 Serial = "123",
                 InsulinId = Guid.NewGuid(),
