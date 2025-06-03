@@ -20,5 +20,6 @@ namespace GlucoPilot.Api.Endpoints.Pens.ListPens
         public required string Serial { get; set; }
         public Guid InsulinId { get; set; }
         public required string InsulinName { get; set; }
+        public DateTimeOffset StartTime { get; set; }
     }
 }
