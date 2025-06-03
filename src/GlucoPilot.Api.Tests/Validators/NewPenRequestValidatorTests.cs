@@ -37,7 +37,7 @@ namespace GlucoPilot.Api.Tests.Validators
             var request = new NewPenRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Model = PenModel.NovePen6,
+                Model = PenModel.NovoPen6,
                 Colour = PenColour.Blue,
                 Serial = "SN123456"
             };
@@ -77,7 +77,7 @@ namespace GlucoPilot.Api.Tests.Validators
             var request = new NewPenRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Model = PenModel.NovePen6,
+                Model = PenModel.NovoPen6,
                 Colour = (PenColour)99,
                 Serial = "SN123456"
             };
@@ -94,7 +94,7 @@ namespace GlucoPilot.Api.Tests.Validators
             var request = new NewPenRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Model = PenModel.NovePen6,
+                Model = PenModel.NovoPen6,
                 Colour = PenColour.Blue,
                 Serial = ""
             };
@@ -111,7 +111,7 @@ namespace GlucoPilot.Api.Tests.Validators
             var request = new NewPenRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Model = PenModel.NovePen6,
+                Model = PenModel.NovoPen6,
                 Colour = PenColour.Blue,
                 Serial = "   "
             };
@@ -128,7 +128,7 @@ namespace GlucoPilot.Api.Tests.Validators
             var request = new NewPenRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Model = PenModel.NovePen6,
+                Model = PenModel.NovoPen6,
                 Colour = PenColour.Blue,
                 Serial = new string('A', 101)
             };
@@ -145,7 +145,7 @@ namespace GlucoPilot.Api.Tests.Validators
             var request = new NewPenRequest
             {
                 InsulinId = Guid.NewGuid(),
-                Model = PenModel.NovePen6,
+                Model = PenModel.NovoPen6,
                 Colour = PenColour.Blue,
                 Serial = "SN123456"
             };

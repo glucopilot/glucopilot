@@ -43,6 +43,7 @@ internal static class Endpoint
                 Serial = p.Serial,
                 InsulinId = p.InsulinId,
                 InsulinName = p.Insulin != null ? p.Insulin.Name : "",
+                StartTime = p.StartTime,
             })
             .ToList();
 
