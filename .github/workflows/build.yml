@@ -32,7 +32,7 @@ jobs:
       run: dotnet format src/gluco-pilot.sln
     - name: Commit changes
       if: github.event_name == 'pull_request'
-      uses: stefanzweifel/git-auto-commit-action@f9017b24eeaf7914d3306c6e13e8a6eb89d873e4
+      uses: stefanzweifel/git-auto-commit-action@01d77ca6cb089da1360e540865f7d035c95aa199
       with:
         add_options: -u
         commit_message: Run code generators and linters
