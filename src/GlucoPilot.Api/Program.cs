@@ -36,7 +36,14 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(opt =>
 {
-    opt.CustomSchemaIds(type => type.FullName);
+    opt.CustomSchemaIds(type =>
+    {
+        return type.FullName.Replace("GlucoPilot.Api.Endpoints.", "")
+            .Replace("GlucoPilot.Identity.Endpoints.", "")
+            .Replace("GlucoPilot.Api.Models.", "")
+            .Replace("GlucoPilot.Identity.Models.", "")
+            .Replace(".", "_");
+    });
     opt.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
