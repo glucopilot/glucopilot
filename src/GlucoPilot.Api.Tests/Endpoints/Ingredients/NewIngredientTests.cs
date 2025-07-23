@@ -31,7 +31,7 @@ public class NewIngredientTests
     [Test]
     public async Task HandleAsync_Returns_ValidationProblem_When_Request_Is_Invalid()
     {
-        var request = new NewIngredientRequest { Name = "Test", Carbs = 10, Protein = 5, Fat = 2, Calories = 100, Uom = UnitOfMeasurement.Grams };
+        var request = new NewIngredientRequest { Name = "Test", Carbs = 10, Protein = 5, Fat = 2, Calories = 100, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Grams };
         var validationResult = new FluentValidation.Results.ValidationResult([new FluentValidation.Results.ValidationFailure("Name", "Name is required")
         ]);
 
@@ -47,7 +47,7 @@ public class NewIngredientTests
     [Test]
     public async Task HandleAsync_Returns_Ok_With_Response_When_Request_Is_Valid()
     {
-        var request = new NewIngredientRequest { Name = "Test", Carbs = 10, Protein = 5, Fat = 2, Calories = 100, Uom = UnitOfMeasurement.Grams };
+        var request = new NewIngredientRequest { Name = "Test", Carbs = 10, Protein = 5, Fat = 2, Calories = 100, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Grams };
         var validationResult = new FluentValidation.Results.ValidationResult();
         var userId = Guid.NewGuid();
 

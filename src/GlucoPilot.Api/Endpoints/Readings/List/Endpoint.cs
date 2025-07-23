@@ -1,5 +1,4 @@
-﻿using System;
-using FluentValidation;
+﻿using FluentValidation;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.Data.Enums;
+using ReadingDirection = GlucoPilot.Api.Models.ReadingDirection;
 
 namespace GlucoPilot.Api.Endpoints.Readings.List;
 
@@ -50,7 +50,7 @@ internal static class Endpoint
                     Id = r.Id,
                     Created = r.Created,
                     GlucoseLevel = r.GlucoseLevel,
-                    Direction = r.Direction
+                    Direction = (ReadingDirection)r.Direction
                 })
                 .ToList();
 
@@ -105,7 +105,7 @@ internal static class Endpoint
                 Id = r.Id,
                 Created = r.Created,
                 GlucoseLevel = r.GlucoseLevel,
-                Direction = r.Direction
+                Direction = (ReadingDirection)r.Direction
             })
             .ToList();
 

@@ -1,5 +1,5 @@
-﻿using GlucoPilot.Data.Enums;
-using System;
+﻿using System;
+using GlucoPilot.Api.Models;
 
 namespace GlucoPilot.Api.Endpoints.Treatments.GetTreatment;
 

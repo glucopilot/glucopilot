@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using GlucoPilot.Api.Endpoints.Ingredients.NewIngredient;
-using GlucoPilot.Data.Enums;
+using GlucoPilot.Api.Models;
 using NUnit.Framework;
 using static GlucoPilot.Api.Endpoints.Ingredients.NewIngredient.NewIngredientRequest;
 
