@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Api.Models;
 
 namespace GlucoPilot.Api.Endpoints.Treatments.ListTreatments;
 
@@ -61,7 +62,7 @@ internal static class Endpoint
             {
                 Id = t.Id,
                 Created = t.Created,
-                Type = t.Type,
+                Type = (TreatmentType)t.Type,
                 Meal = t.Meal is not null
                     ? new ListTreatmentMealResponse
                     {

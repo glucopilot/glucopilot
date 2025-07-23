@@ -85,7 +85,7 @@ public sealed class UserService : IUserService
                 AlarmRules = alarmRules is not null ? alarmRules.Select(r => new LoginAlarmRuleResponse
                 {
                     Id = r.Id,
-                    TargetDirection = r.TargetDirection,
+                    TargetDirection = (AlarmTargetDirection)r.TargetDirection,
                     TargetValue = r.TargetValue,
                 }).ToList() : null,
                 RefreshToken = refreshToken.Token,

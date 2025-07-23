@@ -1,4 +1,4 @@
-﻿using GlucoPilot.Data.Enums;
+﻿using GlucoPilot.Api.Models;
 using System;
 
 namespace GlucoPilot.Api.Endpoints.Ingredients.GetIngredients;

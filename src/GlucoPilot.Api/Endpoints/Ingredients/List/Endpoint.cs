@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Api.Models;
 
 namespace GlucoPilot.Api.Endpoints.Ingredients.List;
 
@@ -40,21 +41,21 @@ internal static class Endpoint
         }
 
         var ingredients = ingredientsQuery.OrderByDescending(i => i.Created)
-        .Skip(request.Page * request.PageSize)
-        .Take(request.PageSize)
-        .Select(i => new GetIngredientResponse
-        {
-            Id = i.Id,
-            Created = i.Created,
-            Name = i.Name,
-            Carbs = i.Carbs,
-            Protein = i.Protein,
-            Fat = i.Fat,
-            Calories = i.Calories,
-            Uom = i.Uom,
-            Updated = i.Updated
-        })
-        .ToList();
+            .Skip(request.Page * request.PageSize)
+            .Take(request.PageSize)
+            .Select(i => new GetIngredientResponse
+            {
+                Id = i.Id,
+                Created = i.Created,
+                Name = i.Name,
+                Carbs = i.Carbs,
+                Protein = i.Protein,
+                Fat = i.Fat,
+                Calories = i.Calories,
+                Uom = (UnitOfMeasurement)i.Uom,
+                Updated = i.Updated
+            })
+            .ToList();
 
         var totalMeals = await repository.CountAsync(i => i.UserId == userId, cancellationToken).ConfigureAwait(false);
         var response = new ListIngredientsResponse

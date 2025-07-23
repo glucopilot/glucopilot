@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using GlucoPilot.Data.Entities;
-using GlucoPilot.Data.Enums;
+using GlucoPilot.Api.Models;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -33,7 +33,7 @@ internal static class Endpoint
             UserId = userId,
             Created = request.Created,
             GlucoseLevel = request.GlucoseLevel,
-            Direction = ReadingDirection.NotComputable,
+            Direction = (Data.Enums.ReadingDirection)ReadingDirection.NotComputable,
         };
 
         await repository.AddAsync(reading, cancellationToken).ConfigureAwait(false);

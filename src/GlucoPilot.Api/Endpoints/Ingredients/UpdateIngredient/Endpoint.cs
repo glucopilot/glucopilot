@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Api.Models;
 
 namespace GlucoPilot.Api.Endpoints.Ingredients.UpdateIngredient;
 
@@ -42,7 +43,7 @@ internal static class Endpoint
         ingredient.Protein = request.Protein;
         ingredient.Fat = request.Fat;
         ingredient.Calories = request.Calories;
-        ingredient.Uom = request.Uom;
+        ingredient.Uom = (Data.Enums.UnitOfMeasurement)request.Uom;
         ingredient.Updated = DateTimeOffset.UtcNow;
 
         await ingredientRepository.UpdateAsync(ingredient, cancellationToken).ConfigureAwait(false);
@@ -55,7 +56,7 @@ internal static class Endpoint
             Protein = ingredient.Protein,
             Fat = ingredient.Fat,
             Calories = ingredient.Calories,
-            Uom = ingredient.Uom,
+            Uom = (UnitOfMeasurement)ingredient.Uom,
             Updated = ingredient.Updated
         };
 

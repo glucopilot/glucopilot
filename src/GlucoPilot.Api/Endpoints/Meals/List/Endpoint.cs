@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Api.Models;
 
 namespace GlucoPilot.Api.Endpoints.Meals.List;
 
@@ -59,7 +60,7 @@ internal static class Endpoint
                         Protein = mi.Ingredient.Protein,
                         Fat = mi.Ingredient.Fat,
                         Calories = mi.Ingredient.Calories,
-                        Uom = mi.Ingredient.Uom
+                        Uom = (UnitOfMeasurement)mi.Ingredient.Uom
                     } : null,
                     Quantity = mi.Quantity
                 }).ToList(),

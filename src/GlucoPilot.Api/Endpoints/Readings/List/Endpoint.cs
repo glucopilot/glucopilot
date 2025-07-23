@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GlucoPilot.Data.Enums;
+using GlucoPilot.Api.Models;
 
 namespace GlucoPilot.Api.Endpoints.Readings.List;
 
@@ -22,7 +22,6 @@ internal static class Endpoint
             [FromServices] IValidator<ListReadingsRequest> validator,
             [FromServices] ICurrentUser currentUser,
             [FromServices] IRepository<Reading> repository,
-            [FromServices] IRepository<Patient> patientRepository,
             CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
@@ -32,30 +31,6 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
-
-        var patient = await patientRepository.FindOneAsync(u => u.Id == userId,
-                new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true }, cancellationToken)
-            .ConfigureAwait(false);
-        if (patient?.GlucoseProvider == GlucoseProvider.None)
-        {
-            // If the patient has no glucose provider, we return all readings without aggregation as chances are they likely won't have a GCM...
-            // We may want to think about abstracting this behavior away from the GlucoseProvider enum in the future.
-            var rawReadings = repository.Find(
-                    r => r.UserId == userId && r.Created >= request.From && r.Created <= request.To,
-                    new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true })
-                .OrderByDescending(r => r.Created)
-                .Select(r => new ReadingsResponse
-                {
-                    UserId = r.UserId,
-                    Id = r.Id,
-                    Created = r.Created,
-                    GlucoseLevel = r.GlucoseLevel,
-                    Direction = r.Direction
-                })
-                .ToList();
-
-            return TypedResults.Ok(rawReadings);
-        }
 
         var query = """
                                     WITH QuarterHourIntervals AS (
@@ -96,8 +71,7 @@ internal static class Endpoint
                         [Created] DESC;
                     """;
 
-        var readings = repository.FromSqlRaw(query, new FindOptions { IsAsNoTracking = true }, request.MinuteInterval,
-                request.From, request.To,
+        var readings = repository.FromSqlRaw(query, new FindOptions { IsAsNoTracking = true }, request.MinuteInterval, request.From, request.To,
                 userId).AsEnumerable()
             .Select(r => new ReadingsResponse
             {
@@ -105,7 +79,7 @@ internal static class Endpoint
                 Id = r.Id,
                 Created = r.Created,
                 GlucoseLevel = r.GlucoseLevel,
-                Direction = r.Direction
+                Direction = (ReadingDirection)r.Direction
             })
             .ToList();
 

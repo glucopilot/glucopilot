@@ -1,7 +1,7 @@
 ﻿using GlucoPilot.Api.Models;
-using GlucoPilot.Data.Enums;
 using System;
 using System.Collections.Generic;
+using TreatmentType = GlucoPilot.Api.Models.TreatmentType;
 
 namespace GlucoPilot.Api.Endpoints.Treatments.ListTreatments;
 

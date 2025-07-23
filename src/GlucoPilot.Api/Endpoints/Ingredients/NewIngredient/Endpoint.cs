@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Data.Enums;
 
 namespace GlucoPilot.Api.Endpoints.Ingredients.NewIngredient;
 
@@ -36,7 +37,7 @@ internal static class Endpoint
             Protein = request.Protein,
             Fat = request.Fat,
             Calories = request.Calories,
-            Uom = request.Uom,
+            Uom = (UnitOfMeasurement)request.Uom,
             UserId = userId,
         };
 
@@ -51,7 +52,7 @@ internal static class Endpoint
             Protein = ingredient.Protein,
             Fat = ingredient.Fat,
             Calories = ingredient.Calories,
-            Uom = ingredient.Uom,
+            Uom = (Models.UnitOfMeasurement)ingredient.Uom,
         };
 
         return TypedResults.Ok(response);
