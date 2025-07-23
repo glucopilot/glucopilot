@@ -19,7 +19,7 @@ public static class IngredientsEndpoints
             .WithName("ListIngredients")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
-        
+
         group.MapPost("/", NewIngredient.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .WithName("CreateIngredient")
