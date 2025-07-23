@@ -16,11 +16,13 @@ public static class ReadingsEndpoints
 
         group.MapGet("/", List.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("ListReadings")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/", NewReading.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("NewReading")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 

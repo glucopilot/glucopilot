@@ -16,31 +16,37 @@ public static class TreatmentsEndpoints
 
         group.MapGet("/{id:guid}", GetTreatment.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("GetTreatment")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/", NewTreatment.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("NewTreatment")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPatch("/{id:guid}", UpdateTreatment.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("UpdateTreatment")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapDelete("/{id:guid}", RemoveTreatment.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("DeleteTreatment")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapGet("/", ListTreatments.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("ListTreatments")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapGet("/nutrition", Nutrition.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("GetTreatmentNutrition")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 

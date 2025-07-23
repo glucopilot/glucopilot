@@ -16,20 +16,24 @@ public static class IngredientsEndpoints
 
         group.MapGet("/", List.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("ListIngredients")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
-
+        
         group.MapPost("/", NewIngredient.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("CreateIngredient")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPatch("/{id:guid}", UpdateIngredient.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("UpdateIngredient")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapDelete("/{id:guid}", RemoveIngredient.Endpoint.HandleAsync)
+            .WithName("DeleteIngredient")
             .HasApiVersion(1.0)
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();

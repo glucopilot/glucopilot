@@ -16,11 +16,13 @@ public static class PensEndpoints
 
         group.MapGet("/", ListPens.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("ListPens")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/", NewPen.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("CreatePen")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 

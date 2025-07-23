@@ -16,11 +16,13 @@ public static class SensorsEndpoints
 
         group.MapGet("/", List.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("ListSensors")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapDelete("/{id:guid}", RemoveSensor.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("DeleteSensor")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 

@@ -16,26 +16,31 @@ public static class InjectionsEndpoints
 
         group.MapGet("/{id:guid}", GetInjection.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("GetInjection")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapGet("/", ListInjections.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("ListInjections")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/", NewInjection.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("NewInjection")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPatch("/{id:guid}", UpdateInjection.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("UpdateInjection")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapDelete("/{id:guid}", RemoveInjection.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("DeleteInjection")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
