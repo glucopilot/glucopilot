@@ -33,8 +33,8 @@ public static class IngredientsEndpoints
             .RequireAuthorization();
 
         group.MapDelete("/{id:guid}", RemoveIngredient.Endpoint.HandleAsync)
-            .WithName("DeleteIngredient")
             .HasApiVersion(1.0)
+            .WithName("DeleteIngredient")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
