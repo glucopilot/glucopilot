@@ -16,11 +16,13 @@ internal static class SettingEndpoints
 
         group.MapGet("/user", User.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("GetUserSettings")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPatch("/user", PatchUser.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("UpdateUserSettings")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 

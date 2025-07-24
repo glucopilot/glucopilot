@@ -16,16 +16,19 @@ public static class LibreLinkEndpoints
 
         group.MapGet("/connections", Connections.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("LibreLinkConnections")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/login", Login.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("LibreLinkLogin")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/pair", PairConnection.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("LibreLinkPair")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 

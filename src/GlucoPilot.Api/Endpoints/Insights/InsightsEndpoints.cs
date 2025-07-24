@@ -16,21 +16,25 @@ internal static class InsightsEndpoints
 
         group.MapGet("/insulin", Insulin.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("InsulinInsight")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapGet("/average-glucose", AverageGlucose.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("AverageGlucoseInsight")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapGet("/average-nutrition", AverageNutrition.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("AverageNutritionInsight")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapGet("/insulin-to-carb-ratio", InsulinToCarbRatio.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("InsulinToCarbRatioInsight")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 

@@ -16,26 +16,31 @@ public static class MealsEndpoints
 
         group.MapGet("/", List.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("ListMeals")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapGet("/{id:guid}", GetMeal.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("GetMeal")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPost("/", NewMeal.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("CreateMeal")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapPatch("/", UpdateMeal.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("UpdateMeal")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         group.MapDelete("/{id:guid}", RemoveMeal.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
+            .WithName("DeleteMeal")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
