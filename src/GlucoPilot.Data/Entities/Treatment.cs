@@ -98,7 +98,7 @@ public class Treatment
                 .Sum(tm => tm.Meal!.MealIngredients
                 .Where(mi => mi.Ingredient != null)
                 .Sum(mi => mi.Ingredient!.Carbs * mi.Quantity * tm.Quantity));
-                      
+
             var carbs = ingredientCarbs + mealIngredientsCarbs;
             var insulin = (decimal)Injection.Units;
 
