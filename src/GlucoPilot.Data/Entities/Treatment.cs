@@ -1,5 +1,7 @@
 ﻿using GlucoPilot.Data.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -50,17 +52,17 @@ public class Treatment
     {
         get
         {
-            if (MealId is not null && InjectionId is null)
+            if (Meals.Count > 0 && InjectionId is null)
             {
                 return TreatmentType.Correction;
             }
 
-            if (MealId is not null && InjectionId is not null)
+            if (Meals.Count > 0 && InjectionId is not null)
             {
                 return TreatmentType.Meal;
             }
 
-            if (MealId is null && InjectionId is not null)
+            if (Meals.Count == 0 && InjectionId is not null)
             {
                 return TreatmentType.Injection;
             }
@@ -77,12 +79,15 @@ public class Treatment
     {
         get
         {
-            if (Meal?.MealIngredients is null || Injection is null || Injection.Units.Equals(0))
+            var ingredients = Meals.Where(m => m.Meal is not null)
+                .SelectMany(m => m.Meal?.MealIngredients.Select(mi => mi.Ingredient) ?? [])
+                .Concat(Ingredients.Where(i => i.Ingredient is not null).Select(i => i.Ingredient));
+            if (ingredients?.Count() == 0 || Injection is null || Injection.Units.Equals(0))
             {
                 return null;
             }
 
-            var carbs = Meal.MealIngredients.Sum(mi => mi.Ingredient?.Carbs ?? 0);
+            var carbs = ingredients?.Sum(i => i?.Carbs);
             var insulin = (decimal)Injection.Units;
 
             return carbs / insulin;
@@ -102,12 +107,26 @@ public class Treatment
     /// <summary>
     /// The Id of the meal that this treatment is associated with.
     /// </summary>
+    [NotMapped]
     public Guid? MealId { get; set; }
 
     /// <summary>
     /// The meal associated with this treatment.
     /// </summary>
+    [NotMapped]
     public virtual Meal? Meal { get; set; }
+
+    /// <summary>
+    /// The meals associated with this treatment.
+    /// </summary>
+    [DeleteBehavior(DeleteBehavior.NoAction)]
+    public virtual ICollection<TreatmentMeal> Meals { get; set; } = [];
+
+    /// <summary>
+    /// The ingredients associated with this treatment.
+    /// </summary>
+    [DeleteBehavior(DeleteBehavior.NoAction)]
+    public virtual ICollection<TreatmentIngredient> Ingredients { get; set; } = [];
 
     /// <summary>
     /// The Id of the injection that this treatment is associated with.
