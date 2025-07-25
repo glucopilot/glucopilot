@@ -84,7 +84,7 @@ public class Treatment
                     .Where(mi => mi.Ingredient is not null)
                     .Select(mi => mi.Ingredient));
 
-            if ((Ingredients.Count == 0 && mealIngredients.Any()) || Injection is null || Injection.Units.Equals(0))
+            if ((Ingredients.Count == 0 && !mealIngredients.Any()) || Injection is null || Injection.Units.Equals(0))
             {
                 return null;
             }

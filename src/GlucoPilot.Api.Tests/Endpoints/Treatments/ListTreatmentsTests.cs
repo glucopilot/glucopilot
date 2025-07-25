@@ -78,23 +78,29 @@ public class ListTreatmentsTests
                     Created = DateTimeOffset.UtcNow,
                     MealId = mealId,
                     InjectionId = null,
-                    Meal = new Meal
+                    Meals = [new TreatmentMeal
                     {
-                        Id = mealId,
-                        Name = "Lunch",
-                        Created = DateTimeOffset.UtcNow,
-                        MealIngredients = new List<MealIngredient>
+                        TreatmentId = Guid.NewGuid(),
+                        MealId = Guid.NewGuid(),
+                        Meal = new Meal
                         {
-                            new MealIngredient
+                            Id = mealId,
+                            Name = "Lunch",
+                            Created = DateTimeOffset.UtcNow,
+                            MealIngredients = new List<MealIngredient>
                             {
-                                Ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Grams, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
-                                Quantity = 1,
-                                Id = Guid.NewGuid(),
-                                IngredientId = ingredientId,
-                                MealId = mealId
+                                new MealIngredient
+                                {
+                                    Ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Grams, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
+                                    Quantity = 1,
+                                    Id = Guid.NewGuid(),
+                                    IngredientId = ingredientId,
+                                    MealId = mealId
+                                }
                             }
-                        }
-                    }
+                        },
+                        Quantity = 1
+                    }]
                 }
             };
 
