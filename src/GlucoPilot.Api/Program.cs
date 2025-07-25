@@ -10,6 +10,7 @@ using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity;
 using GlucoPilot.LibreLinkClient;
 using GlucoPilot.Mail;
+using GlucoPilot.Nutrition;
 using GlucoPilot.Sync.LibreLink;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -60,6 +61,7 @@ builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 builder.Services.AddHealthChecks().AddDatabaseHealthChecks();
 builder.Services.AddData(builder.Configuration.GetSection("Data").Bind);
 builder.Services.AddIdentity(builder.Configuration.GetSection("Identity").Bind);
+builder.Services.AddNutrition(builder.Configuration.GetSection("Nutrition").Bind);
 
 builder.Services.AddTransient<ExceptionMiddleware>();
 
@@ -101,6 +103,7 @@ app.UseHealthChecks("/health");
 
 app.MapIdentityEndpoints();
 app.MapGlucoPilotEndpoints();
+app.MapNutritionEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
