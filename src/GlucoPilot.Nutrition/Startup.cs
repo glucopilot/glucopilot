@@ -22,9 +22,9 @@ public static class Startup
             .Configure(configure)
             .ValidateDataAnnotations()
             .ValidateOnStart();
-        
+
         services.AddNutritionDbContext(configure);
-        
+
         return services;
     }
 
@@ -32,7 +32,7 @@ public static class Startup
     {
         return endpoints.MapNutritionEndpointsInternal();
     }
-    
+
     private static IServiceCollection AddNutritionDbContext(this IServiceCollection services, Action<NutritionOptions> configure)
     {
         var nutritionOptions = new NutritionOptions();
@@ -43,9 +43,9 @@ public static class Startup
             options.UseSqlServer(nutritionOptions.ConnectionString,
                 e => e.MigrationsAssembly("GlucoPilot.Nutrition.Data.Migrators.MSSQL"));
         });
-        
+
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-        
+
         return services;
     }
 }

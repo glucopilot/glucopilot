@@ -35,7 +35,7 @@ public class MailServiceTests
 
         _sut = new MailService(_smtpClientFactory.Object, _options.Object, _logger.Object);
     }
-    
+
     [Test]
     public void Constructor_Throws()
     {

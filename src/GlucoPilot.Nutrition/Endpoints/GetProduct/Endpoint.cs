@@ -21,7 +21,7 @@ internal static class Endpoint
         {
             return TypedResults.NotFound();
         }
-        
+
         var response = new ProductResponse()
         {
             Id = product.Id,
@@ -54,7 +54,7 @@ internal static class Endpoint
             Code = product.Code,
             ServingQuantity = product.ServingQuantity,
         };
-        
+
         return TypedResults.Ok(response);
     }
 }

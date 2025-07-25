@@ -19,7 +19,7 @@ internal static class NutritionEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ProductResponse>()
             .RequireAuthorization();
-        
+
         return endpoints;
     }
 }

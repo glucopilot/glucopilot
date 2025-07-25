@@ -7,7 +7,7 @@ namespace GlucoPilot.Nutrition.Data;
 [ExcludeFromCodeCoverage]
 public class GlucoPilotNutritionDbContext : DbContext
 {
-    public DbSet<Product> Products { get; set; }    
+    public DbSet<Product> Products { get; set; }
 
     public GlucoPilotNutritionDbContext(DbContextOptions<GlucoPilotNutritionDbContext> options) : base(options)
     {

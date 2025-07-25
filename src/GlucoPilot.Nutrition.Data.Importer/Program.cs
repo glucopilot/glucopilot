@@ -45,47 +45,47 @@ while (reader.Peek() >= 0)
 
     if (product?.Nutriments == null) continue;
 
-     products.Add(new GlucoPilot.Nutrition.Data.Entities.Product
-     {
-         Id = Guid.NewGuid().ToString(),
-         ProductType = product.ProductType,
-         Quantity = product.Quantity,
-         ProductQuantityUnit = product.ProductQuantityUnit,
-         ProductName = product.ProductName,
-         ProductQuantity = product.ProductQuantity,
-         NutritionDataPer = product.NutritionDataPer,
-         Nutriments = new GlucoPilot.Nutrition.Data.Entities.Nutriments
-         {
-             EnergyUnit = product.Nutriments.EnergyUnit,
-             FatUnit = product.Nutriments.FatUnit,
-             CarbohydratesUnit = product.Nutriments.CarbohydratesUnit,
-             EnergyKcalUnit = product.Nutriments.EnergyKcalUnit,
-             EnergyKcalValue = product.Nutriments.EnergyKcalValue,
-             EnergyValue = product.Nutriments.EnergyValue,
-             CarbohydratesValue = product.Nutriments.CarbohydratesValue,
-             Proteins = product.Nutriments.Proteins,
-             EnergyKcalValueComputed = product.Nutriments.EnergyKcalValueComputed,
-             ProteinsValue = product.Nutriments.ProteinsValue,
-             EnergyKcal = product.Nutriments.EnergyKcal,
-             ProteinsUnit = product.Nutriments.ProteinsUnit,
-             Carbohydrates = product.Nutriments.Carbohydrates,
-             Energy = product.Nutriments.Energy,
-             Fat = product.Nutriments.Fat,
-             FatValue = product.Nutriments.FatValue
-         },
-         NutritionDataPreparedPer = product.NutritionDataPreparedPer,
-         Code = product.Code,
-         ServingQuantity = product.ServingQuantity
-     });
-    
-     if (products.Count >= 10000)
-     {
-         await dbContext.BulkInsertAsync(products);
-         products.Clear();
-     }
+    products.Add(new GlucoPilot.Nutrition.Data.Entities.Product
+    {
+        Id = Guid.NewGuid().ToString(),
+        ProductType = product.ProductType,
+        Quantity = product.Quantity,
+        ProductQuantityUnit = product.ProductQuantityUnit,
+        ProductName = product.ProductName,
+        ProductQuantity = product.ProductQuantity,
+        NutritionDataPer = product.NutritionDataPer,
+        Nutriments = new GlucoPilot.Nutrition.Data.Entities.Nutriments
+        {
+            EnergyUnit = product.Nutriments.EnergyUnit,
+            FatUnit = product.Nutriments.FatUnit,
+            CarbohydratesUnit = product.Nutriments.CarbohydratesUnit,
+            EnergyKcalUnit = product.Nutriments.EnergyKcalUnit,
+            EnergyKcalValue = product.Nutriments.EnergyKcalValue,
+            EnergyValue = product.Nutriments.EnergyValue,
+            CarbohydratesValue = product.Nutriments.CarbohydratesValue,
+            Proteins = product.Nutriments.Proteins,
+            EnergyKcalValueComputed = product.Nutriments.EnergyKcalValueComputed,
+            ProteinsValue = product.Nutriments.ProteinsValue,
+            EnergyKcal = product.Nutriments.EnergyKcal,
+            ProteinsUnit = product.Nutriments.ProteinsUnit,
+            Carbohydrates = product.Nutriments.Carbohydrates,
+            Energy = product.Nutriments.Energy,
+            Fat = product.Nutriments.Fat,
+            FatValue = product.Nutriments.FatValue
+        },
+        NutritionDataPreparedPer = product.NutritionDataPreparedPer,
+        Code = product.Code,
+        ServingQuantity = product.ServingQuantity
+    });
+
+    if (products.Count >= 10000)
+    {
+        await dbContext.BulkInsertAsync(products);
+        products.Clear();
+    }
 }
 
-if (products.Count > 0) 
+if (products.Count > 0)
 {
     await dbContext.BulkInsertAsync(products);
     products.Clear();
