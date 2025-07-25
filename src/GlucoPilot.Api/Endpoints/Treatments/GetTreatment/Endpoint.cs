@@ -27,7 +27,8 @@ internal static class Endpoint
         var treatment = treatmentRepository
             .GetAll(new FindOptions { IsAsNoTracking = true })
             .Where(t => t.Id == id && t.UserId == userId)
-            .Include(t => t.Meal)
+            .Include(t => t.Meals)
+            .ThenInclude(m => m.Meal)
             .ThenInclude(m => m.MealIngredients)
             .ThenInclude(mi => mi.Ingredient)
             .Include(t => t.Injection)
@@ -46,16 +47,27 @@ internal static class Endpoint
             Created = treatment.Created,
             Updated = treatment.Updated,
             Type = (TreatmentType)treatment.Type,
-            Meal = treatment.Meal is not null
-            ? new GetTreatmentMealResponse
+            Meals = treatment.Meals.Select(m => new GetTreatmentMealResponse
             {
-                Id = treatment.Meal.Id,
-                Name = treatment.Meal.Name,
-                TotalCalories = treatment.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Calories * mi.Quantity),
-                TotalCarbs = treatment.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Carbs * mi.Quantity),
-                TotalProtein = treatment.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Protein * mi.Quantity),
-                TotalFat = treatment.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Fat * mi.Quantity),
-            } : null,
+                Id = m.Meal.Id,
+                Name = m.Meal.Name,
+                TotalCalories = m.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Calories * mi.Quantity),
+                TotalCarbs = m.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Carbs * mi.Quantity),
+                TotalProtein = m.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Protein * mi.Quantity),
+                TotalFat = m.Meal.MealIngredients.Sum(mi => mi.Ingredient is null ? 0 : mi.Ingredient.Fat * mi.Quantity),
+                Quantity = m.Quantity,
+            }).ToList(),
+            Ingredients = treatment.Ingredients.Select(i => new GetTreatmentIngredientResponse
+            {
+                Id = i.Ingredient.Id,
+                Name = i.Ingredient.Name,
+                Quantity = i.Quantity,
+                Uom = (UnitOfMeasurement)i.Ingredient.Uom,
+                Carbs = i.Ingredient.Carbs,
+                Protein = i.Ingredient.Protein,
+                Fat = i.Ingredient.Fat,
+                Calories = i.Ingredient.Calories,
+            }).ToList(),
             Injection = treatment.Injection is not null
             ? new GetTreatmentInjectionResponse
             {

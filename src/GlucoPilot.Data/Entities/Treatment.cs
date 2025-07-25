@@ -52,17 +52,17 @@ public class Treatment
     {
         get
         {
-            if (Meals.Count > 0 && InjectionId is null)
+            if ((Meals.Count > 0 || Ingredients.Count > 0) && InjectionId is null)
             {
                 return TreatmentType.Correction;
             }
 
-            if (Meals.Count > 0 && InjectionId is not null)
+            if ((Meals.Count > 0 || Ingredients.Count > 0) && InjectionId is not null)
             {
                 return TreatmentType.Meal;
             }
 
-            if (Meals.Count == 0 && InjectionId is not null)
+            if ((Meals.Count == 0 && Ingredients.Count == 0) && InjectionId is not null)
             {
                 return TreatmentType.Injection;
             }
@@ -115,18 +115,6 @@ public class Treatment
     /// The last reading (within a time frame) associated with this treatment.
     /// </summary>
     public virtual Reading? Reading { get; set; }
-
-    /// <summary>
-    /// The Id of the meal that this treatment is associated with.
-    /// </summary>
-    [NotMapped]
-    public Guid? MealId { get; set; }
-
-    /// <summary>
-    /// The meal associated with this treatment.
-    /// </summary>
-    [NotMapped]
-    public virtual Meal? Meal { get; set; }
 
     /// <summary>
     /// The meals associated with this treatment.
