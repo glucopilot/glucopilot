@@ -19,22 +19,22 @@ public class TreatmentMeal
     public required Guid TreatmentId { get; set; }
 
     /// <summary>
-    /// The treatment the treatment ingredient is associated with.
+    /// The treatment the treatment meal is associated with.
     /// </summary>
     public virtual Treatment? Treatment { get; set; }
 
     /// <summary>
-    /// The unique identifier for the ingredient.
+    /// The unique identifier for the meal.
     /// </summary>
     public required Guid MealId { get; set; }
 
     /// <summary>
-    /// The ingredients the meal ingredient is associated with.
+    /// The meal the meal treatment is associated with.
     /// </summary>
     public virtual Meal? Meal { get; set; }
 
     /// <summary>
-    /// The quantity of the ingredient in the meal.
+    /// The quantity of the meal in the treatment.
     /// </summary>
     [Range(0, int.MaxValue)]
     public required decimal Quantity { get; set; }

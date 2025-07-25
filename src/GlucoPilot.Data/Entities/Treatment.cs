@@ -79,15 +79,23 @@ public class Treatment
     {
         get
         {
-            var ingredients = Meals.Where(m => m.Meal is not null)
-                .SelectMany(m => m.Meal?.MealIngredients.Select(mi => mi.Ingredient) ?? [])
-                .Concat(Ingredients.Where(i => i.Ingredient is not null).Select(i => i.Ingredient));
-            if (ingredients?.Count() == 0 || Injection is null || Injection.Units.Equals(0))
+            var mealIngredients = Meals.SelectMany(m => m.Meal?.MealIngredients.Where(mi => mi.Ingredient is not null).Select(mi => mi.Ingredient));
+            if ((Ingredients.Count == 0 && mealIngredients.Any()) || Injection is null || Injection.Units.Equals(0))
             {
                 return null;
             }
 
-            var carbs = ingredients?.Sum(i => i?.Carbs);
+            var ingredientCarbs = Ingredients
+                .Where(ti => ti.Ingredient != null)
+                .Sum(ti => ti.Ingredient!.Carbs * ti.Quantity);
+
+            var mealIngredientsCarbs = Meals
+                .Where(tm => tm.Meal != null)
+                .Sum(tm => tm.Meal!.MealIngredients
+                .Where(mi => mi.Ingredient != null)
+                .Sum(mi => mi.Ingredient!.Carbs * mi.Quantity * tm.Quantity));
+                      
+            var carbs = ingredientCarbs + mealIngredientsCarbs;
             var insulin = (decimal)Injection.Units;
 
             return carbs / insulin;

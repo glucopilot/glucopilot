@@ -29,12 +29,12 @@ public class TreatmentIngredient
     public required Guid IngredientId { get; set; }
 
     /// <summary>
-    /// The ingredients the meal ingredient is associated with.
+    /// The ingredients the treatment ingredient is associated with.
     /// </summary>
     public virtual Ingredient? Ingredient { get; set; }
 
     /// <summary>
-    /// The quantity of the ingredient in the meal.
+    /// The quantity of the ingredient in the treatment.
     /// </summary>
     [Range(0, int.MaxValue)]
     public required decimal Quantity { get; set; }
