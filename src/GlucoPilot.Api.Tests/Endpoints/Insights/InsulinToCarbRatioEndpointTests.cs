@@ -46,29 +46,41 @@ internal sealed class InsulinToCarbRatioEndpointTests
             {
                 UserId = userId,
                 Injection = new Injection { InsulinId = Guid.NewGuid(), Units = 10 },
-                Meal = new Meal
+                Meals = [new TreatmentMeal
                 {
-                    Name = "Breakfast",
-                    Created = DateTimeOffset.UtcNow.AddHours(-1),
-                    MealIngredients = new List<MealIngredient>
+                    TreatmentId = Guid.NewGuid(),
+                    MealId = Guid.NewGuid(),
+                    Meal = new Meal
                     {
-                        new MealIngredient { Id = Guid.NewGuid(), IngredientId = Guid.NewGuid(), MealId = Guid.NewGuid(), Quantity = 1, Ingredient = new Ingredient { Created = DateTime.UtcNow.AddHours(-12), Name = "Test Ingredient 2", Uom = UnitOfMeasurement.Grams,Carbs = 50 } }
-                    }
-                }
+                        Name = "Breakfast",
+                        Created = DateTimeOffset.UtcNow.AddHours(-1),
+                        MealIngredients = new List<MealIngredient>
+                        {
+                            new MealIngredient { Id = Guid.NewGuid(), IngredientId = Guid.NewGuid(), MealId = Guid.NewGuid(), Quantity = 1, Ingredient = new Ingredient { Created = DateTime.UtcNow.AddHours(-12), Name = "Test Ingredient 2", Uom = UnitOfMeasurement.Grams,Carbs = 50 } }
+                        }
+                    },
+                    Quantity = 1
+                }]
             },
             new Treatment
             {
                 UserId = userId,
                 Injection = new Injection { InsulinId = Guid.NewGuid(), Units = 20 },
-                Meal = new Meal
+                Meals = [new TreatmentMeal
                 {
-                    Name = "Breakfast 2",
-                    Created = DateTimeOffset.UtcNow,
-                    MealIngredients = new List<MealIngredient>
+                    TreatmentId = Guid.NewGuid(),
+                    MealId = Guid.NewGuid(),
+                    Meal = new Meal
                     {
-                        new MealIngredient { Id = Guid.NewGuid(), IngredientId = Guid.NewGuid(), MealId = Guid.NewGuid(), Quantity = 1, Ingredient = new Ingredient { Created = DateTime.UtcNow.AddHours(-12), Name = "Test Ingredient", Uom = UnitOfMeasurement.Grams, Carbs = 100 } }
-                    }
-                }
+                        Name = "Breakfast 2",
+                        Created = DateTimeOffset.UtcNow,
+                        MealIngredients = new List<MealIngredient>
+                        {
+                            new MealIngredient { Id = Guid.NewGuid(), IngredientId = Guid.NewGuid(), MealId = Guid.NewGuid(), Quantity = 1, Ingredient = new Ingredient { Created = DateTime.UtcNow.AddHours(-12), Name = "Test Ingredient", Uom = UnitOfMeasurement.Grams, Carbs = 100 } }
+                        }
+                    },
+                    Quantity = 1
+                }]
             }
         }.AsQueryable();
 

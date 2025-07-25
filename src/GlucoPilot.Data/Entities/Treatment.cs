@@ -1,5 +1,7 @@
 ﻿using GlucoPilot.Data.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -50,17 +52,17 @@ public class Treatment
     {
         get
         {
-            if (MealId is not null && InjectionId is null)
+            if (Meals.Count > 0 && InjectionId is null)
             {
                 return TreatmentType.Correction;
             }
 
-            if (MealId is not null && InjectionId is not null)
+            if (Meals.Count > 0 && InjectionId is not null)
             {
                 return TreatmentType.Meal;
             }
 
-            if (MealId is null && InjectionId is not null)
+            if (Meals.Count == 0 && InjectionId is not null)
             {
                 return TreatmentType.Injection;
             }
@@ -77,12 +79,27 @@ public class Treatment
     {
         get
         {
-            if (Meal?.MealIngredients is null || Injection is null || Injection.Units.Equals(0))
+            var mealIngredients = Meals.Where(m => m.Meal != null)
+                .SelectMany(m => m.Meal!.MealIngredients
+                    .Where(mi => mi.Ingredient is not null)
+                    .Select(mi => mi.Ingredient));
+
+            if ((Ingredients.Count == 0 && !mealIngredients.Any()) || Injection is null || Injection.Units.Equals(0))
             {
                 return null;
             }
 
-            var carbs = Meal.MealIngredients.Sum(mi => mi.Ingredient?.Carbs ?? 0);
+            var ingredientCarbs = Ingredients
+                .Where(ti => ti.Ingredient != null)
+                .Sum(ti => ti.Ingredient!.Carbs * ti.Quantity);
+
+            var mealIngredientsCarbs = Meals
+                .Where(tm => tm.Meal != null)
+                .Sum(tm => tm.Meal!.MealIngredients
+                .Where(mi => mi.Ingredient != null)
+                .Sum(mi => mi.Ingredient!.Carbs * mi.Quantity * tm.Quantity));
+
+            var carbs = ingredientCarbs + mealIngredientsCarbs;
             var insulin = (decimal)Injection.Units;
 
             return carbs / insulin;
@@ -102,12 +119,26 @@ public class Treatment
     /// <summary>
     /// The Id of the meal that this treatment is associated with.
     /// </summary>
+    [NotMapped]
     public Guid? MealId { get; set; }
 
     /// <summary>
     /// The meal associated with this treatment.
     /// </summary>
+    [NotMapped]
     public virtual Meal? Meal { get; set; }
+
+    /// <summary>
+    /// The meals associated with this treatment.
+    /// </summary>
+    [DeleteBehavior(DeleteBehavior.NoAction)]
+    public virtual ICollection<TreatmentMeal> Meals { get; set; } = [];
+
+    /// <summary>
+    /// The ingredients associated with this treatment.
+    /// </summary>
+    [DeleteBehavior(DeleteBehavior.NoAction)]
+    public virtual ICollection<TreatmentIngredient> Ingredients { get; set; } = [];
 
     /// <summary>
     /// The Id of the injection that this treatment is associated with.
