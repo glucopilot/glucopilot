@@ -17,7 +17,7 @@ public record NewTreatmentRequest
         public NewTreatmentRequestValidator()
         {
             RuleFor(request => request)
-                .Must(request => request.Meals.Count > 0 || request.Ingredients .Count > 0 || request.Injection != null)
+                .Must(request => request.Meals.Count > 0 || request.Ingredients.Count > 0 || request.Injection != null)
                 .WithMessage(Resources.ValidationMessages.MealInjectionIdInjectionIdMustBeProvided);
             RuleFor(x => x.Injection.InsulinId)
                 .NotEmpty()

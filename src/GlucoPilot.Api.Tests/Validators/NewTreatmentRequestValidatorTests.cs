@@ -78,7 +78,7 @@ public class NewTreatmentRequestValidatorTests
     {
         var request = new NewTreatmentRequest
         {
-            Meals= [],
+            Meals = [],
             Ingredients = [],
             Injection = new NewInjection
             {

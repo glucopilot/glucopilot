@@ -115,7 +115,7 @@ public class UpdateTreatmentTests
     public void HandleAsync_Should_Throw_NotFoundException_When_Meal_Not_Found()
     {
         var id = Guid.NewGuid();
-        var request = new UpdateTreatmentRequest { Meals = [ new UpdateTreatmentMealRequest { Id = Guid.NewGuid(), Quantity = 1 }] };
+        var request = new UpdateTreatmentRequest { Meals = [new UpdateTreatmentMealRequest { Id = Guid.NewGuid(), Quantity = 1 }] };
         var userId = Guid.NewGuid();
         var treatment = new Treatment { Id = id, UserId = userId };
 
