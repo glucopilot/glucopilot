@@ -83,37 +83,47 @@ public class AverageNutritionTests
             .Setup(c => c.GetUserId())
             .Returns(userId);
 
+        var treatmentId = Guid.NewGuid();
+        var mealId = Guid.NewGuid();
         var treatments = new List<Treatment>
         {
             new Treatment
             {
+                Id = treatmentId,
                 UserId = userId,
                 Created = DateTimeOffset.UtcNow.AddMinutes(-1),
-                Meal = new Meal
-                {
-                    Created = DateTimeOffset.UtcNow.AddMinutes(-1),
-                    Name = "Breakfast",
-                    MealIngredients = new List<MealIngredient>
+                Meals = [new TreatmentMeal {
+                    Id = Guid.NewGuid(),
+                    TreatmentId = treatmentId,
+                    MealId = mealId,
+                    Meal = new Meal
                     {
-                        new MealIngredient
+                        Id = mealId,
+                        Created = DateTimeOffset.UtcNow.AddMinutes(-1),
+                        Name = "Breakfast",
+                        MealIngredients = new List<MealIngredient>
                         {
-                            Ingredient = new Ingredient
+                            new MealIngredient
                             {
-                                Created = DateTimeOffset.UtcNow.AddMinutes(-1),
-                                Name = "Egg",
-                                Uom = UnitOfMeasurement.Grams,
-                                Calories = 100,
-                                Carbs = 20,
-                                Protein = 10,
-                                Fat = 5
-                            },
-                            Quantity = 2,
-                            Id = default,
-                            MealId = default,
-                            IngredientId = default
+                                Ingredient = new Ingredient
+                                {
+                                    Created = DateTimeOffset.UtcNow.AddMinutes(-1),
+                                    Name = "Egg",
+                                    Uom = UnitOfMeasurement.Grams,
+                                    Calories = 100,
+                                    Carbs = 20,
+                                    Protein = 10,
+                                    Fat = 5
+                                },
+                                Quantity = 2,
+                                Id = default,
+                                MealId = default,
+                                IngredientId = default
+                            }
                         }
-                    }
-                }
+                    },
+                    Quantity = 1
+                }]
             }
         };
 

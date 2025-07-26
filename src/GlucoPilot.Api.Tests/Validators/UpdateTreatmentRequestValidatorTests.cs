@@ -2,6 +2,7 @@
 using GlucoPilot.Api.Endpoints.Treatments.UpdateTreatment;
 using NUnit.Framework;
 using System;
+using static GlucoPilot.Api.Endpoints.Treatments.UpdateTreatment.UpdateTreatmentRequest;
 
 namespace GlucoPilot.Api.Tests.Validators;
 
@@ -17,12 +18,13 @@ public class UpdateTreatmentRequestValidatorTests
     }
 
     [Test]
-    public void Validate_Should_Return_Error_When_All_Ids_Are_Null()
+    public void Validate_Should_Return_Error_When_All_Update_Values_Are_Invalid()
     {
         var request = new UpdateTreatmentRequest
         {
             InjectionId = null,
-            MealId = null,
+            Meals = [],
+            Ingredients = [],
             ReadingId = null
         };
 
@@ -34,9 +36,11 @@ public class UpdateTreatmentRequestValidatorTests
             Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
             x => x.ErrorMessage == "INJECTION_ID_REQUIRED_WHEN_ALL_NULL"));
             Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
-                x => x.ErrorMessage == "MEAL_ID_REQUIRED_WHEN_ALL_NULL"));
+                x => x.ErrorMessage == "MEAL_REQUIRED_WHEN_ALL_NULL"));
             Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
                 x => x.ErrorMessage == "READING_ID_REQUIRED_WHEN_ALL_NULL"));
+            Assert.That(result.Errors, Has.Exactly(1).Matches<FluentValidation.Results.ValidationFailure>(
+                x => x.ErrorMessage == "INGREDIENT_REQUIRED_WHEN_ALL_NULL"));
         });
     }
 
@@ -46,7 +50,8 @@ public class UpdateTreatmentRequestValidatorTests
         var request = new UpdateTreatmentRequest
         {
             InjectionId = Guid.NewGuid(),
-            MealId = null,
+            Meals = [],
+            Ingredients = [],
             ReadingId = null
         };
 
@@ -56,12 +61,29 @@ public class UpdateTreatmentRequestValidatorTests
     }
 
     [Test]
-    public void Validate_Should_Pass_When_Only_MealId_Is_Provided()
+    public void Validate_Should_Pass_When_Only_Meal_Is_Provided()
     {
         var request = new UpdateTreatmentRequest
         {
             InjectionId = null,
-            MealId = Guid.NewGuid(),
+            Meals = [new UpdateTreatmentMealRequest { Id = Guid.NewGuid(), Quantity = 1 }],
+            Ingredients = [],
+            ReadingId = null
+        };
+
+        var result = _validator.TestValidate(request);
+
+        Assert.That(result.IsValid, Is.True);
+    }
+
+    [Test]
+    public void Validate_Should_Pass_When_Only_Ingredient_Is_Provided()
+    {
+        var request = new UpdateTreatmentRequest
+        {
+            InjectionId = null,
+            Meals = [],
+            Ingredients = [new UpdateTreatmentIngredientRequest { Id = Guid.NewGuid(), Quantity = 1 }],
             ReadingId = null
         };
 
@@ -76,7 +98,8 @@ public class UpdateTreatmentRequestValidatorTests
         var request = new UpdateTreatmentRequest
         {
             InjectionId = null,
-            MealId = null,
+            Meals = [],
+            Ingredients = [],
             ReadingId = Guid.NewGuid()
         };
 
@@ -86,12 +109,13 @@ public class UpdateTreatmentRequestValidatorTests
     }
 
     [Test]
-    public void Validate_Should_Pass_When_Multiple_Ids_Are_Provided()
+    public void Validate_Should_Pass_When_Multiple_Values_Are_Provided()
     {
         var request = new UpdateTreatmentRequest
         {
             InjectionId = Guid.NewGuid(),
-            MealId = Guid.NewGuid(),
+            Meals = [new UpdateTreatmentMealRequest { Id = Guid.NewGuid(), Quantity = 1 }],
+            Ingredients = [new UpdateTreatmentIngredientRequest { Id = Guid.NewGuid(), Quantity = 1 }],
             ReadingId = null
         };
 

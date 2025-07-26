@@ -27,6 +27,7 @@ internal static class Endpoint
         var treatment = treatmentRepository
             .GetAll(new FindOptions { IsAsNoTracking = true })
             .Where(t => t.Id == id && t.UserId == userId)
+            .Include(t => t.Ingredients)
             .Include(t => t.Meals)
             .ThenInclude(m => m.Meal)
             .ThenInclude(m => m.MealIngredients)
@@ -34,6 +35,7 @@ internal static class Endpoint
             .Include(t => t.Injection)
             .ThenInclude(i => i.Insulin)
             .Include(t => t.Reading)
+            .AsSplitQuery()
             .FirstOrDefault();
 
         if (treatment is null)

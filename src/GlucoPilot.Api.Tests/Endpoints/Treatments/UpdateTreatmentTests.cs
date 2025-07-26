@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
 using GlucoPilot.Api.Endpoints.Treatments.UpdateTreatment;
 using GlucoPilot.AspNetCore.Exceptions;
@@ -13,6 +8,12 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using static GlucoPilot.Api.Endpoints.Treatments.UpdateTreatment.UpdateTreatmentRequest;
 
 namespace GlucoPilot.Api.Tests.Endpoints.Treatments;
 
@@ -24,6 +25,7 @@ public class UpdateTreatmentTests
     private Mock<IRepository<Treatment>> _treatmentRepositoryMock;
     private Mock<IRepository<Reading>> _readingRepositoryMock;
     private Mock<IRepository<Meal>> _mealRepositoryMock;
+    private Mock<IRepository<Ingredient>> _ingredientRepositoryMock;
     private Mock<IRepository<Injection>> _injectionRepositoryMock;
 
     [SetUp]
@@ -34,6 +36,7 @@ public class UpdateTreatmentTests
         _treatmentRepositoryMock = new Mock<IRepository<Treatment>>();
         _readingRepositoryMock = new Mock<IRepository<Reading>>();
         _mealRepositoryMock = new Mock<IRepository<Meal>>();
+        _ingredientRepositoryMock = new Mock<IRepository<Ingredient>>();
         _injectionRepositoryMock = new Mock<IRepository<Injection>>();
     }
 
@@ -65,6 +68,7 @@ public class UpdateTreatmentTests
                 _treatmentRepositoryMock.Object,
                 _readingRepositoryMock.Object,
                 _mealRepositoryMock.Object,
+                _ingredientRepositoryMock.Object,
                 _injectionRepositoryMock.Object,
                 CancellationToken.None));
     }
@@ -102,6 +106,7 @@ public class UpdateTreatmentTests
                 _treatmentRepositoryMock.Object,
                 _readingRepositoryMock.Object,
                 _mealRepositoryMock.Object,
+                _ingredientRepositoryMock.Object,
                 _injectionRepositoryMock.Object,
                 CancellationToken.None));
     }
@@ -110,7 +115,7 @@ public class UpdateTreatmentTests
     public void HandleAsync_Should_Throw_NotFoundException_When_Meal_Not_Found()
     {
         var id = Guid.NewGuid();
-        var request = new UpdateTreatmentRequest { MealId = Guid.NewGuid() };
+        var request = new UpdateTreatmentRequest { Meals = [ new UpdateTreatmentMealRequest { Id = Guid.NewGuid(), Quantity = 1 }] };
         var userId = Guid.NewGuid();
         var treatment = new Treatment { Id = id, UserId = userId };
 
@@ -139,6 +144,7 @@ public class UpdateTreatmentTests
                 _treatmentRepositoryMock.Object,
                 _readingRepositoryMock.Object,
                 _mealRepositoryMock.Object,
+                _ingredientRepositoryMock.Object,
                 _injectionRepositoryMock.Object,
                 CancellationToken.None));
     }
@@ -176,6 +182,7 @@ public class UpdateTreatmentTests
                 _treatmentRepositoryMock.Object,
                 _readingRepositoryMock.Object,
                 _mealRepositoryMock.Object,
+                _ingredientRepositoryMock.Object,
                 _injectionRepositoryMock.Object,
                 CancellationToken.None));
     }
@@ -212,6 +219,7 @@ public class UpdateTreatmentTests
             _treatmentRepositoryMock.Object,
             _readingRepositoryMock.Object,
             _mealRepositoryMock.Object,
+            _ingredientRepositoryMock.Object,
             _injectionRepositoryMock.Object,
             CancellationToken.None);
 
@@ -252,6 +260,7 @@ public class UpdateTreatmentTests
             _treatmentRepositoryMock.Object,
             _readingRepositoryMock.Object,
             _mealRepositoryMock.Object,
+            _ingredientRepositoryMock.Object,
             _injectionRepositoryMock.Object,
             CancellationToken.None);
 
@@ -281,6 +290,7 @@ public class UpdateTreatmentTests
                 _treatmentRepositoryMock.Object,
                 _readingRepositoryMock.Object,
                 _mealRepositoryMock.Object,
+                _ingredientRepositoryMock.Object,
                 _injectionRepositoryMock.Object,
                 CancellationToken.None));
     }
