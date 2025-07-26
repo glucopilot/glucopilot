@@ -76,7 +76,6 @@ public class ListTreatmentsTests
                     Id = Guid.NewGuid(),
                     UserId = userId,
                     Created = DateTimeOffset.UtcNow,
-                    MealId = mealId,
                     InjectionId = null,
                     Meals = [new TreatmentMeal
                     {

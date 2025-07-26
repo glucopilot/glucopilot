@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using GlucoPilot.Api.Models;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -30,11 +31,11 @@ internal static class Endpoint
         }
 
         var insulinToCarbs = repository.Find(t =>
-                    t.Meal != null && t.Meal.MealIngredients.Count > 0 && t.Injection != null && t.UserId == userId &&
+                    (int)t.Type == (int)TreatmentType.Meal && t.UserId == userId &&
                     t.Created >= request.From &&
                     t.Created <= request.To,
-                new FindOptions { IsAsNoTracking = true }).Include(t => t.Injection).Include(t => t.Meal)
-            .ThenInclude(m => m!.MealIngredients).ThenInclude(mi => mi.Ingredient)
+                new FindOptions { IsAsNoTracking = true }).Include(t => t.Injection).Include(t => t.Ingredients).Include(t => t.Meals)
+            .ThenInclude(m => m!.Meal).ThenInclude(m => m!.MealIngredients).ThenInclude(mi => mi.Ingredient)
             .AsEnumerable()
             .Average(x => x.InsulinToCarbRatio);
 

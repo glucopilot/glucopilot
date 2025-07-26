@@ -160,6 +160,15 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INGREDIENT_REQUIRED_WHEN_ALL_NULL.
+        /// </summary>
+        public static string IngredientRequiredWhenAllNull {
+            get {
+                return ResourceManager.GetString("IngredientRequiredWhenAllNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INGREDIENTS_NOT_EMPTY.
         /// </summary>
         public static string IngredientsNotEmpty {
@@ -223,15 +232,6 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MEAL_ID_INJECTION_ID_MUST_BE_PROVIDED.
-        /// </summary>
-        public static string MealdInjectionIdMustBeProvided {
-            get {
-                return ResourceManager.GetString("MealdInjectionIdMustBeProvided", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to MEAL_ID_INVALID.
         /// </summary>
         public static string MealIdInvalid {
@@ -241,11 +241,20 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MEAL_ID_REQUIRED_WHEN_ALL_NULL.
+        ///   Looks up a localized string similar to MEAL_INGREDIENT_IDS_INJECTION_ID_MUST_BE_PROVIDED.
         /// </summary>
-        public static string MealIdRequiredWhenAllNull {
+        public static string MealInjectionIdInjectionIdMustBeProvided {
             get {
-                return ResourceManager.GetString("MealIdRequiredWhenAllNull", resourceCulture);
+                return ResourceManager.GetString("MealInjectionIdInjectionIdMustBeProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MEAL_REQUIRED_WHEN_ALL_NULL.
+        /// </summary>
+        public static string MealRequiredWhenAllNull {
+            get {
+                return ResourceManager.GetString("MealRequiredWhenAllNull", resourceCulture);
             }
         }
         

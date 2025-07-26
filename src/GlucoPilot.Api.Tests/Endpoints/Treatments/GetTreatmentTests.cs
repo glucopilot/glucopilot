@@ -39,7 +39,6 @@ public class GetTreatmentTests
             Id = treatmentId,
             UserId = userId,
             Created = DateTimeOffset.UtcNow,
-            MealId = mealId,
             Meals = [new TreatmentMeal
             {
                 TreatmentId = Guid.NewGuid(),
@@ -81,12 +80,12 @@ public class GetTreatmentTests
             var okResult = result.Result as Ok<GetTreatmentResponse>;
             Assert.That(okResult, Is.InstanceOf<Ok<GetTreatmentResponse>>());
             Assert.That(okResult?.Value.Id, Is.EqualTo(treatmentId));
-            //Assert.That(okResult.Value.Meal, Is.EqualTo(mealId));
+            Assert.That(okResult.Value.Meals.Any(m => m.Id == mealId), Is.True);
         });
     }
 
     [Test]
-    public async Task HandleAsync_Should_Return_Ok_When_Treatment_Exists_Meal_Null()
+    public async Task HandleAsync_Should_Return_Ok_When_Treatment_Has_No_Meals_Or_Ingredients()
     {
         var treatmentId = Guid.NewGuid();
         var userId = Guid.NewGuid();
@@ -97,9 +96,9 @@ public class GetTreatmentTests
             Id = treatmentId,
             UserId = userId,
             Created = DateTimeOffset.UtcNow,
-            MealId = null,
-            Meal = null,
             InjectionId = injectionId,
+            Meals = [],
+            Ingredients = [],
             Injection = new Injection
             {
                 Id = injectionId,

@@ -147,9 +147,6 @@
   <data name="ReadingIdRequiredWhenAllNull" xml:space="preserve">
     <value>READING_ID_REQUIRED_WHEN_ALL_NULL</value>
   </data>
-  <data name="MealdInjectionIdMustBeProvided" xml:space="preserve">
-    <value>MEAL_ID_INJECTION_ID_MUST_BE_PROVIDED</value>
-  </data>
   <data name="CannotBeFutureDate" xml:space="preserve">
     <value>CANNOT_BE_FUTURE_DATE</value>
   </data>
@@ -162,8 +159,8 @@
   <data name="IntervalInvalid" xml:space="preserve">
     <value>INTERVAL_INVALID</value>
   </data>
-  <data name="MealIdRequiredWhenAllNull" xml:space="preserve">
-    <value>MEAL_ID_REQUIRED_WHEN_ALL_NULL</value>
+  <data name="MealRequiredWhenAllNull" xml:space="preserve">
+    <value>MEAL_REQUIRED_WHEN_ALL_NULL</value>
   </data>
   <data name="IngredientIdInvalid" xml:space="preserve">
     <value>INGREDIENT_ID_INVALID</value>
@@ -239,5 +236,11 @@
   </data>
   <data name="InsulinNotFound" xml:space="preserve">
     <value>INSULIN_NOT_FOUND</value>
+  </data>
+  <data name="MealInjectionIdInjectionIdMustBeProvided" xml:space="preserve">
+    <value>MEAL_INGREDIENT_IDS_INJECTION_ID_MUST_BE_PROVIDED</value>
+  </data>
+  <data name="IngredientRequiredWhenAllNull" xml:space="preserve">
+    <value>INGREDIENT_REQUIRED_WHEN_ALL_NULL</value>
   </data>
 </root>
