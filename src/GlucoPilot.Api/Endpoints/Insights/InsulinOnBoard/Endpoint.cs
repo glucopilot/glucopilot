@@ -4,6 +4,7 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -60,6 +61,8 @@ internal static class Endpoint
 
         return TypedResults.Ok(response);
     }
+
+    // This is the function used to calculate Insulin On Board (IOB) based on the treatment data.
 
     //private static decimal CalculateInsulinOnBoard(Treatment treatment)
     //{
