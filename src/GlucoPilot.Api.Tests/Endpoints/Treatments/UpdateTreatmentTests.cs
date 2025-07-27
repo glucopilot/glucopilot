@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -191,9 +192,22 @@ public class UpdateTreatmentTests
     public async Task HandleAsync_Should_Return_Ok_When_Treatment_Updated_Successfully()
     {
         var id = Guid.NewGuid();
-        var request = new UpdateTreatmentRequest();
         var userId = Guid.NewGuid();
-        var treatment = new Treatment { Id = id, UserId = userId };
+        var mealId = Guid.NewGuid();
+        var meal = new Meal { Id = mealId, Name = "Sugar on Toast", Created = DateTimeOffset.UtcNow };
+        var ingredientId = Guid.NewGuid();
+        var ingredient = new Ingredient { Id = ingredientId, Name = "Butter", Created = DateTimeOffset.UtcNow, Carbs = 0, Protein = 0, Fat = 10, Calories = 90, Uom = default! };
+        var treatment = new Treatment
+        {
+            Id = id,
+            UserId = userId,
+            Meals = [new TreatmentMeal { MealId = mealId, Quantity = 2, TreatmentId = id, Meal = meal }],
+        };
+        var request = new UpdateTreatmentRequest
+        {
+            Meals = [new UpdateTreatmentMealRequest { Id = mealId, Quantity = 2 }],
+            Ingredients = [new UpdateTreatmentIngredientRequest { Id = ingredientId, Quantity = 3 }]
+        };
 
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
@@ -206,6 +220,14 @@ public class UpdateTreatmentTests
         _treatmentRepositoryMock
             .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Treatment, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(treatment);
+
+        _mealRepositoryMock
+            .Setup(r => r.Find(It.IsAny<Expression<Func<Meal, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(new List<Meal>() { meal }.AsQueryable());
+
+        _ingredientRepositoryMock
+            .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(new List<Ingredient>() { ingredient }.AsQueryable());
 
         _treatmentRepositoryMock
             .Setup(r => r.UpdateAsync(It.IsAny<Treatment>(), It.IsAny<CancellationToken>()))
@@ -230,6 +252,16 @@ public class UpdateTreatmentTests
             Assert.That(okResult.Value, Is.Not.Null);
             Assert.That(okResult.Value.Id, Is.EqualTo(id));
             Assert.That(okResult.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
+
+            Assert.That(okResult.Value.Meals, Is.Not.Null.And.Not.Empty);
+            var mealResponse = okResult.Value.Meals.First();
+            Assert.That(mealResponse.Id, Is.EqualTo(mealId));
+            Assert.That(mealResponse.Quantity, Is.EqualTo(2));
+
+            Assert.That(okResult.Value.Ingredients, Is.Not.Null.And.Not.Empty);
+            var ingredientResponse = okResult.Value.Ingredients.First();
+            Assert.That(ingredientResponse.Id, Is.EqualTo(ingredientId));
+            Assert.That(ingredientResponse.Quantity, Is.EqualTo(3));
         });
     }
 

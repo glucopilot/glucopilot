@@ -61,7 +61,15 @@ public class GetTreatmentTests
                     ]
                 },
                 Quantity = 1
-            }]
+            }],
+            Ingredients = [new TreatmentIngredient
+            {
+                Id = Guid.NewGuid(),
+                IngredientId = ingredientId,
+                TreatmentId = treatmentId,
+                Ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Unit, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
+                Quantity = 2
+            }],
         };
 
         _mockCurrentUser.Setup(x => x.GetUserId()).Returns(userId);
@@ -81,6 +89,7 @@ public class GetTreatmentTests
             Assert.That(okResult, Is.InstanceOf<Ok<GetTreatmentResponse>>());
             Assert.That(okResult?.Value.Id, Is.EqualTo(treatmentId));
             Assert.That(okResult.Value.Meals.Any(m => m.Id == mealId), Is.True);
+            Assert.That(okResult.Value.Ingredients.Any(i => i.Id == ingredientId), Is.True);
         });
     }
 

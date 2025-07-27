@@ -117,13 +117,13 @@ internal static class Endpoint
             Meals = treatment.Meals.Select(m => new UpdateTreatmentMealResponse
             {
                 Id = m.MealId,
-                Name = m.Meal.Name,
+                Name = m.Meal?.Name ?? "",
                 Quantity = m.Quantity,
             }).ToList(),
             Ingredients = treatment.Ingredients.Select(i => new UpdateTreatmentIngredientResponse
             {
                 Id = i.IngredientId,
-                Name = i.Ingredient.Name,
+                Name = i.Ingredient?.Name ?? "",
                 Quantity = i.Quantity,
             }).ToList(),
             InjectionId = treatment.InjectionId,
