@@ -30,25 +30,33 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
-        var meals = repository
+        var treatments = repository
             .Find(m => m.UserId == userId, new FindOptions { IsAsNoTracking = true })
-            .Include(m => m.Meal)
+            .Include(t => t.Ingredients)
+            .Include(m => m.Meals)
+            .ThenInclude(m => m.Meal)
             .ThenInclude(mi => mi!.MealIngredients)
             .ThenInclude(mi => mi.Ingredient)
-            .Where(t => t.Meal != null && t.Created >= request.From && t.Created <= request.To)
-            .Select(t => t.Meal)
+            .Where(t => (t.Meals.Count > 0 || t.Ingredients.Count > 0) && t.Created >= request.From && t.Created <= request.To)
+            .AsSplitQuery()
             .ToList();
 
-        var allIngredients = meals.SelectMany(m => m?.MealIngredients ?? Enumerable.Empty<MealIngredient>())
-            .Where(mi => mi.Ingredient != null)
-            .ToArray();
+        var mealIngredients = treatments
+            .SelectMany(t => t.Meals)
+            .Where(tm => tm.Meal != null)
+            .SelectMany(tm => tm.Meal!.MealIngredients)
+            .Where(mi => mi.Ingredient != null);
+
+        var ingredients = treatments
+            .SelectMany(t => t.Ingredients)
+            .Where(i => i != null);
 
         var response = new NutritionResponseModel
         {
-            TotalCalories = allIngredients.Sum(mi => (mi.Ingredient?.Calories ?? 0) * mi.Quantity),
-            TotalCarbs = allIngredients.Sum(mi => (mi.Ingredient?.Carbs ?? 0) * mi.Quantity),
-            TotalProtein = allIngredients.Sum(mi => (mi.Ingredient?.Protein ?? 0) * mi.Quantity),
-            TotalFat = allIngredients.Sum(mi => (mi.Ingredient?.Fat ?? 0) * mi.Quantity)
+            TotalCalories = mealIngredients.Sum(mi => (mi.Ingredient?.Calories ?? 0) * mi.Quantity) + ingredients.Sum(i => (i.Ingredient?.Calories ?? 0) * i.Quantity),
+            TotalCarbs = mealIngredients.Sum(mi => (mi.Ingredient?.Carbs ?? 0) * mi.Quantity) + ingredients.Sum(i => (i.Ingredient?.Carbs ?? 0) * i.Quantity),
+            TotalProtein = mealIngredients.Sum(mi => (mi.Ingredient?.Protein ?? 0) * mi.Quantity) + ingredients.Sum(i => (i.Ingredient?.Protein ?? 0) * i.Quantity),
+            TotalFat = mealIngredients.Sum(mi => (mi.Ingredient?.Fat ?? 0) * mi.Quantity) + ingredients.Sum(i => (i.Ingredient?.Fat ?? 0) * i.Quantity)
         };
 
         return TypedResults.Ok(response);

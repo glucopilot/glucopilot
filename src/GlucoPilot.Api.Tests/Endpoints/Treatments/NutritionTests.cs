@@ -83,37 +83,64 @@ public class AverageNutritionTests
             .Setup(c => c.GetUserId())
             .Returns(userId);
 
+        var treatmentId = Guid.NewGuid();
+        var mealId = Guid.NewGuid();
         var treatments = new List<Treatment>
         {
             new Treatment
             {
+                Id = treatmentId,
                 UserId = userId,
                 Created = DateTimeOffset.UtcNow.AddMinutes(-1),
-                Meal = new Meal
-                {
-                    Created = DateTimeOffset.UtcNow.AddMinutes(-1),
-                    Name = "Breakfast",
-                    MealIngredients = new List<MealIngredient>
+                Meals = [new TreatmentMeal {
+                    Id = Guid.NewGuid(),
+                    TreatmentId = treatmentId,
+                    MealId = mealId,
+                    Meal = new Meal
                     {
-                        new MealIngredient
+                        Id = mealId,
+                        Created = DateTimeOffset.UtcNow.AddMinutes(-1),
+                        Name = "Breakfast",
+                        MealIngredients = new List<MealIngredient>
                         {
-                            Ingredient = new Ingredient
+                            new MealIngredient
                             {
-                                Created = DateTimeOffset.UtcNow.AddMinutes(-1),
-                                Name = "Egg",
-                                Uom = UnitOfMeasurement.Grams,
-                                Calories = 100,
-                                Carbs = 20,
-                                Protein = 10,
-                                Fat = 5
-                            },
-                            Quantity = 2,
-                            Id = default,
-                            MealId = default,
-                            IngredientId = default
+                                Ingredient = new Ingredient
+                                {
+                                    Created = DateTimeOffset.UtcNow.AddMinutes(-1),
+                                    Name = "Egg",
+                                    Uom = UnitOfMeasurement.Grams,
+                                    Calories = 100,
+                                    Carbs = 20,
+                                    Protein = 10,
+                                    Fat = 5
+                                },
+                                Quantity = 2,
+                                Id = default,
+                                MealId = default,
+                                IngredientId = default
+                            }
                         }
-                    }
-                }
+                    },
+                    Quantity = 1
+                }],
+                Ingredients = [new TreatmentIngredient
+                {
+                    Id = Guid.NewGuid(),
+                    IngredientId = Guid.NewGuid(),
+                    TreatmentId = treatmentId,
+                    Ingredient = new Ingredient
+                    {
+                        Created = DateTimeOffset.UtcNow.AddMinutes(-1),
+                        Name = "Bread",
+                        Uom = UnitOfMeasurement.Grams,
+                        Calories = 200,
+                        Carbs = 40,
+                        Protein = 20,
+                        Fat = 10
+                    },
+                    Quantity = 1
+                }],
             }
         };
 
@@ -128,10 +155,10 @@ public class AverageNutritionTests
         Assert.That(response, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(response.TotalCalories, Is.EqualTo(200));
-            Assert.That(response.TotalCarbs, Is.EqualTo(40));
-            Assert.That(response.TotalProtein, Is.EqualTo(20));
-            Assert.That(response.TotalFat, Is.EqualTo(10));
+            Assert.That(response.TotalCalories, Is.EqualTo(400));
+            Assert.That(response.TotalCarbs, Is.EqualTo(80));
+            Assert.That(response.TotalProtein, Is.EqualTo(40));
+            Assert.That(response.TotalFat, Is.EqualTo(20));
         });
     }
 

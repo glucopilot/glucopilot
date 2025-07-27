@@ -60,7 +60,16 @@ internal sealed class InsulinToCarbRatioEndpointTests
                         }
                     },
                     Quantity = 1
-                }]
+                }],
+                Ingredients = [
+                    new TreatmentIngredient
+                    {
+                        TreatmentId = Guid.NewGuid(),
+                        IngredientId = Guid.NewGuid(),
+                        Ingredient = new Ingredient { Created = DateTime.UtcNow.AddHours(-12), Name = "Test Ingredient 2", Uom = UnitOfMeasurement.Grams, Carbs = 50 },
+                        Quantity = 2
+                    }
+                ]
             },
             new Treatment
             {
@@ -98,7 +107,7 @@ internal sealed class InsulinToCarbRatioEndpointTests
         Assert.Multiple(() =>
         {
             Assert.That(result.Result, Is.InstanceOf<Ok<decimal?>>());
-            Assert.That(((Ok<decimal?>)result.Result).Value, Is.EqualTo(5)); // Average insulin to carb ratio: (50/10 + 100/20) / 2 = 5
+            Assert.That(((Ok<decimal?>)result.Result).Value, Is.EqualTo(10)); // Average insulin to carb ratio: (150/10 + 100/20) / 2 = 10
         });
     }
 

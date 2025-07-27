@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using GlucoPilot.Api.Endpoints.Treatments.NewTreatment;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -24,6 +25,7 @@ internal static class Endpoint
         [FromServices] IRepository<Treatment> treatmentRepository,
         [FromServices] IRepository<Reading> readingRepository,
         [FromServices] IRepository<Meal> mealRepository,
+        [FromServices] IRepository<Ingredient> ingredientRepository,
         [FromServices] IRepository<Injection> injectionRepository,
         CancellationToken cancellationToken)
     {
@@ -57,16 +59,22 @@ internal static class Endpoint
             }
         }
 
-        Meal? meal = null;
-        if (request.MealId is not null)
+        var mealIds = request.Meals.Select(m => m.Id).ToList();
+        var meals = mealRepository.Find(m => mealIds.Contains(m.Id) && m.UserId == userId, new FindOptions { IsAsNoTracking = true }).ToList();
+        var invalidMealIds = mealIds.Except(meals.Select(m => m.Id)).ToList();
+
+        if (invalidMealIds.Count > 0)
         {
-            meal = await mealRepository
-                .FindOneAsync(m => m.Id == request.MealId && m.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken)
-                .ConfigureAwait(false);
-            if (meal is null)
-            {
-                throw new NotFoundException("MEAL_NOT_FOUND");
-            }
+            throw new NotFoundException("MEAL_NOT_FOUND");
+        }
+
+        var ingredientIds = request.Ingredients.Select(i => i.Id).ToList();
+        var ingredients = ingredientRepository.Find(i => ingredientIds.Contains(i.Id) && i.UserId == userId, new FindOptions { IsAsNoTracking = true }).ToList();
+        var invalidIngredientIds = ingredientIds.Except(ingredients.Select(i => i.Id)).ToList();
+
+        if (invalidIngredientIds.Count > 0)
+        {
+            throw new NotFoundException("INGREDIENT_NOT_FOUND");
         }
 
         Reading? reading = null;
@@ -82,7 +90,20 @@ internal static class Endpoint
         }
 
         treatment.ReadingId = request.ReadingId;
-        treatment.MealId = request.MealId;
+        treatment.Meals = request.Meals.Select(m => new TreatmentMeal
+        {
+            Id = Guid.NewGuid(),
+            MealId = m.Id,
+            TreatmentId = treatment.Id,
+            Quantity = m.Quantity,
+        }).ToList();
+        treatment.Ingredients = request.Ingredients.Select(i => new TreatmentIngredient
+        {
+            Id = Guid.NewGuid(),
+            IngredientId = i.Id,
+            TreatmentId = treatment.Id,
+            Quantity = i.Quantity,
+        }).ToList();
         treatment.InjectionId = request.InjectionId;
         treatment.Updated = DateTimeOffset.UtcNow;
 
@@ -93,8 +114,18 @@ internal static class Endpoint
             Id = treatment.Id,
             ReadingId = treatment.ReadingId,
             ReadingGlucoseLevel = reading?.GlucoseLevel,
-            MealId = treatment.MealId,
-            MealName = meal?.Name,
+            Meals = treatment.Meals.Select(m => new UpdateTreatmentMealResponse
+            {
+                Id = m.MealId,
+                Name = m.Meal?.Name ?? "",
+                Quantity = m.Quantity,
+            }).ToList(),
+            Ingredients = treatment.Ingredients.Select(i => new UpdateTreatmentIngredientResponse
+            {
+                Id = i.IngredientId,
+                Name = i.Ingredient?.Name ?? "",
+                Quantity = i.Quantity,
+            }).ToList(),
             InjectionId = treatment.InjectionId,
             InsulinName = injection?.Insulin?.Name,
             InsulinUnits = injection?.Units,

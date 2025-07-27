@@ -76,7 +76,6 @@ public class ListTreatmentsTests
                     Id = Guid.NewGuid(),
                     UserId = userId,
                     Created = DateTimeOffset.UtcNow,
-                    MealId = mealId,
                     InjectionId = null,
                     Meals = [new TreatmentMeal
                     {
@@ -100,7 +99,15 @@ public class ListTreatmentsTests
                             }
                         },
                         Quantity = 1
-                    }]
+                    }],
+                    Ingredients = [new TreatmentIngredient
+                    {
+                        Id = Guid.NewGuid(),
+                        IngredientId = ingredientId,
+                        TreatmentId = Guid.NewGuid(),
+                        Ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Grams, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
+                        Quantity = 1
+                    }],
                 }
             };
 
