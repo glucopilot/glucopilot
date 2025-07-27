@@ -26,6 +26,12 @@ public static class PensEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
+        group.MapDelete("/{id:guid}", RemovePen.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .WithName("DeletePen")
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }
