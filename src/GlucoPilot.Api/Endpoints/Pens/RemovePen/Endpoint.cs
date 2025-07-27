@@ -14,21 +14,21 @@ namespace GlucoPilot.Api.Endpoints.Pens.RemovePen;
 internal static class Endpoint
 {
     internal static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult>> HandleAsync(
-        [FromBody] Guid id,
+        [FromRoute] Guid id,
         [FromServices] ICurrentUser currentUser,
         [FromServices] IRepository<Pen> penRepository,
         CancellationToken cancellationToken)
     {
         var userId = currentUser.GetUserId();
 
-        var pen = await penRepository.FindOneAsync(p => p.Id == id && p.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken);
+        var pen = await penRepository.FindOneAsync(p => p.Id == id && p.UserId == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken).ConfigureAwait(false);
 
         if (pen is null)
         {
             throw new NotFoundException(Resources.ValidationMessages.PenNotFound);
         }
 
-        await penRepository.DeleteAsync(pen, cancellationToken);
+        await penRepository.DeleteAsync(pen, cancellationToken).ConfigureAwait(false);
 
         return TypedResults.NoContent();
     }
