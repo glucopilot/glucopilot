@@ -21,14 +21,14 @@ internal static class Endpoint
     {
         var userId = currentUser.GetUserId();
 
-        var ingredient = await ingredientRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken);
+        var ingredient = await ingredientRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
 
         if (ingredient is null)
         {
             throw new NotFoundException("INGREDIENT_NOT_FOUND");
         }
 
-        await ingredientRepository.DeleteAsync(ingredient, cancellationToken);
+        await ingredientRepository.DeleteAsync(ingredient, cancellationToken).ConfigureAwait(false);
 
         return TypedResults.NoContent();
     }
