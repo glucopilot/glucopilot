@@ -27,10 +27,6 @@ public record NewTreatmentRequest
                 .GreaterThan(0)
                 .When(request => request.Injection is not null)
                 .WithMessage(Resources.ValidationMessages.UnitsGreaterThanZero);
-            RuleFor(x => x.Injection.Created)
-                .NotEmpty()
-                .When(request => request.Injection is not null)
-                .WithMessage(Resources.ValidationMessages.CreatedDateRequired);
         }
     }
 }
@@ -39,7 +35,6 @@ public record NewInjection
 {
     public Guid InsulinId { get; set; }
     public double Units { get; set; }
-    public DateTimeOffset Created { get; set; }
 }
 
 public record NewTreatmentMeal

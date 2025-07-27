@@ -36,6 +36,8 @@ internal static class Endpoint
 
         var userId = currentUser.GetUserId();
 
+        var created = request.Created ?? DateTimeOffset.UtcNow;
+
         Injection? injection = null;
 
         if (request.Injection is not null)
@@ -49,7 +51,7 @@ internal static class Endpoint
             injection = new Injection
             {
                 UserId = userId,
-                Created = request.Injection.Created,
+                Created = created,
                 InsulinId = request.Injection.InsulinId,
                 Units = request.Injection.Units,
             };
@@ -93,7 +95,7 @@ internal static class Endpoint
         var treatment = new Treatment
         {
             UserId = userId,
-            Created = request.Created ?? DateTimeOffset.UtcNow,
+            Created = created,
             Meals = [],
             Ingredients = [],
             InjectionId = injection?.Id,
