@@ -38,6 +38,12 @@ internal static class InsightsEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
+        group.MapGet("/insulin-on-board", InsulinOnBoard.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .WithName("InsulinOnBoardInsight")
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }

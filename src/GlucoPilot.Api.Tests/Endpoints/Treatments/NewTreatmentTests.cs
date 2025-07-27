@@ -56,7 +56,6 @@ public class NewTreatmentTests
         {
             Injection = new NewInjection
             {
-                Created = DateTimeOffset.UtcNow,
                 InsulinId = insulin.Id,
                 Units = 5
             }
@@ -88,8 +87,7 @@ public class NewTreatmentTests
         _injectionRepositoryMock.Verify(r => r.AddAsync(It.Is<Injection>(i =>
             i.UserId == userId &&
             i.InsulinId == request.Injection.InsulinId &&
-            i.Units == request.Injection.Units &&
-            i.Created == request.Injection.Created), It.IsAny<CancellationToken>()), Times.Once);
+            i.Units == request.Injection.Units), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
@@ -205,7 +203,7 @@ public class NewTreatmentTests
             Created = DateTimeOffset.UtcNow,
             Meals = [new NewTreatmentMeal { Id = Guid.NewGuid(), Quantity = 1 }],
             Ingredients = [new NewTreatmentIngredient { Id = Guid.NewGuid(), Quantity = 1 }],
-            Injection = new NewInjection { Created = DateTimeOffset.UtcNow, InsulinId = insulin.Id, Units = 5 },
+            Injection = new NewInjection { InsulinId = insulin.Id, Units = 5 },
             ReadingId = Guid.NewGuid()
         };
         var userId = Guid.NewGuid();

@@ -83,8 +83,7 @@ public class NewTreatmentRequestValidatorTests
             Injection = new NewInjection
             {
                 InsulinId = Guid.NewGuid(),
-                Units = 1,
-                Created = DateTimeOffset.UtcNow
+                Units = 1
             }
         };
 
@@ -117,8 +116,7 @@ public class NewTreatmentRequestValidatorTests
             Injection = new NewInjection
             {
                 InsulinId = Guid.NewGuid(),
-                Units = 1,
-                Created = DateTimeOffset.UtcNow
+                Units = 1
             }
         };
 
