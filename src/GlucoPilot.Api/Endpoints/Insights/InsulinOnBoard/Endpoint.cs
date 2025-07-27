@@ -25,7 +25,7 @@ internal static class Endpoint
         var to = DateTimeOffset.UtcNow;
         var from = to.AddHours(-24);
 
-        var treatments = treatmentService.Find( t => t.Injection != null &&
+        var treatments = treatmentService.Find(t => t.Injection != null &&
                     t.Injection.Insulin != null &&
                     t.Injection.Insulin.Duration.HasValue
                     && t.Injection.Insulin.Created >= from && t.Injection.Insulin.Created <= to)

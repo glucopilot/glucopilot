@@ -32,7 +32,7 @@ public class InsulinOnBoardEndpointTests
 
     [Test]
     public async Task HandleAsync_Returns_Ok_With_Valid_Treatments()
-    {    
+    {
         var insulin = new Insulin
         {
             Id = Guid.NewGuid(),
