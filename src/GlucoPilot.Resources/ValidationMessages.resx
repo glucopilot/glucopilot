@@ -246,4 +246,7 @@
   <data name="PenNotFound" xml:space="preserve">
     <value>PEN_NOT_FOUND</value>
   </data>
+  <data name="PenNotFound" xml:space="preserve">
+    <value>PEN_NOT_FOUND</value>
+  </data>
 </root>
