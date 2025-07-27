@@ -313,6 +313,15 @@ namespace GlucoPilot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PEN_NOT_FOUND.
+        /// </summary>
+        public static string PenNotFound {
+            get {
+                return ResourceManager.GetString("PenNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PEN_SERIAL_INVALID.
         /// </summary>
         public static string PenSerialInvalid {
