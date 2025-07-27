@@ -5,7 +5,7 @@ namespace GlucoPilot.Api.Endpoints.Insights.InsulinOnBoard;
 
 public record InsulinOnBoardResponse
 {
-    public ICollection<InsulinOnBoardTreatmentResponse> Treatments = [];
+    public ICollection<InsulinOnBoardTreatmentResponse> Treatments { get; set; } = [];
 }
 
 public record InsulinOnBoardTreatmentResponse
