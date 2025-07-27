@@ -9,25 +9,26 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GlucoPilot.Api.Endpoints.Insulins.RemoveInsulin;
+namespace GlucoPilot.Api.Endpoints.Pens.RemovePen;
 
 internal static class Endpoint
 {
     internal static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult>> HandleAsync(
         [FromRoute] Guid id,
-        [FromServices] IRepository<Insulin> insulinRepository,
         [FromServices] ICurrentUser currentUser,
+        [FromServices] IRepository<Pen> penRepository,
         CancellationToken cancellationToken)
     {
         var userId = currentUser.GetUserId();
 
-        var insulin = await insulinRepository.FindOneAsync(i => i.Id == id && i.UserId == userId, new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
-        if (insulin is null)
+        var pen = await penRepository.FindOneAsync(p => p.Id == id && p.UserId == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken).ConfigureAwait(false);
+
+        if (pen is null)
         {
-            throw new NotFoundException("INSULIN_NOT_FOUND");
+            throw new NotFoundException(Resources.ValidationMessages.PenNotFound);
         }
 
-        await insulinRepository.DeleteAsync(insulin, cancellationToken).ConfigureAwait(false);
+        await penRepository.DeleteAsync(pen, cancellationToken).ConfigureAwait(false);
 
         return TypedResults.NoContent();
     }

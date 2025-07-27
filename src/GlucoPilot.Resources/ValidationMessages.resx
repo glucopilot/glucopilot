@@ -243,4 +243,7 @@
   <data name="IngredientRequiredWhenAllNull" xml:space="preserve">
     <value>INGREDIENT_REQUIRED_WHEN_ALL_NULL</value>
   </data>
+  <data name="PenNotFound" xml:space="preserve">
+    <value>PEN_NOT_FOUND</value>
+  </data>
 </root>
