@@ -30,6 +30,10 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Lint
       run: dotnet format src/gluco-pilot.sln
+    - name: Install Swagger
+      run: dotnet tool install --global Swashbuckle.AspNetCore.Cli
+    - name: Generate Swagger
+      run: dotnet swagger tofile --output docs/openapi.json --yaml src/gluco-pilot/bin/Release/net9.0/GlucoPilot.dll openapi
     - name: Commit changes
       if: github.event_name == 'pull_request'
       uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
