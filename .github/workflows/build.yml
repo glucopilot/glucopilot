@@ -64,4 +64,4 @@ jobs:
     - name: Install Swagger
       run: dotnet tool install --global Swashbuckle.AspNetCore.Cli
     - name: Generate Swagger
-      run: dotnet swagger tofile --output docs/openapi.json --yaml src/gluco-pilot/bin/Release/net9.0/GlucoPilot.dll openapi
+      run: dotnet swagger tofile --output docs/openapi.json --yaml src/GlucoPilot/bin/Release/net9.0/GlucoPilot.Api.dll openapi
