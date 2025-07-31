@@ -48,7 +48,7 @@ internal sealed class TimeInRangeEndpointTests
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         _validatorMock.Setup(x => x.ValidateAsync(request, _cancellationToken)).ReturnsAsync(validationResult);
-        _repositoryMock.Setup(x => x.FromSqlRaw<GlucoseRange>(It.IsAny<string>(), It.IsAny<FindOptions>(), userId, request.From, request.To))
+        _repositoryMock.Setup(x => x.FromSqlRaw<GlucoseRange>(It.IsAny<string>(), It.IsAny<FindOptions>(), userId, request.From, request.To, It.IsAny<double>(), It.IsAny<double>()))
             .Returns(glucoseRanges.AsQueryable());
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, _cancellationToken);

@@ -5,7 +5,6 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
@@ -15,6 +14,9 @@ namespace GlucoPilot.Api.Endpoints.Insights.TimeInRange;
 
 internal static class Endpoint
 {
+    private static double HIGH_GLUCOSE_THRESHOLD_OFFSET = 3d;
+    private static double MAX_GLUCOSE_LEVEL = double.MaxValue;
+
     internal static async Task<Results<Ok<TimeInRangeResponse>, ValidationProblem, UnauthorizedHttpResult>>
         HandleAsync(
             [AsParameters] TimeInRangeRequest request,
@@ -56,7 +58,7 @@ internal static class Endpoint
                 CASE 
                     WHEN GlucoseLevel BETWEEN 0 AND LowSugarThreshold THEN 0
                     WHEN GlucoseLevel BETWEEN HighSugarThreshold AND HighSugarThreshold + 3 THEN 2
-                    When GlucoseLevel > HighSugarThreshold + 3 THEN 3
+                    When GlucoseLevel > HighSugarThreshold + {3} THEN 3
                     ELSE 1
                 END AS RangeID,
                 DATEDIFF(minute, startTime, endTime) AS Duration
@@ -71,14 +73,14 @@ internal static class Endpoint
                 WHEN RangeID = 0 THEN 0
                 WHEN RangeID = 1 THEN LowSugarThreshold
                 WHEN RangeID = 2 THEN HighSugarThreshold
-                WHEN RangeID = 3 THEN HighSugarThreshold + 3
+                WHEN RangeID = 3 THEN HighSugarThreshold + {3}
                 ELSE NULL
             END) AS RangeMin,
             MAX(CASE 
                 WHEN RangeID = 0 THEN LowSugarThreshold
                 WHEN RangeID = 1 THEN HighSugarThreshold
-                WHEN RangeID = 2 THEN HighSugarThreshold + 3
-                WHEN RangeID = 3 THEN 9999
+                WHEN RangeID = 2 THEN HighSugarThreshold + {3}
+                WHEN RangeID = 3 THEN {4}
                 ELSE NULL
             END) AS RangeMax
         FROM TimeInRange
@@ -86,7 +88,7 @@ internal static class Endpoint
         GROUP BY RangeID, LowSugarThreshold, HighSugarThreshold
         ORDER BY RangeID;";
 
-        var results = rangeRepository.FromSqlRaw<GlucoseRange>(sqlQuery, new FindOptions { IsAsNoTracking = true }, userId, from, to)
+        var results = rangeRepository.FromSqlRaw<GlucoseRange>(sqlQuery, new FindOptions { IsAsNoTracking = true }, userId, from, to, HIGH_GLUCOSE_THRESHOLD_OFFSET, MAX_GLUCOSE_LEVEL)
             .AsEnumerable()
             .ToList();
 

@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Endpoints.Insights.Insulin;
 using System;
 
 namespace GlucoPilot.Api.Endpoints.Insights.TimeInRange;
