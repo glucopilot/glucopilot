@@ -44,6 +44,12 @@ internal static class InsightsEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
+        group.MapGet("/time-in-range", TimeInRange.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .WithName("TimeInRangeInsight")
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }
