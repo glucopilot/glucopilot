@@ -14,8 +14,8 @@ namespace GlucoPilot.Api.Endpoints.Insights.TimeInRange;
 
 internal static class Endpoint
 {
-    private static double HIGH_GLUCOSE_THRESHOLD_OFFSET = 3d;
-    private static double MAX_GLUCOSE_LEVEL = double.MaxValue;
+    private const double HIGH_GLUCOSE_THRESHOLD_OFFSET = 3d;
+    private const double MAX_GLUCOSE_LEVEL = double.MaxValue;
 
     internal static async Task<Results<Ok<TimeInRangeResponse>, ValidationProblem, UnauthorizedHttpResult>>
         HandleAsync(
