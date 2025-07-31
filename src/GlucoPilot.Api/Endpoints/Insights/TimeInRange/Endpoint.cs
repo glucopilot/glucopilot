@@ -88,7 +88,7 @@ internal static class Endpoint
         GROUP BY RangeID, LowSugarThreshold, HighSugarThreshold
         ORDER BY RangeID;";
 
-        var results = rangeRepository.FromSqlRaw<GlucoseRange>(sqlQuery, new FindOptions { IsAsNoTracking = true }, userId, from, to, HIGH_GLUCOSE_THRESHOLD_OFFSET, MAX_GLUCOSE_LEVEL)
+        var results = rangeRepository.FromSqlRaw<GlucoseRange>(sqlQuery, new FindOptions { IsAsNoTracking = true }, userId, from, to, HighGlucoseThresholdOffset, MaxGlucoseLevel)
             .AsEnumerable()
             .ToList();
 
