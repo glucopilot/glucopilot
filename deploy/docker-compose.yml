@@ -23,6 +23,7 @@ services:
       Data__ConnectionString: "Server=mssql-db;Database=GlucoPilot;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True"
       Identity__TokenExpirationInMinutes: "60"
       Identity__TokenSigningKey: ${IDENTITY_TOKEN_SIGNING_KEY}
+      Nutrition__ConnectionString: ${NUTRITION_CONNECTION_STRING}
       Mail__SmtpHost: ${SMTP_HOST}
       Mail__Port: ${SMTP_PORT}
       Mail__SmtpUser: ${SMTP_USER}
