@@ -5,6 +5,10 @@
     {
       "matchUpdateTypes": [ "minor", "patch", "pin", "digest" ],
       "groupName": "all-updates"
+    },
+    {
+      "matchPackageNames": [ "stefanzweifel/git-auto-commit-action" ],
+      "enabled": false
     }
   ],
   "prConcurrentLimit": 1,
