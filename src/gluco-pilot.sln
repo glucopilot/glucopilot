@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition.Data.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition", "GlucoPilot.Nutrition\GlucoPilot.Nutrition.csproj", "{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition.Tests", "GlucoPilot.Nutrition.Tests\GlucoPilot.Nutrition.Tests.csproj", "{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,10 @@ Global
 		{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
