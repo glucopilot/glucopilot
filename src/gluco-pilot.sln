@@ -37,6 +37,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Sync.LibreLink.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Resources", "GlucoPilot.Resources\GlucoPilot.Resources.csproj", "{9C6697A5-0D88-48CA-B432-CF5234DF6BAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition.Data", "GlucoPilot.Nutrition.Data\GlucoPilot.Nutrition.Data.csproj", "{2FE1C948-2166-4B64-920E-F16F4BA302F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition.Data.Migrators.MSSQL", "GlucoPilot.Nutrition.Data.Migrators.MSSQL\GlucoPilot.Nutrition.Data.Migrators.MSSQL.csproj", "{E4B2646E-CBF6-44ED-98F0-0D32ED502E96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition.Data.Importer", "GlucoPilot.Nutrition.Data.Importer\GlucoPilot.Nutrition.Data.Importer.csproj", "{971DDCD1-68BE-4503-80AF-9C510A0E2EF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition", "GlucoPilot.Nutrition\GlucoPilot.Nutrition.csproj", "{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlucoPilot.Nutrition.Tests", "GlucoPilot.Nutrition.Tests\GlucoPilot.Nutrition.Tests.csproj", "{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,12 +117,33 @@ Global
 		{9C6697A5-0D88-48CA-B432-CF5234DF6BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C6697A5-0D88-48CA-B432-CF5234DF6BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C6697A5-0D88-48CA-B432-CF5234DF6BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FE1C948-2166-4B64-920E-F16F4BA302F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FE1C948-2166-4B64-920E-F16F4BA302F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FE1C948-2166-4B64-920E-F16F4BA302F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FE1C948-2166-4B64-920E-F16F4BA302F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4B2646E-CBF6-44ED-98F0-0D32ED502E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4B2646E-CBF6-44ED-98F0-0D32ED502E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4B2646E-CBF6-44ED-98F0-0D32ED502E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4B2646E-CBF6-44ED-98F0-0D32ED502E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{971DDCD1-68BE-4503-80AF-9C510A0E2EF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{971DDCD1-68BE-4503-80AF-9C510A0E2EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{971DDCD1-68BE-4503-80AF-9C510A0E2EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{971DDCD1-68BE-4503-80AF-9C510A0E2EF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04F1ED59-E937-4C8C-9F0C-1B3587F821AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC5A4350-0BE4-40E9-B6E9-B9D56C85E56F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{93B26342-5B6D-41C3-A9DB-ADAAB15E9588} = {81AD2BD0-9627-46C1-9ED9-3428A758A0E4}
+		{E4B2646E-CBF6-44ED-98F0-0D32ED502E96} = {81AD2BD0-9627-46C1-9ED9-3428A758A0E4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A1F22B33-D12F-4D26-BC1C-46B1794592B3}
