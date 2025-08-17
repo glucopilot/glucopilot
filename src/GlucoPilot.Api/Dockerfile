@@ -19,6 +19,7 @@ COPY ["GlucoPilot.AspNetCore", "GlucoPilot.AspNetCore"]
 COPY ["GlucoPilot.Mail", "GlucoPilot.Mail"]
 COPY ["GlucoPilot.LibreLinkClient", "GlucoPilot.LibreLinkClient"]
 COPY ["GlucoPilot.Sync.LibreLink", "GlucoPilot.Sync.LibreLink"]
+COPY ["GlucoPilot.Resources", "GlucoPilot.Resources"]
 WORKDIR "/src/GlucoPilot.Api"
 RUN dotnet build "GlucoPilot.Api.csproj" -c "$BuildConfiguration" -o /app/build
 
