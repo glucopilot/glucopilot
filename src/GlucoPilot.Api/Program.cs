@@ -75,7 +75,10 @@ builder.Services.AddLibreLinkClient(builder.Configuration.GetSection("LibreLink"
 
 builder.Services.AddMail(builder.Configuration.GetSection("Mail").Bind);
 
-builder.Services.AddHostedService<SyncService>();
+builder.Services.Configure<DataServiceOptions>(builder.Configuration.GetSection("DataService"));
+builder.Services.AddHostedService<DataService>();
+
+builder.Services.AddHostedService<LibreSyncService>();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
