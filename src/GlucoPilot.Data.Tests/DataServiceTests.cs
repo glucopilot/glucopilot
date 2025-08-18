@@ -82,7 +82,7 @@ public class DataServiceTests
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
-    
+
     [Test]
     public void StartAsync_Logs_Error_When_Cancellation_Token_Is_Not_Cancellation_Token()
     {
@@ -115,7 +115,7 @@ public class DataServiceTests
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
-    
+
     [Test]
     public async Task DoWorkAsync_Logs_Deleting_Expired_Data()
     {
