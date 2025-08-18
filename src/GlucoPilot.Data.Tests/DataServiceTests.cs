@@ -103,9 +103,9 @@ public class DataServiceTests
     }
 
     [Test]
-    public void StartAsync_Logs_Starting_Data_Clean()
+    public async Task DoWorkAsync_Logs_Starting_Data_Clean()
     {
-        _sut.StartAsync(CancellationToken.None);
+        await _sut.DoWorkAsync(CancellationToken.None).ConfigureAwait((false));
         _logger.Verify(
             x => x.Log(
                 LogLevel.Information,
@@ -117,9 +117,9 @@ public class DataServiceTests
     }
     
     [Test]
-    public async Task StartAsync_Logs_Deleting_Expired_Data()
+    public async Task DoWorkAsync_Logs_Deleting_Expired_Data()
     {
-        await _sut.DoWorkAsync(CancellationToken.None);
+        await _sut.DoWorkAsync(CancellationToken.None).ConfigureAwait(false);
         _logger.Verify(
             x => x.Log(
                 LogLevel.Information,

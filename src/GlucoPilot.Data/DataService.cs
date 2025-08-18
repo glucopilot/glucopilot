@@ -51,7 +51,7 @@ public partial class DataService: IHostedService, IDisposable
     {
         StartingDataService();
 
-        _timer = new Timer(DoWork, cancellationToken, TimeSpan.Zero, TimeSpan.FromDays(1));
+        _timer = new Timer(DoWork, cancellationToken, TimeSpan.Zero, _options.RunInterval);
 
         return Task.CompletedTask;
     }
