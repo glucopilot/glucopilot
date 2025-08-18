@@ -11,15 +11,15 @@ using GlucoPilot.LibreLinkClient.Models;
 
 namespace GlucoPilot.Sync.LibreLink;
 
-public partial class SyncService : IHostedService, IDisposable
+public partial class LibreSyncService : IHostedService, IDisposable
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ILogger<SyncService> _logger;
+    private readonly ILogger<LibreSyncService> _logger;
     private Timer? _timer;
 
     private bool _disposed;
 
-    public SyncService(IServiceScopeFactory scopeFactory, ILogger<SyncService> logger)
+    public LibreSyncService(IServiceScopeFactory scopeFactory, ILogger<LibreSyncService> logger)
     {
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -13,15 +13,15 @@ using AuthTicket = GlucoPilot.Data.Entities.AuthTicket;
 namespace GlucoPilot.Sync.LibreLink.Tests;
 
 [TestFixture]
-public class SyncServiceTests
+public class LibreSyncServiceTests
 {
-    private SyncService _sut;
+    private LibreSyncService _sut;
     private Mock<IRepository<Patient>> _patientRepository;
     private Mock<IRepository<Reading>> _readingRepository;
     private Mock<IRepository<Sensor>> _sensorRepository;
     private Mock<IServiceScopeFactory> _scopeFactory;
     private Mock<ILibreLinkClient> _libreLinkClient;
-    private Mock<ILogger<SyncService>> _logger;
+    private Mock<ILogger<LibreSyncService>> _logger;
 
     [SetUp]
     public void SetUp()
@@ -43,10 +43,10 @@ public class SyncServiceTests
                 scope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
                 return scope.Object;
             });
-        _logger = new Mock<ILogger<SyncService>>();
+        _logger = new Mock<ILogger<LibreSyncService>>();
         _logger.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _libreLinkClient = new Mock<ILibreLinkClient>();
-        _sut = new SyncService(_scopeFactory.Object, _logger.Object);
+        _sut = new LibreSyncService(_scopeFactory.Object, _logger.Object);
     }
 
     [TearDown]
@@ -58,9 +58,9 @@ public class SyncServiceTests
     [Test]
     public void Constructor()
     {
-        Assert.Throws<ArgumentNullException>(() => new SyncService(null!, _logger.Object));
-        Assert.Throws<ArgumentNullException>(() => new SyncService(_scopeFactory.Object, null!));
-        Assert.DoesNotThrow(() => new SyncService(_scopeFactory.Object, _logger.Object));
+        Assert.Throws<ArgumentNullException>(() => new LibreSyncService(null!, _logger.Object));
+        Assert.Throws<ArgumentNullException>(() => new LibreSyncService(_scopeFactory.Object, null!));
+        Assert.DoesNotThrow(() => new LibreSyncService(_scopeFactory.Object, _logger.Object));
     }
 
     [Test]
