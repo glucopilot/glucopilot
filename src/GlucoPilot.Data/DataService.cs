@@ -88,8 +88,12 @@ public partial class DataService: IHostedService, IDisposable
         
         using (var scope = _scopeFactory.CreateScope())
         {
-            var patientRepository = scope.ServiceProvider.GetRequiredService<IRepository<Patient>>();
             var readingsRepository = scope.ServiceProvider.GetRequiredService<IRepository<Reading>>();
+
+            DeletingExpiredData();
+            
+            var expireDate = DateTime.UtcNow.Date - TimeSpan.FromDays(_options.DataExpireAge);
+            await readingsRepository.DeleteManyAsync(r => r.Created < expireDate, cancellationToken);
         }
     }
 
@@ -102,7 +106,7 @@ public partial class DataService: IHostedService, IDisposable
     [LoggerMessage(LogLevel.Information, "Deleting expired data.")]
     private partial void DeletingExpiredData();
     
-    [LoggerMessage(LogLevel.Error, "Data service failed")]
+    [LoggerMessage(LogLevel.Error, "Data service failed.")]
     private partial void DataServiceFailed(Exception ex);
 
     [LoggerMessage(LogLevel.Information, "Starting data clean.")]
