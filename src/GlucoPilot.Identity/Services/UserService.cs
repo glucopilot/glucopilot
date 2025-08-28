@@ -56,10 +56,14 @@ public sealed class UserService : IUserService
                 .ToList();
         }
 
-        if (user is null || (_options.RequireEmailVerification && !user.IsVerified) ||
-            !Verify(request.Password, user.PasswordHash))
+        if (user is null || !Verify(request.Password, user.PasswordHash))
         {
             throw new UnauthorizedException("EMAIL_OR_PASSWORD_INCORRECT");
+        }
+
+        if (_options.RequireEmailVerification && !user.IsVerified)
+        {
+            throw new ForbiddenException("EMAIL_NOT_VERIFIED");
         }
 
         var token = _tokenService.GenerateJwtToken(user);

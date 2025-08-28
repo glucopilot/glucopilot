@@ -167,7 +167,7 @@ internal sealed class UserServiceTests
     }
 
     [Test]
-    public void LoginAsync_WithValidPatientCredentials_Unverified_Throws_Unauthorized()
+    public void LoginAsync_WithValidPatientCredentials_Unverified_Throws_Forbidden()
     {
         _options.RequireEmailVerification = true;
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
@@ -177,11 +177,11 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<UnauthorizedException>());
+        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<ForbiddenException>());
     }
 
     [Test]
-    public void LoginAsync_WithValidCareGiverCredentials_Unverified_Throws_Unauthorized()
+    public void LoginAsync_WithValidCareGiverCredentials_Unverified_Throws_Forbidden()
     {
         _options.RequireEmailVerification = true;
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
@@ -191,7 +191,7 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
-        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<UnauthorizedException>());
+        Assert.That(() => _sut.LoginAsync(request, "127.0.0.1"), Throws.TypeOf<ForbiddenException>());
     }
 
     [Test]
