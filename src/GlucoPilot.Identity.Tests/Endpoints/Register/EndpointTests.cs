@@ -39,7 +39,7 @@ internal sealed class EndpointTests
         validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
         var userServiceMock = new Mock<IUserService>();
-        userServiceMock.Setup(us => us.RegisterAsync(request, It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        userServiceMock.Setup(us => us.RegisterAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         var result = await Endpoint.HandleAsync(request, validatorMock.Object, userServiceMock.Object, new DefaultHttpContext(), CancellationToken.None);

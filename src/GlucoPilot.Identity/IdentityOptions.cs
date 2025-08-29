@@ -13,4 +13,6 @@ public sealed class IdentityOptions
     [Required] public int RefreshTokenExpirationInDays { get; set; } = 30;
 
     public bool RequireEmailVerification { get; set; } = true;
+    
+    public string? VerifyEmailBaseUri { get; set; }
 }

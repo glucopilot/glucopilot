@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -110,8 +111,7 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, string origin,
-        CancellationToken cancellationToken = default)
+    public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
         if (await _repository.AnyAsync(x => x.Email == request.Email, cancellationToken).ConfigureAwait(false))
         {
@@ -172,7 +172,7 @@ public sealed class UserService : IUserService
             var confirmEmailModel = new EmailConfirmation()
             {
                 Email = user.Email,
-                Url = GetEmailVerificationUrl(user.EmailVerificationToken!, origin),
+                Url = GetEmailVerificationUrl(user.EmailVerificationToken!),
             };
 
             var message = new MailRequest()
@@ -312,10 +312,15 @@ public sealed class UserService : IUserService
         return token;
     }
 
-    private static string GetEmailVerificationUrl(string verificationToken, string origin)
+    private string GetEmailVerificationUrl(string verificationToken)
     {
+        if (string.IsNullOrWhiteSpace(_options.VerifyEmailBaseUri))
+        {
+            throw new InvalidOperationException("VerifyEmailBaseUri is not configured.");
+        }
+        
         const string route = "api/v1/identity/verify-email";
-        var endpointUri = new Uri(string.Concat($"{origin}/", route));
+        var endpointUri = new Uri(string.Concat($"{_options.VerifyEmailBaseUri?.TrimEnd('/')}/", route));
         return QueryHelpers.AddQueryString(endpointUri.ToString(), "token", verificationToken);
     }
 
