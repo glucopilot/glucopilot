@@ -318,7 +318,7 @@ public sealed class UserService : IUserService
         {
             throw new InvalidOperationException("VerifyEmailBaseUri is not configured.");
         }
-        
+
         const string route = "api/v1/identity/verify-email";
         var endpointUri = new Uri(string.Concat($"{_options.VerifyEmailBaseUri?.TrimEnd('/')}/", route));
         return QueryHelpers.AddQueryString(endpointUri.ToString(), "token", verificationToken);
