@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -314,13 +313,8 @@ public sealed class UserService : IUserService
 
     private string GetEmailVerificationUrl(string verificationToken)
     {
-        if (string.IsNullOrWhiteSpace(_options.VerifyEmailBaseUri))
-        {
-            throw new InvalidOperationException("VerifyEmailBaseUri is not configured.");
-        }
-
         const string route = "api/v1/identity/verify-email";
-        var endpointUri = new Uri(string.Concat($"{_options.VerifyEmailBaseUri?.TrimEnd('/')}/", route));
+        var endpointUri = new Uri(string.Concat($"{_options.VerifyEmailBaseUri?.TrimEnd('/') ?? throw new InvalidOperationException("VerifyEmailBaseUri is not configured.")}/", route));
         return QueryHelpers.AddQueryString(endpointUri.ToString(), "token", verificationToken);
     }
 
