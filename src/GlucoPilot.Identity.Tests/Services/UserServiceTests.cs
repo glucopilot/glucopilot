@@ -36,7 +36,7 @@ internal sealed class UserServiceTests
         _mailService = new Mock<IMailService>();
         _templateService = new Mock<ITemplateService>();
         _identityOptions = new Mock<IOptions<IdentityOptions>>();
-        _options = new IdentityOptions() { RequireEmailVerification = false };
+        _options = new IdentityOptions() { RequireEmailVerification = false, VerifyEmailBaseUri = "https://localhost/" };
         _identityOptions.Setup(x => x.Value).Returns(_options);
 
         _sut = new UserService(_userRepository.Object, _alarmRepository.Object, _tokenService.Object, _mailService.Object,
@@ -231,7 +231,7 @@ internal sealed class UserServiceTests
             LastName = "last name",
         };
 
-        var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
+        var result = await _sut.RegisterAsync(request, CancellationToken.None);
 
         Assert.Multiple(() =>
         {
@@ -258,7 +258,7 @@ internal sealed class UserServiceTests
             PatientId = patient.Id
         };
 
-        var result = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
+        var result = await _sut.RegisterAsync(request, CancellationToken.None);
 
         Assert.Multiple(() =>
         {
@@ -286,7 +286,7 @@ internal sealed class UserServiceTests
             PatientId = patient.Id
         };
 
-        _ = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
+        _ = await _sut.RegisterAsync(request, CancellationToken.None);
 
         _mailService.Verify(
             m => m.SendAsync(It.Is<MailRequest>(x => x.To.SequenceEqual(new[] { request.Email })),
@@ -306,7 +306,7 @@ internal sealed class UserServiceTests
             AcceptedTerms = true,
         };
 
-        _ = await _sut.RegisterAsync(request, "http://localhost", CancellationToken.None);
+        _ = await _sut.RegisterAsync(request, CancellationToken.None);
 
         _mailService.Verify(
             m => m.SendAsync(It.Is<MailRequest>(x => x.To.SequenceEqual(new[] { request.Email })),
@@ -326,7 +326,7 @@ internal sealed class UserServiceTests
         _userRepository.Setup(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        Assert.That(() => _sut.RegisterAsync(request, "http://localhost", CancellationToken.None),
+        Assert.That(() => _sut.RegisterAsync(request, CancellationToken.None),
             Throws.InstanceOf<ConflictException>());
     }
 
@@ -342,7 +342,7 @@ internal sealed class UserServiceTests
             PatientId = Guid.NewGuid()
         };
 
-        Assert.That(() => _sut.RegisterAsync(request, "http://localhost", CancellationToken.None),
+        Assert.That(() => _sut.RegisterAsync(request, CancellationToken.None),
             Throws.InstanceOf<NotFoundException>());
     }
 
