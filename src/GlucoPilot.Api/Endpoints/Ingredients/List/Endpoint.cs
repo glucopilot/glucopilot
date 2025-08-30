@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GlucoPilot.Api.Endpoints.Ingredients.List;
 
@@ -40,7 +41,7 @@ internal static class Endpoint
 #pragma warning restore CA1862 // EF cannot use a query with a .Contains(StringComparison) within it.
         }
 
-        var ingredients = ingredientsQuery.OrderByDescending(i => i.Created)
+        var ingredients = await ingredientsQuery.OrderByDescending(i => i.Created)
             .Skip(request.Page * request.PageSize)
             .Take(request.PageSize)
             .Select(i => new GetIngredientResponse
@@ -55,7 +56,7 @@ internal static class Endpoint
                 Uom = (UnitOfMeasurement)i.Uom,
                 Updated = i.Updated
             })
-            .ToList();
+            .ToListAsync(cancellationToken).ConfigureAwait(false);
 
         var totalMeals = await repository.CountAsync(i => i.UserId == userId, cancellationToken).ConfigureAwait(false);
         var response = new ListIngredientsResponse

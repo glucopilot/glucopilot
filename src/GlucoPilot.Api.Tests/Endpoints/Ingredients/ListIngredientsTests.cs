@@ -10,6 +10,7 @@ using GlucoPilot.Api.Endpoints.Ingredients.List;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
+using GlucoPilot.Data.Tests;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
@@ -64,7 +65,7 @@ public class ListIngredientsTests
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _repositoryMock
             .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
-            .Returns(ingredients.AsQueryable());
+            .Returns(new TestAsyncEnumerable<Ingredient>(ingredients));
         _repositoryMock
             .Setup(r => r.CountAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(ingredients.Count);
@@ -94,10 +95,10 @@ public class ListIngredientsTests
             PageSize = 10
         };
 
-        _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new ValidationResult());
+        _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
-                       .Returns((Expression<Func<Ingredient, bool>> predicate, FindOptions _) => ingredients.Where(predicate));
+                       .Returns((Expression<Func<Ingredient, bool>> predicate, FindOptions _) => new TestAsyncEnumerable<Ingredient>(ingredients.Where(predicate)));
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
