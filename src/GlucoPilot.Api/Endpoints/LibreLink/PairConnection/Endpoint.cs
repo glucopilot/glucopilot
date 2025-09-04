@@ -11,7 +11,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
-using GlucoPilot.Data.Enums;
 using AuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
 namespace GlucoPilot.Api.Endpoints.LibreLink.PairConnection;
@@ -56,7 +55,6 @@ internal static class Endpoint
             }
 
             patient.PatientId = request.PatientId.ToString();
-            patient.GlucoseProvider = GlucoseProvider.LibreLink;
 
             await patientRepository.UpdateAsync(patient, cancellationToken);
 
