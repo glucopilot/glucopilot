@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
