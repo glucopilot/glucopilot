@@ -71,7 +71,7 @@ internal sealed class UserServiceTests
     {
         var request = new LoginRequest { Email = "test@example.com", Password = "password" };
         var user = new Patient
-        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password") };
+        { Email = "test@example.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), PatientId = "PatientId" };
 
         _userRepository.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<FindOptions>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -84,6 +84,7 @@ internal sealed class UserServiceTests
         {
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Token, Is.Not.Empty);
+            Assert.That(result.PatientId, Is.EqualTo(user.PatientId));
         });
     }
 

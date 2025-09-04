@@ -14,6 +14,7 @@ public sealed record LoginResponse
     public int? TargetLow { get; init; }
     public int? TargetHigh { get; init; }
     public required ICollection<LoginAlarmRuleResponse>? AlarmRules { get; init; }
+    public string? PatientId { get; init; }
 
     [JsonIgnore]
     public string? RefreshToken { get; init; }

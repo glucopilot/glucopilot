@@ -93,6 +93,7 @@ public sealed class UserService : IUserService
                     TargetValue = r.TargetValue,
                 }).ToList() : null,
                 RefreshToken = refreshToken.Token,
+                PatientId = patient.PatientId,
             };
         }
 
@@ -107,6 +108,7 @@ public sealed class UserService : IUserService
             TargetHigh = null,
             AlarmRules = null,
             RefreshToken = refreshToken.Token,
+            PatientId = null,
         };
     }
 
