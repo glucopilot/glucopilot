@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
+using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using GlucoPilot.LibreLinkClient;
@@ -64,6 +66,7 @@ internal static class Endpoint
                     Expires = authTicket.Expires,
                     Duration = authTicket.Duration,
                 };
+                patient.GlucoseProvider = GlucoseProvider.LibreLink;
                 await patientRepository.UpdateAsync(patient, cancellationToken).ConfigureAwait(false);
             }
 

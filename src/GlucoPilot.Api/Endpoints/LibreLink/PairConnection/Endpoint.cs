@@ -56,7 +56,6 @@ internal static class Endpoint
             }
 
             patient.PatientId = request.PatientId.ToString();
-            patient.GlucoseProvider = GlucoseProvider.LibreLink;
 
             await patientRepository.UpdateAsync(patient, cancellationToken);
 
