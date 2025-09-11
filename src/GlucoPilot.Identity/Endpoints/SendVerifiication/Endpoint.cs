@@ -25,7 +25,7 @@ internal static class Endpoint
             await userService.SendVerificationEmailAsync(user.Email, user.EmailVerificationToken, cancellationToken)
                 .ConfigureAwait(false);
         }
-        
+
         // Always return 204 No Content to prevent email enumeration
         return TypedResults.NoContent();
     }
