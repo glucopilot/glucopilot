@@ -25,7 +25,8 @@ public sealed class UserService : IUserService
     private readonly ITemplateService _templateService;
     private readonly IdentityOptions _options;
 
-    public UserService(IRepository<User> repository, IRepository<AlarmRule> alarmRepository, ITokenService tokenService, IMailService mailService,
+    public UserService(IRepository<User> repository, IRepository<AlarmRule> alarmRepository, ITokenService tokenService,
+        IMailService mailService,
         ITemplateService templateService, IOptions<IdentityOptions> options)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
@@ -36,7 +37,8 @@ public sealed class UserService : IUserService
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
     }
 
-    public async Task<LoginResponse> LoginAsync(LoginRequest request, string ipAddress, CancellationToken cancellationToken = default)
+    public async Task<LoginResponse> LoginAsync(LoginRequest request, string ipAddress,
+        CancellationToken cancellationToken = default)
     {
         var user = await _repository.FindOneAsync(u => u.Email == request.Email,
             new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true }, cancellationToken);
@@ -45,7 +47,7 @@ public sealed class UserService : IUserService
         if (user is Patient)
         {
             alarmRules = _alarmRepository.Find(x => x.PatientId == user.Id,
-                new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = false })
+                    new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = false })
                 .Select(alarm => new AlarmRule
                 {
                     Id = alarm.Id,
@@ -86,12 +88,14 @@ public sealed class UserService : IUserService
                 GlucoseProvider = (GlucoseProvider)patient.GlucoseProvider,
                 TargetLow = patient.TargetLow,
                 TargetHigh = patient.TargetHigh,
-                AlarmRules = alarmRules is not null ? alarmRules.Select(r => new LoginAlarmRuleResponse
-                {
-                    Id = r.Id,
-                    TargetDirection = (AlarmTargetDirection)r.TargetDirection,
-                    TargetValue = r.TargetValue,
-                }).ToList() : null,
+                AlarmRules = alarmRules is not null
+                    ? alarmRules.Select(r => new LoginAlarmRuleResponse
+                    {
+                        Id = r.Id,
+                        TargetDirection = (AlarmTargetDirection)r.TargetDirection,
+                        TargetValue = r.TargetValue,
+                    }).ToList()
+                    : null,
                 RefreshToken = refreshToken.Token,
                 PatientId = patient.PatientId,
             };
@@ -112,7 +116,8 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
+    public async Task<RegisterResponse> RegisterAsync(RegisterRequest request,
+        CancellationToken cancellationToken = default)
     {
         if (await _repository.AnyAsync(x => x.Email == request.Email, cancellationToken).ConfigureAwait(false))
         {
@@ -170,21 +175,8 @@ public sealed class UserService : IUserService
 
         if (_options.RequireEmailVerification)
         {
-            var confirmEmailModel = new EmailConfirmation()
-            {
-                Email = user.Email,
-                Url = GetEmailVerificationUrl(user.EmailVerificationToken!),
-            };
-
-            var message = new MailRequest()
-            {
-                To = [user.Email],
-                Subject = "Verify your email",
-                Body = await _templateService
-                    .RenderTemplateAsync("EmailConfirmation", confirmEmailModel, cancellationToken)
-                    .ConfigureAwait(false),
-            };
-            await _mailService.SendAsync(message, cancellationToken).ConfigureAwait(false);
+            await SendVerificationEmailAsync(user.Email, user.EmailVerificationToken!, cancellationToken)
+                .ConfigureAwait(false);
         }
 
         return new RegisterResponse
@@ -198,7 +190,28 @@ public sealed class UserService : IUserService
         };
     }
 
-    public async Task<TokenResponse> RefreshTokenAsync(string? token, string ipAddress, CancellationToken cancellationToken = default)
+    public async Task SendVerificationEmailAsync(string email, string verificationToken,
+        CancellationToken cancellationToken = default)
+    {
+        var confirmEmailModel = new EmailConfirmation()
+        {
+            Email = email,
+            Url = GetEmailVerificationUrl(verificationToken),
+        };
+
+        var message = new MailRequest()
+        {
+            To = [email],
+            Subject = "Verify your email",
+            Body = await _templateService
+                .RenderTemplateAsync("EmailConfirmation", confirmEmailModel, cancellationToken)
+                .ConfigureAwait(false),
+        };
+        await _mailService.SendAsync(message, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<TokenResponse> RefreshTokenAsync(string? token, string ipAddress,
+        CancellationToken cancellationToken = default)
     {
         var user = await FindByRefreshTokenAsync(token, cancellationToken).ConfigureAwait(false);
         var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
@@ -240,7 +253,8 @@ public sealed class UserService : IUserService
             throw new UnauthorizedException("INVALID_TOKEN");
         }
 
-        var user = await _repository.FindOneAsync(u => u.RefreshTokens.Any(t => t.Token == token), new FindOptions { IsAsNoTracking = false }, cancellationToken)
+        var user = await _repository.FindOneAsync(u => u.RefreshTokens.Any(t => t.Token == token),
+                new FindOptions { IsAsNoTracking = false }, cancellationToken)
             .ConfigureAwait(false);
         if (user is null)
         {
@@ -257,6 +271,7 @@ public sealed class UserService : IUserService
         {
             throw new UnauthorizedException("INVALID_TOKEN");
         }
+
         var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
         if (!refreshToken.IsActive)
@@ -268,7 +283,8 @@ public sealed class UserService : IUserService
         await _repository.UpdateAsync(user, cancellationToken).ConfigureAwait(false);
     }
 
-    private static void RevokeRefreshTokensRecursively(RefreshToken refreshToken, User user, string ipAddress, string reason)
+    private static void RevokeRefreshTokensRecursively(RefreshToken refreshToken, User user, string ipAddress,
+        string reason)
     {
         if (string.IsNullOrEmpty(refreshToken.ReplacedByToken))
         {
@@ -291,7 +307,8 @@ public sealed class UserService : IUserService
         }
     }
 
-    private static void RevokeRefreshToken(RefreshToken refreshToken, string ipAddress, string? reason = null, string? replacedByToken = null)
+    private static void RevokeRefreshToken(RefreshToken refreshToken, string ipAddress, string? reason = null,
+        string? replacedByToken = null)
     {
         refreshToken.Revoked = DateTime.UtcNow;
         refreshToken.RevokedByIp = ipAddress;
@@ -316,7 +333,10 @@ public sealed class UserService : IUserService
     private string GetEmailVerificationUrl(string verificationToken)
     {
         const string route = "api/v1/identity/verify-email";
-        var endpointUri = new Uri(string.Concat($"{_options.VerifyEmailBaseUri?.TrimEnd('/') ?? throw new InvalidOperationException("VerifyEmailBaseUri is not configured.")}/", route));
+        var endpointUri =
+            new Uri(string.Concat(
+                $"{_options.VerifyEmailBaseUri?.TrimEnd('/') ?? throw new InvalidOperationException("VerifyEmailBaseUri is not configured.")}/",
+                route));
         return QueryHelpers.AddQueryString(endpointUri.ToString(), "token", verificationToken);
     }
 
