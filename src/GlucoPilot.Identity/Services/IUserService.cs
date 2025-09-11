@@ -13,4 +13,5 @@ public interface IUserService
     Task<TokenResponse> RefreshTokenAsync(string? token, string ipAddress, CancellationToken cancellationToken = default);
     Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken = default);
     Task VerifyEmailAsync(VerifyEmailRequest request, CancellationToken cancellationToken = default);
+    Task SendVerificationEmailAsync(string email, string verificationToken, CancellationToken cancellationToken = default);
 }

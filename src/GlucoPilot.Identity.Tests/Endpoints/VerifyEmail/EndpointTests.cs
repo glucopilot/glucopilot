@@ -27,7 +27,7 @@ internal sealed class EndpointTests
             CancellationToken.None);
 
         Assert.That(((ContentHttpResult)result.Result).ResponseContent,
-            Is.EqualTo("<h1>Success</h1><p>Your email has been verified.</p>"));
+            Is.EqualTo("<h1>Success</h1><p>Your email has been verified. You may now close this page.</p>"));
     }
 
     [Test]
