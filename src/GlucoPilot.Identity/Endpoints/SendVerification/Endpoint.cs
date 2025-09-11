@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GlucoPilot.Identity.Endpoints.SendVerifiication;
+namespace GlucoPilot.Identity.Endpoints.SendVerification;
 
 internal static class Endpoint
 {
@@ -20,7 +20,7 @@ internal static class Endpoint
 
         var user = await userRepository.FindOneAsync(x => x.Email == email, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        if (user is not null)
+        if (user?.EmailVerificationToken != null)
         {
             await userService.SendVerificationEmailAsync(user.Email, user.EmailVerificationToken, cancellationToken)
                 .ConfigureAwait(false);

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
-using GlucoPilot.Identity.Endpoints.SendVerifiication;
+using GlucoPilot.Identity.Endpoints.SendVerification;
 using GlucoPilot.Identity.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
