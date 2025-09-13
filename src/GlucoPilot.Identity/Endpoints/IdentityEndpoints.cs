@@ -26,7 +26,7 @@ internal static class IdentityEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ContentResult>()
             .AllowAnonymous();
-        group.MapGet("/send-verification", SendVerification.Endpoint.HandleAsync)
+        group.MapPost("/send-verification", SendVerification.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .AllowAnonymous();
         group.MapPost("/refresh-token", RefreshToken.Endpoint.HandleAsync)
