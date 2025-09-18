@@ -18,7 +18,7 @@ public record UserData
     public long UnixDateOfBirth { get; init; }
 
     [JsonIgnore]
-    public DateTimeOffset DateOfBirth => DateTimeOffset.FromUnixTimeSeconds(UnixDateOfBirth);
+    public DateTimeOffset? DateOfBirth => UnixDateOfBirth == 0 ? (DateTimeOffset?)null : DateTimeOffset.FromUnixTimeSeconds(UnixDateOfBirth);
 
     [JsonPropertyName("email")]
     public string? Email { get; init; }
