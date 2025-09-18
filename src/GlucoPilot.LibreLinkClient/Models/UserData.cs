@@ -6,13 +6,13 @@ namespace GlucoPilot.LibreLinkClient.Models;
 public record UserData
 {
     [JsonPropertyName("id")]
-    public string Id { get; init; }
+    public string? Id { get; init; }
 
     [JsonPropertyName("firstName")]
-    public string FirstName { get; init; }
+    public string? FirstName { get; init; }
 
     [JsonPropertyName("lastName")]
-    public string LastName { get; init; }
+    public string? LastName { get; init; }
 
     [JsonPropertyName("dateOfBirth")]
     public long UnixDateOfBirth { get; init; }
@@ -21,7 +21,7 @@ public record UserData
     public DateTimeOffset DateOfBirth => DateTimeOffset.FromUnixTimeSeconds(UnixDateOfBirth);
 
     [JsonPropertyName("email")]
-    public string Email { get; init; }
+    public string? Email { get; init; }
 
     [JsonPropertyName("country")]
     public required string Country { get; init; }
@@ -30,17 +30,17 @@ public record UserData
     public required string UiLanguage { get; init; }
 
     [JsonPropertyName("communicationLanguage")]
-    public string CommunicationLanguage { get; init; }
+    public string? CommunicationLanguage { get; init; }
 
     [JsonPropertyName("accountType")]
     public required string AccountType { get; init; }
 
     [JsonPropertyName("uom")]
-    public string Uom { get; init; }
+    public string? Uom { get; init; }
 
     [JsonPropertyName("dateFormat")]
-    public string DateFormat { get; init; }
+    public string? DateFormat { get; init; }
 
     [JsonPropertyName("emailDay")]
-    public int[] EmailDay { get; init; }
+    public int[]? EmailDay { get; init; }
 }
