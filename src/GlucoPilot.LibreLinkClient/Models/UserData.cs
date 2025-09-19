@@ -6,22 +6,22 @@ namespace GlucoPilot.LibreLinkClient.Models;
 public record UserData
 {
     [JsonPropertyName("id")]
-    public required string Id { get; init; }
+    public string? Id { get; init; }
 
     [JsonPropertyName("firstName")]
-    public required string FirstName { get; init; }
+    public string? FirstName { get; init; }
 
     [JsonPropertyName("lastName")]
-    public required string LastName { get; init; }
+    public string? LastName { get; init; }
 
     [JsonPropertyName("dateOfBirth")]
-    public required long UnixDateOfBirth { get; init; }
+    public long UnixDateOfBirth { get; init; }
 
     [JsonIgnore]
-    public DateTimeOffset DateOfBirth => DateTimeOffset.FromUnixTimeSeconds(UnixDateOfBirth);
+    public DateTimeOffset? DateOfBirth => UnixDateOfBirth == 0 ? (DateTimeOffset?)null : DateTimeOffset.FromUnixTimeSeconds(UnixDateOfBirth);
 
     [JsonPropertyName("email")]
-    public required string Email { get; init; }
+    public string? Email { get; init; }
 
     [JsonPropertyName("country")]
     public required string Country { get; init; }
@@ -30,17 +30,17 @@ public record UserData
     public required string UiLanguage { get; init; }
 
     [JsonPropertyName("communicationLanguage")]
-    public required string CommunicationLanguage { get; init; }
+    public string? CommunicationLanguage { get; init; }
 
     [JsonPropertyName("accountType")]
     public required string AccountType { get; init; }
 
     [JsonPropertyName("uom")]
-    public required string Uom { get; init; }
+    public string? Uom { get; init; }
 
     [JsonPropertyName("dateFormat")]
-    public required string DateFormat { get; init; }
+    public string? DateFormat { get; init; }
 
     [JsonPropertyName("emailDay")]
-    public required int[] EmailDay { get; init; }
+    public int[]? EmailDay { get; init; }
 }
