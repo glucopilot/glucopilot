@@ -19,7 +19,7 @@ public static class ReadingsEndpoints
             .WithName("ListReadings")
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
-        
+
         group.MapGet("/all", ListAll.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
             .WithName("ListAllReadings")
