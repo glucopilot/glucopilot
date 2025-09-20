@@ -34,7 +34,7 @@ public class ListAllTests
         _repositoryMock = new Mock<IRepository<Reading>>();
         _patientRepositoryMock = new Mock<IRepository<Patient>>();
     }
-    
+
     [Test]
     public async Task HandleAsync_ReturnsOkResult_WhenRequestIsValid_And_Patient_Has_No_Provider()
     {
