@@ -30,7 +30,7 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
-        
+
         var query = """
                                     WITH QuarterHourIntervals AS (
                         SELECT 
