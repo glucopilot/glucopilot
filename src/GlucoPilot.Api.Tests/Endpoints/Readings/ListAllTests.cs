@@ -23,7 +23,6 @@ public class ListAllTests
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IValidator<ListAllReadingsRequest>> _validatorMock;
     Mock<IRepository<Reading>> _repositoryMock;
-    Mock<IRepository<Patient>> _patientRepositoryMock;
 
     [SetUp]
     public void Setup()
@@ -32,7 +31,6 @@ public class ListAllTests
         _currentUserMock.Setup(c => c.GetUserId()).Returns(_userId);
         _validatorMock = new Mock<IValidator<ListAllReadingsRequest>>();
         _repositoryMock = new Mock<IRepository<Reading>>();
-        _patientRepositoryMock = new Mock<IRepository<Patient>>();
     }
     
     [Test]
@@ -54,8 +52,6 @@ public class ListAllTests
             PasswordHash = "testpassword",
             GlucoseProvider = GlucoseProvider.LibreLink
         };
-        _patientRepositoryMock.Setup(p => p.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(),
-            It.IsAny<FindOptions>(), It.IsAny<CancellationToken>())).ReturnsAsync(patient);
 
         var reading = new Reading
         {
@@ -74,7 +70,6 @@ public class ListAllTests
             _validatorMock.Object,
             _currentUserMock.Object,
             _repositoryMock.Object,
-            _patientRepositoryMock.Object,
             CancellationToken.None);
 
         Assert.Multiple(() =>
@@ -115,7 +110,7 @@ public class ListAllTests
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>()))
             .Returns(new List<Reading> { reading }.AsQueryable());
 
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
         var validationProblem = result.Result as ValidationProblem;

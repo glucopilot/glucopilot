@@ -21,7 +21,6 @@ public class Endpoint
             [FromServices] IValidator<ListAllReadingsRequest> validator,
             [FromServices] ICurrentUser currentUser,
             [FromServices] IRepository<Reading> repository,
-            [FromServices] IRepository<Patient> patientRepository,
             CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
@@ -29,27 +28,23 @@ public class Endpoint
         {
             return TypedResults.ValidationProblem(validation.ToDictionary());
         }
-        
+
         var userId = currentUser.GetUserId();
 
-        var patient = await patientRepository.FindOneAsync(u => u.Id == userId,
-                new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true }, cancellationToken)
-            .ConfigureAwait(false);
-        
-            var rawReadings = repository.Find(
-                    r => r.UserId == userId && r.Created >= request.From && r.Created <= request.To,
-                    new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true })
-                .OrderByDescending(r => r.Created)
-                .Select(r => new AllReadingsResponse
-                {
-                    UserId = r.UserId,
-                    Id = r.Id,
-                    Created = r.Created,
-                    GlucoseLevel = r.GlucoseLevel,
-                    Direction = (ReadingDirection)r.Direction
-                })
-                .ToList();
+        var rawReadings = repository.Find(
+                r => r.UserId == userId && r.Created >= request.From && r.Created <= request.To,
+                new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true })
+            .OrderByDescending(r => r.Created)
+            .Select(r => new AllReadingsResponse
+            {
+                UserId = r.UserId,
+                Id = r.Id,
+                Created = r.Created,
+                GlucoseLevel = r.GlucoseLevel,
+                Direction = (ReadingDirection)r.Direction
+            })
+            .ToList();
 
-            return TypedResults.Ok(rawReadings);
-        }
+        return TypedResults.Ok(rawReadings);
+    }
 }

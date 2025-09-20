@@ -10,7 +10,7 @@ public record ListAllReadingsRequest
     public DateTimeOffset From { get; set; }
 
     [Required]
-    public DateTimeOffset? To { get; set; }
+    public DateTimeOffset To { get; set; }
 }
 
 public sealed class ListAllReadingsValidator : AbstractValidator<ListAllReadingsRequest>
