@@ -32,7 +32,7 @@ public class ListAllTests
         _validatorMock = new Mock<IValidator<ListAllReadingsRequest>>();
         _repositoryMock = new Mock<IRepository<Reading>>();
     }
-    
+
     [Test]
     public async Task HandleAsync_ReturnsOkResult_WhenRequestIsValid_And_Patient_Has_No_Provider()
     {
