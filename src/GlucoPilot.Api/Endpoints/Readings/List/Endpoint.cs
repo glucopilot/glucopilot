@@ -21,7 +21,6 @@ internal static class Endpoint
             [FromServices] IValidator<ListReadingsRequest> validator,
             [FromServices] ICurrentUser currentUser,
             [FromServices] IRepository<Reading> repository,
-            [FromServices] IRepository<Patient> patientRepository,
             CancellationToken cancellationToken)
     {
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
@@ -31,11 +30,7 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
-
-        var patient = await patientRepository.FindOneAsync(u => u.Id == userId,
-                new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true }, cancellationToken)
-            .ConfigureAwait(false);
-
+        
         var query = """
                                     WITH QuarterHourIntervals AS (
                         SELECT 

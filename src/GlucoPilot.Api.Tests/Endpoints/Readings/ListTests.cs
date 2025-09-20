@@ -24,7 +24,6 @@ internal sealed class ListTests
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IValidator<ListReadingsRequest>> _validatorMock;
     Mock<IRepository<Reading>> _repositoryMock;
-    Mock<IRepository<Patient>> _patientRepositoryMock;
 
     [SetUp]
     public void Setup()
@@ -33,7 +32,6 @@ internal sealed class ListTests
         _currentUserMock.Setup(c => c.GetUserId()).Returns(_userId);
         _validatorMock = new Mock<IValidator<ListReadingsRequest>>();
         _repositoryMock = new Mock<IRepository<Reading>>();
-        _patientRepositoryMock = new Mock<IRepository<Patient>>();
     }
 
     [Test]
@@ -65,7 +63,6 @@ internal sealed class ListTests
             _validatorMock.Object,
             _currentUserMock.Object,
             _repositoryMock.Object,
-            _patientRepositoryMock.Object,
             CancellationToken.None);
 
         Assert.Multiple(() =>
@@ -104,7 +101,7 @@ internal sealed class ListTests
         _repositoryMock.Setup(r => r.Find(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<FindOptions>()))
             .Returns(new List<Reading> { reading }.AsQueryable());
 
-        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.InstanceOf<ValidationProblem>());
         var validationProblem = result.Result as ValidationProblem;
