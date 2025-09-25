@@ -24,6 +24,12 @@ internal static class Endpoint
             [FromServices] IRepository<Reading> repository,
             CancellationToken cancellationToken)
     {
+
+        if (request.To is null)
+        {
+            request.To = DateTime.UtcNow;
+        }
+
         if (await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false) is
             { IsValid: false } validation)
         {
@@ -31,11 +37,7 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
-
-        if (request.To is null)
-        {
-            request.To = DateTime.UtcNow;
-        }
+        
 
         var query = """
                                     WITH QuarterHourIntervals AS (
@@ -124,7 +126,7 @@ internal static class Endpoint
                          r.Created >= request.From &&
                          r.Created < last.Created,
                     new FindOptions { IsAsNoTracking = true })
-                    .OrderByDescending(r => r.Created)
+                    .OrderBy(r => r.Created)
                     .Select(r => new ReadingsResponse
                     {
                         UserId = r.UserId,

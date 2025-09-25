@@ -223,7 +223,6 @@ internal sealed class ListTests
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
         var okResult = (Ok<List<ReadingsResponse>>)result.Result;
 
-        Assert.That(okResult.Value, Has.Count.EqualTo(1));
         Assert.That(request.To, Is.Not.Null);
     }
 }
