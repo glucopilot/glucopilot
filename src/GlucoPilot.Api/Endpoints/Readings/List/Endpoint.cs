@@ -138,7 +138,7 @@ internal static class Endpoint
 
                 if (additionalReadings.Count > 0)
                 {
-                    readings.Add(additionalReadings.Last());
+                    readings.Add(additionalReadings.First());
                 }
             }
         }        
