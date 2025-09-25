@@ -148,7 +148,7 @@ internal sealed class ListTests
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         var okResult = (Ok<List<ReadingsResponse>>)result.Result;
-        Assert.That(okResult.Value.Count, Is.EqualTo(3));
+        Assert.That(okResult.Value, Has.Count.EqualTo(3));
         Assert.That(okResult.Value.First().GlucoseLevel, Is.EqualTo(120));
     }
 
@@ -191,7 +191,7 @@ internal sealed class ListTests
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         var okResult = (Ok<List<ReadingsResponse>>)result.Result;
-        Assert.That(okResult.Value.Count, Is.EqualTo(3));
+        Assert.That(okResult.Value, Has.Count.EqualTo(3));
         Assert.That(okResult.Value.Last().GlucoseLevel, Is.EqualTo(130));
     }
 }

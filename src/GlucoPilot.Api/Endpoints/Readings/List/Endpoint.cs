@@ -91,7 +91,7 @@ internal static class Endpoint
 
         if (readings.Count > 0)
         {
-            var first = readings.First();
+            var first = readings[0];
             if (request.To.Value - first.Created > TimeSpan.FromMinutes(1))
             {
                 var additionalReadings = repository.Find(
@@ -112,11 +112,11 @@ internal static class Endpoint
 
                 if (additionalReadings.Count > 0)
                 {
-                    readings.Insert(0, additionalReadings.First());
+                    readings.Insert(0, additionalReadings[0]);
                 }
             }
 
-            var last = readings.Last();
+            var last = readings[readings.Count-1];
             if (last.Created - request.From > TimeSpan.FromMinutes(1))
             {
                 var additionalReadings = repository.Find(
@@ -137,7 +137,7 @@ internal static class Endpoint
 
                 if (additionalReadings.Count > 0)
                 {
-                    readings.Add(additionalReadings.First());
+                    readings.Add(additionalReadings[0]);
                 }
             }
         }
