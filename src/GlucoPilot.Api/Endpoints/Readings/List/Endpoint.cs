@@ -116,7 +116,7 @@ internal static class Endpoint
                 }
             }
 
-            var last = readings[readings.Count-1];
+            var last = readings[readings.Count - 1];
             if (last.Created - request.From > TimeSpan.FromMinutes(1))
             {
                 var additionalReadings = repository.Find(
