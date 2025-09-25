@@ -116,33 +116,32 @@ internal static class Endpoint
                     readings.Insert(0, additionalReadings.First());
                 }
             }
-        }
 
-
-        var last = readings.Last();
-        if (last.Created - request.From > TimeSpan.FromMinutes(1))
-        {
-            var additionalReadings = repository.Find(
-                r => r.UserId == userId &&
-                     r.Created >= request.From &&
-                     r.Created < last.Created,
-                new FindOptions { IsAsNoTracking = true })
-                .OrderByDescending(r => r.Created)
-                .Select(r => new ReadingsResponse
-                {
-                    UserId = r.UserId,
-                    Id = r.Id,
-                    Created = r.Created,
-                    GlucoseLevel = r.GlucoseLevel,
-                    Direction = (ReadingDirection)r.Direction
-                })
-                .ToList();
-
-            if (additionalReadings.Count > 0)
+            var last = readings.Last();
+            if (last.Created - request.From > TimeSpan.FromMinutes(1))
             {
-                readings.Add(additionalReadings.Last());
+                var additionalReadings = repository.Find(
+                    r => r.UserId == userId &&
+                         r.Created >= request.From &&
+                         r.Created < last.Created,
+                    new FindOptions { IsAsNoTracking = true })
+                    .OrderByDescending(r => r.Created)
+                    .Select(r => new ReadingsResponse
+                    {
+                        UserId = r.UserId,
+                        Id = r.Id,
+                        Created = r.Created,
+                        GlucoseLevel = r.GlucoseLevel,
+                        Direction = (ReadingDirection)r.Direction
+                    })
+                    .ToList();
+
+                if (additionalReadings.Count > 0)
+                {
+                    readings.Add(additionalReadings.Last());
+                }
             }
-        }
+        }        
 
         return TypedResults.Ok(readings);
     }
