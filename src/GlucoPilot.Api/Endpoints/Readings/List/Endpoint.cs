@@ -101,7 +101,7 @@ internal static class Endpoint
                          r.Created > first.Created &&
                          r.Created <= request.To.Value,
                     new FindOptions { IsAsNoTracking = true })
-                    .OrderBy(r => r.Created)
+                    .OrderByDescending(r => r.Created)
                     .Select(r => new ReadingsResponse
                     {
                         UserId = r.UserId,
