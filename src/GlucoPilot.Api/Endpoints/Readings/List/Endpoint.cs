@@ -5,8 +5,10 @@ using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using ReadingDirection = GlucoPilot.Api.Models.ReadingDirection;
@@ -30,6 +32,11 @@ internal static class Endpoint
         }
 
         var userId = currentUser.GetUserId();
+
+        if (request.To is null)
+        {
+            request.To = DateTime.UtcNow;
+        }
 
         var query = """
                                     WITH QuarterHourIntervals AS (
@@ -82,6 +89,60 @@ internal static class Endpoint
                 Direction = (ReadingDirection)r.Direction
             })
             .ToList();
+
+        if (readings.Count > 0)
+        {
+            var first = readings.First();
+            if (request.To.Value - first.Created > TimeSpan.FromMinutes(1))
+            {
+                var additionalReadings = repository.Find(
+                    r => r.UserId == userId &&
+                         r.Created > first.Created &&
+                         r.Created <= request.To.Value,
+                    new FindOptions { IsAsNoTracking = true })
+                    .OrderBy(r => r.Created)
+                    .Select(r => new ReadingsResponse
+                    {
+                        UserId = r.UserId,
+                        Id = r.Id,
+                        Created = r.Created,
+                        GlucoseLevel = r.GlucoseLevel,
+                        Direction = (ReadingDirection)r.Direction
+                    })
+                    .ToList();
+
+                if (additionalReadings.Count > 0)
+                {
+                    readings.Insert(0, additionalReadings.First());
+                }
+            }
+        }
+
+
+        var last = readings.Last();
+        if (last.Created - request.From > TimeSpan.FromMinutes(1))
+        {
+            var additionalReadings = repository.Find(
+                r => r.UserId == userId &&
+                     r.Created >= request.From &&
+                     r.Created < last.Created,
+                new FindOptions { IsAsNoTracking = true })
+                .OrderByDescending(r => r.Created)
+                .Select(r => new ReadingsResponse
+                {
+                    UserId = r.UserId,
+                    Id = r.Id,
+                    Created = r.Created,
+                    GlucoseLevel = r.GlucoseLevel,
+                    Direction = (ReadingDirection)r.Direction
+                })
+                .ToList();
+
+            if (additionalReadings.Count > 0)
+            {
+                readings.Add(additionalReadings.Last());
+            }
+        }
 
         return TypedResults.Ok(readings);
     }
