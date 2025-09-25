@@ -194,4 +194,36 @@ internal sealed class ListTests
         Assert.That(okResult.Value, Has.Count.EqualTo(3));
         Assert.That(okResult.Value.Last().GlucoseLevel, Is.EqualTo(130));
     }
+
+    [Test]
+    public async Task HandleAsync_Initialises_Request_To_When_Null()
+    {
+        var request = new ListReadingsRequest
+        {
+            From = DateTimeOffset.UtcNow.AddHours(-2),
+            To = null,
+            MinuteInterval = 15
+        };
+
+        _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        var reading = new Reading
+        {
+            Id = Guid.NewGuid(),
+            UserId = _userId,
+            Created = DateTimeOffset.UtcNow.AddMinutes(-30),
+            GlucoseLevel = 100,
+            Direction = ReadingDirection.Steady
+        };
+
+        _repositoryMock.Setup(r => r.FromSqlRaw(It.IsAny<string>(), It.IsAny<FindOptions>(), It.IsAny<object[]>()))
+            .Returns(new List<Reading> { reading }.AsQueryable());
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+        var okResult = (Ok<List<ReadingsResponse>>)result.Result;
+
+        Assert.That(okResult.Value, Has.Count.EqualTo(1));
+        Assert.That(request.To, Is.Not.Null);
+    }
 }
