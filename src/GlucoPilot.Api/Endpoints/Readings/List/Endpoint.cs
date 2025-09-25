@@ -141,7 +141,7 @@ internal static class Endpoint
                     readings.Add(additionalReadings.First());
                 }
             }
-        }        
+        }
 
         return TypedResults.Ok(readings);
     }
