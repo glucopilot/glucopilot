@@ -37,45 +37,88 @@ internal static class Endpoint
         // so averages may be a little off... But if this defaults to a 24-hour range and goes back 
         // the last 7 days, it should suffice for now...
         var query = """
-                    WITH MealCalories AS (
+                    WITH MealNutrition AS (
                         SELECT 
-                            mi.MealId,
-                            SUM(i.Calories) AS TotalCalories,
-                            SUM(i.Carbs) AS TotalCarbs,
-                            SUM(i.Protein) AS TotalProtein,
-                            SUM(i.Fat) AS TotalFat
+                            tm.TreatmentId,
+                            SUM(mi.Quantity * tm.Quantity * i.Calories) AS TotalCalories,
+                            SUM(mi.Quantity * tm.Quantity * i.Carbs) AS TotalCarbs,
+                            SUM(mi.Quantity * tm.Quantity * i.Protein) AS TotalProtein,
+                            SUM(mi.Quantity * tm.Quantity * i.Fat) AS TotalFat
                         FROM 
-                            meals_ingredients mi
+                            treatment_meal tm
+                        JOIN 
+                            meals_ingredients mi ON tm.MealId = mi.MealId
                         JOIN 
                             ingredients i ON mi.IngredientId = i.Id
                         GROUP BY 
-                            mi.MealId
+                            tm.TreatmentId
+                    ),
+                    IngredientNutrition AS (
+                        SELECT 
+                            ti.TreatmentId,
+                            SUM(ti.Quantity * i.Calories) AS TotalCalories,
+                            SUM(ti.Quantity * i.Carbs) AS TotalCarbs,
+                            SUM(ti.Quantity * i.Protein) AS TotalProtein,
+                            SUM(ti.Quantity * i.Fat) AS TotalFat
+                        FROM 
+                            treatment_ingredient ti
+                        JOIN 
+                            ingredients i ON ti.IngredientId = i.Id
+                        GROUP BY 
+                            ti.TreatmentId
+                    ),
+                    CombinedNutrition AS (
+                        SELECT 
+                            TreatmentId,
+                            TotalCalories,
+                            TotalCarbs,
+                            TotalProtein,
+                            TotalFat
+                        FROM MealNutrition
+                        UNION ALL
+                        SELECT 
+                            TreatmentId,
+                            TotalCalories,
+                            TotalCarbs,
+                            TotalProtein,
+                            TotalFat
+                        FROM IngredientNutrition
+                    ),
+                    TreatmentNutrition AS (
+                        SELECT 
+                            TreatmentId,
+                            SUM(TotalCalories) AS TotalCalories,
+                            SUM(TotalCarbs) AS TotalCarbs,
+                            SUM(TotalProtein) AS TotalProtein,
+                            SUM(TotalFat) AS TotalFat
+                        FROM CombinedNutrition
+                        GROUP BY TreatmentId
                     ),
                     Intervals AS (
                         SELECT 
                             DATEADD(HOUR, DATEDIFF(HOUR, 0, [Created]), 0) AS hour_start,
                             [Id],
                             [UserId],
-                            [Created],
-                            [MealId]
+                            [Created]
                         FROM 
                             [treatments]
                         WHERE 
-                            [MealId] is not NULL
-                            AND [Created] BETWEEN {1} AND {2}
+                            [Created] BETWEEN {1} AND {2}
                             AND [UserId] = {3}
+                            AND ([Id] IN (SELECT DISTINCT TreatmentId FROM treatment_meal) 
+                                 OR [Id] IN (SELECT DISTINCT TreatmentId FROM treatment_ingredient))
                     )
 
                     SELECT 
                         I.hour_start AS Time,
-                        SUM(MC.TotalCalories) AS Calories,
-                        SUM(MC.TotalCarbs) AS Carbs,
-                        SUM(MC.TotalProtein) AS Protein,
-                        SUM(MC.TotalFat) AS Fat
+                        SUM(TN.TotalCalories) AS Calories,
+                        SUM(TN.TotalCarbs) AS Carbs,
+                        SUM(TN.TotalProtein) AS Protein,
+                        SUM(TN.TotalFat) AS Fat
                     FROM 
                         Intervals I
                     JOIN
-                        MealCalories MC ON I.MealId = MC.MealId
+                        TreatmentNutrition TN ON I.Id = TN.TreatmentId
                     GROUP BY 
                         I.hour_start
                     ORDER BY 
