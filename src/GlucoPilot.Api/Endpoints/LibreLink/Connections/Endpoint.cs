@@ -33,7 +33,8 @@ internal static class Endpoint
         var authTicket = new LibreAuthTicket
         {
             Token = patient.AuthTicket.Token,
-            Expires = patient.AuthTicket.Expires
+            Expires = patient.AuthTicket.Expires,
+            PatientId = patient.AuthTicket.PatientId,
         };
         try
         {

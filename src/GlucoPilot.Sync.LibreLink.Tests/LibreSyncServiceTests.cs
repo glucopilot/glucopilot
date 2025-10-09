@@ -131,7 +131,7 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
         };
 
         _patientRepository
@@ -160,7 +160,7 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
         };
 
         _patientRepository
@@ -201,8 +201,8 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } }
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } }
         };
 
         _patientRepository
@@ -246,8 +246,8 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } }
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } }
         };
 
         _patientRepository
@@ -296,8 +296,8 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } }
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } }
         };
 
         _patientRepository
@@ -326,7 +326,7 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
         };
 
         _patientRepository
@@ -369,7 +369,7 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },        };
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },        };
 
         _patientRepository
             .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
@@ -409,7 +409,7 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1 } },        };
+            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },        };
 
         _patientRepository
             .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))

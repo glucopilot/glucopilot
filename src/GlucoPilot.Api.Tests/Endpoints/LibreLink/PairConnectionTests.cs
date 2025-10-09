@@ -46,17 +46,19 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue
+                Expires = long.MaxValue, PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = patientId };
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         _patientRepositoryMock
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(patient);
         _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync([new ConnectionData { PatientId = patientId, FirstName = "Firstname", LastName = "LastName" }
+            .ReturnsAsync([
+                new ConnectionData { PatientId = patientId, FirstName = "Firstname", LastName = "LastName" }
             ]);
 
         var result = await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
@@ -84,7 +86,8 @@ public class PairConnectionTests
                 x.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
             .Returns(patient);
         _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync([new ConnectionData { PatientId = patientId, FirstName = "Firstname", LastName = "LastName" }
+            .ReturnsAsync([
+                new ConnectionData { PatientId = patientId, FirstName = "Firstname", LastName = "LastName" }
             ]);
 
         Assert.ThrowsAsync<UnauthorizedException>(async () =>
@@ -121,14 +124,15 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue
+                Expires = long.MaxValue, PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         _patientRepositoryMock
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(patient);
         _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
@@ -151,14 +155,15 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue
+                Expires = long.MaxValue, PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
         _patientRepositoryMock
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(patient);
         _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
             .ThrowsAsync(new LibreLinkNotAuthenticatedException());
@@ -181,7 +186,7 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue
+                Expires = long.MaxValue, PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
@@ -210,7 +215,7 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue
+                Expires = long.MaxValue, PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };

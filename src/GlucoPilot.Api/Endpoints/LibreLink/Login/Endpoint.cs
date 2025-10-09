@@ -43,7 +43,7 @@ internal static class Endpoint
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");
             }
 
-            if (patient.AuthTicket is not null &&
+            if (patient.AuthTicket is not null && !string.IsNullOrWhiteSpace(patient.AuthTicket.PatientId) &&
                 DateTimeOffset.FromUnixTimeSeconds(patient.AuthTicket.Expires) > DateTimeOffset.UtcNow)
             {
                 return TypedResults.Ok(new LoginResponse
@@ -64,6 +64,7 @@ internal static class Endpoint
                     Token = authTicket.Token,
                     Expires = authTicket.Expires,
                     Duration = authTicket.Duration,
+                    PatientId = authTicket.PatientId,
                 };
                 patient.GlucoseProvider = GlucoseProvider.LibreLink;
                 await patientRepository.UpdateAsync(patient, cancellationToken).ConfigureAwait(false);
