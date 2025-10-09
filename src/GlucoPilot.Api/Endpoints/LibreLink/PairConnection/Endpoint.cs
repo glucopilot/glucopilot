@@ -43,7 +43,8 @@ internal static class Endpoint
                     {
                         Token = patient.AuthTicket.Token,
                         Expires = patient.AuthTicket.Expires,
-                        Duration = patient.AuthTicket.Duration
+                        Duration = patient.AuthTicket.Duration,
+                        PatientId = patient.AuthTicket.PatientId
                     }, cancellationToken).ConfigureAwait(false);
 
             var connections = await libreLinkClient.GetConnectionsAsync(cancellationToken).ConfigureAwait(false);
