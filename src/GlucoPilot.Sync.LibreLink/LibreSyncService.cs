@@ -86,7 +86,8 @@ public partial class LibreSyncService : IHostedService, IDisposable
                     var authTicket = new AuthTicket
                     {
                         Token = patient.AuthTicket!.Token,
-                        Expires = patient.AuthTicket.Expires
+                        Expires = patient.AuthTicket.Expires,
+                        PatientId = patient.AuthTicket.PatientId,
                     };
                     await libreLinkClient.LoginAsync(authTicket, cancellationToken).ConfigureAwait(false);
                     var graph = await libreLinkClient.GraphAsync(patientId, cancellationToken).ConfigureAwait(false);
