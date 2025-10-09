@@ -57,9 +57,15 @@ internal sealed class LibreLinkAuthenticator : ILibreLinkAuthenticator
             throw new LibreLinkAuthenticationFailedException();
         }
 
-        _authTicket = result.Data.AuthTicket;
+        _authTicket = result.Data.AuthTicket with
+        {
+            PatientId = result.Data.UserData?.Id,
+        };
 
-        return result.Data;
+        return result.Data with
+        {
+            AuthTicket = _authTicket,
+        };
     }
 
     public Task<LoginResponse> LoginAsync(AuthTicket ticket, CancellationToken cancellationToken = default)

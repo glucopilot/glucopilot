@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,6 +49,10 @@ internal sealed class LibreLinkClient : ILibreLinkClient
         {
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", result.AuthTicket.Token);
+            if (!string.IsNullOrWhiteSpace(result.AuthTicket.PatientId))
+            {
+                _httpClient.DefaultRequestHeaders.Add("Account-Id", ComputeAccountIdHash(result.AuthTicket.PatientId));
+            }
         }
 
         return result.AuthTicket;
@@ -60,6 +66,10 @@ internal sealed class LibreLinkClient : ILibreLinkClient
         {
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", result.AuthTicket.Token);
+            if (!string.IsNullOrWhiteSpace(result.AuthTicket.PatientId))
+            {
+                _httpClient.DefaultRequestHeaders.Add("Account-Id", ComputeAccountIdHash(result.AuthTicket.PatientId));
+            }
         }
     }
 
@@ -91,5 +101,12 @@ internal sealed class LibreLinkClient : ILibreLinkClient
         }
 
         throw new LibreLinkNotAuthenticatedException();
+    }
+
+    private static string ComputeAccountIdHash(string someIdStr)
+    {
+        var bytes = Encoding.UTF8.GetBytes(someIdStr);
+        var hash = SHA256.HashData(bytes);
+        return Convert.ToHexStringLower(hash);
     }
 }

@@ -61,7 +61,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id" }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
@@ -90,7 +90,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id" }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
@@ -119,7 +119,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id" }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
@@ -161,7 +161,7 @@ public class ConnectionsTests
             Email = "test@test.com",
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
-            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+            { Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id" }
         };
         _patientRepositoryMock.Setup(r =>
                 r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))

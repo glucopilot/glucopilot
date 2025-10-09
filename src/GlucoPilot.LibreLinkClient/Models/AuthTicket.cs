@@ -12,4 +12,7 @@ public sealed record AuthTicket
 
     [JsonPropertyName("duration")]
     public long Duration { get; init; }
+
+    [JsonIgnore]
+    public string? PatientId { get; init; }
 }
