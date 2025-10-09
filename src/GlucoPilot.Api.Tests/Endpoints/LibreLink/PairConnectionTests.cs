@@ -46,7 +46,8 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue, PatientId = "patient_id"
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = patientId };
@@ -124,7 +125,8 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue, PatientId = "patient_id"
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
@@ -155,7 +157,8 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue, PatientId = "patient_id"
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
@@ -186,7 +189,8 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue, PatientId = "patient_id"
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
@@ -215,7 +219,8 @@ public class PairConnectionTests
             {
                 Token = "libreToken",
                 Duration = 1000,
-                Expires = long.MaxValue, PatientId = "patient_id"
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
             }
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };

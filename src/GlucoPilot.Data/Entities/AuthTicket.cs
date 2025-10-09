@@ -10,6 +10,6 @@ public class AuthTicket
     public long Expires { get; set; }
 
     public long Duration { get; set; }
-    
+
     public required string PatientId { get; set; }
 }

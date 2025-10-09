@@ -57,7 +57,7 @@ public class LoginTests
         var userId = Guid.NewGuid();
         var authTicket = new LibreAuthTicket { Token = "token", Expires = 1234567890, Duration = 3600 };
         var patient = new Patient
-            { Id = userId, AuthTicket = null, Email = "test@test.com", PasswordHash = "passwordhash" };
+        { Id = userId, AuthTicket = null, Email = "test@test.com", PasswordHash = "passwordhash" };
 
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
@@ -91,7 +91,8 @@ public class LoginTests
             {
                 Token = "same-token",
                 Expires = 1234567890,
-                Duration = 3600, PatientId = "patient_id"
+                Duration = 3600,
+                PatientId = "patient_id"
             },
             Email = "test@test.com",
             PasswordHash = "passwordhash"
@@ -128,7 +129,8 @@ public class LoginTests
             {
                 Token = "same-token",
                 Expires = 1234567890,
-                Duration = 3600, PatientId = "patient_id"
+                Duration = 3600,
+                PatientId = "patient_id"
             },
             Email = "test@test.com",
             PasswordHash = "passwordhash"

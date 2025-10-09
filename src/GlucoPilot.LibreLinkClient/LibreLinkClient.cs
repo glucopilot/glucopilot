@@ -102,7 +102,7 @@ internal sealed class LibreLinkClient : ILibreLinkClient
 
         throw new LibreLinkNotAuthenticatedException();
     }
-    
+
     private static string ComputeAccountIdHash(string someIdStr)
     {
         var bytes = Encoding.UTF8.GetBytes(someIdStr);
