@@ -29,6 +29,7 @@ internal static class Endpoint
         var treatments = treatmentService.Find(t => t.UserId == userId &&
                 t.Injection != null &&
                 t.Injection.Insulin != null &&
+                t.Injection.Insulin.Type == Data.Enums.InsulinType.Bolus &&
                 t.Injection.Insulin.Duration.HasValue
                 && t.Injection.Created >= from && t.Injection.Created <= to)
             .Include(t => t.Injection)
