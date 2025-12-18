@@ -3,13 +3,13 @@ name: Build
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
-  DOTNET_VERSION: 9.0.x
+  DOTNET_VERSION: 10.0.x
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -17,46 +17,46 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write   
+      contents: write
       packages: read
 
     steps:
-    - uses: actions/checkout@v5
-      with:
-        token: ${{ secrets.PAT }}
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    - name: Lint
-      run: dotnet format src/gluco-pilot.sln
-    - name: Commit changes
-      if: github.event_name == 'pull_request'
-      uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
-      with:
-        add_options: -u
-        commit_message: Run code generators and linters
-        branch: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.PAT }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Lint
+        run: dotnet format src/gluco-pilot.sln
+      - name: Commit changes
+        if: github.event_name == 'pull_request'
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
+        with:
+          add_options: -u
+          commit_message: Run code generators and linters
+          branch: ${{ github.event.pull_request.head.ref }}
 
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    - name: Set up SonarScanner
-      run: >
-        dotnet tool install --global dotnet-sonarscanner
+      - uses: actions/checkout@v5
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Set up SonarScanner
+        run: >
+          dotnet tool install --global dotnet-sonarscanner
 
-        dotnet sonarscanner begin /k:"glucopilot_GlucoPilot" /o:"glucopilot" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/Program.cs" /d:sonar.exclusions="**/Templates/*.cshtml"
+          dotnet sonarscanner begin /k:"glucopilot_GlucoPilot" /o:"glucopilot" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/Program.cs" /d:sonar.exclusions="**/Templates/*.cshtml"
 
-    - name: Restore dependencies
-      run: dotnet restore src/gluco-pilot.sln
-    - name: Build
-      run: dotnet build src/gluco-pilot.sln -c Release --no-restore
-    - name: Test
-      run: dotnet test src/gluco-pilot.sln -c Release --no-build --logger "trx;LogFilePrefix=UnitTestResults" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
-    - name: Upload sonar results
-      run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      - name: Restore dependencies
+        run: dotnet restore src/gluco-pilot.sln
+      - name: Build
+        run: dotnet build src/gluco-pilot.sln -c Release --no-restore
+      - name: Test
+        run: dotnet test src/gluco-pilot.sln -c Release --no-build --logger "trx;LogFilePrefix=UnitTestResults" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+      - name: Upload sonar results
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
