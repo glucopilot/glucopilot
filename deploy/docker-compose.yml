@@ -31,8 +31,8 @@ services:
       Mail__DisplayName: ${SMTP_DISPLAY_NAME}
       Mail__From: ${SMTP_FROM}
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      - "21653:21653"
+      - "21654:21654"
 
 volumes:
   glucopilot-sql-data:
