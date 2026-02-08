@@ -45,6 +45,7 @@ internal static class Endpoint
             .Where(t => t.UserId == userId && t.Created >= request.From && t.Created <= request.To)
             .OrderByDescending(t => t.Created)
             .Include(t => t.Ingredients)
+            .ThenInclude(i => i.Ingredient)
             .Include(t => t.Meals)
             .ThenInclude(m => m.Meal)
             .ThenInclude(m => m.MealIngredients)
@@ -53,9 +54,13 @@ internal static class Endpoint
             .ThenInclude(i => i.Insulin)
             .Include(t => t.Reading)
             .AsSplitQuery()
+            .Skip(request.Page * request.PageSize)
+            .Take(request.PageSize)
             .ToList();
 
-        var totalTreatments = await treatmentRepository.CountAsync(m => m.UserId == userId, cancellationToken).ConfigureAwait(false);
+        var totalTreatments = await treatmentRepository.CountAsync(m => m.UserId == userId
+            && m.Created >= request.From && m.Created <= request.To,
+            cancellationToken).ConfigureAwait(false);
         var numberOfPages = (int)Math.Ceiling(totalTreatments / (double)request.PageSize);
 
         var response = new ListTreatmentsResponse

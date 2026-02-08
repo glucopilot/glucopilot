@@ -66,7 +66,7 @@ public class ListTreatmentsTests
     public async Task HandleAsync_Returns_Ok_With_Valid_Response()
     {
         var userId = Guid.NewGuid();
-        var request = new ListTreatmentsRequest { Page = 1, PageSize = 10 };
+        var request = new ListTreatmentsRequest { Page = 0, PageSize = 10 };
         var mealId = Guid.NewGuid();
         var ingredientId = Guid.NewGuid();
         var treatments = new List<Treatment>

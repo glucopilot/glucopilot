@@ -28,6 +28,7 @@ internal static class Endpoint
             .GetAll(new FindOptions { IsAsNoTracking = true })
             .Where(t => t.Id == id && t.UserId == userId)
             .Include(t => t.Ingredients)
+            .ThenInclude(i => i.Ingredient)
             .Include(t => t.Meals)
             .ThenInclude(m => m.Meal)
             .ThenInclude(m => m.MealIngredients)
