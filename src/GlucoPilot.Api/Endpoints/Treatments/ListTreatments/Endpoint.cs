@@ -58,7 +58,7 @@ internal static class Endpoint
             .Take(request.PageSize)
             .ToList();
 
-        var totalTreatments = await treatmentRepository.CountAsync(m => m.UserId == userId 
+        var totalTreatments = await treatmentRepository.CountAsync(m => m.UserId == userId
             && m.Created >= request.From && m.Created <= request.To,
             cancellationToken).ConfigureAwait(false);
         var numberOfPages = (int)Math.Ceiling(totalTreatments / (double)request.PageSize);
