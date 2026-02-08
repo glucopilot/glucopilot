@@ -54,6 +54,8 @@ internal static class Endpoint
             .ThenInclude(i => i.Insulin)
             .Include(t => t.Reading)
             .AsSplitQuery()
+            .Skip(request.Page * request.PageSize)
+            .Take(request.PageSize)
             .ToList();
 
         var totalTreatments = await treatmentRepository.CountAsync(m => m.UserId == userId 
