@@ -42,4 +42,4 @@ jobs:
           server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
           server-username: ${{ secrets.SERVER_USERNAME }}
           server-password: ${{ secrets.SERVER_PASSWORD }}
-          source-path: src\GlucoPilot.Api\bin\Release\net9.0\win-x86\publish\
+          source-path: src\GlucoPilot.Api\bin\Release\net10.0\win-x86\publish\
