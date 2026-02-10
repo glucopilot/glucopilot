@@ -49,10 +49,10 @@ namespace GlucoPilot.Api.Endpoints.Insights.TotalNutrition
                 .SelectMany(t => t.Meals)
                 .Where(tm => tm.Meal != null)
                 .SelectMany(tm => tm.Meal!.MealIngredients.Select(mi => new
-                    {
-                        MealIngredient = mi,
-                        MealQuantity = tm.Quantity
-                    }))
+                {
+                    MealIngredient = mi,
+                    MealQuantity = tm.Quantity
+                }))
                 .Where(x => x.MealIngredient.Ingredient != null);
 
             var ingredients = treatments
