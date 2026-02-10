@@ -73,14 +73,14 @@ namespace GlucoPilot.Api.Tests.Endpoints.Insights
                                 new MealIngredient
                                 {
                                     Ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Grams, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
-                                    Quantity = 1,
+                                    Quantity = 2,
                                     Id = Guid.NewGuid(),
                                     IngredientId = ingredientId,
                                     MealId = mealId
                                 }
                             }
                         },
-                        Quantity = 1
+                        Quantity = 2
                     }],
                     Ingredients = [new TreatmentIngredient
                     {
@@ -88,7 +88,7 @@ namespace GlucoPilot.Api.Tests.Endpoints.Insights
                         IngredientId = ingredientId,
                         TreatmentId = Guid.NewGuid(),
                         Ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Grams, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
-                        Quantity = 1
+                        Quantity = 2
                     }],
                 }
             };
@@ -105,10 +105,10 @@ namespace GlucoPilot.Api.Tests.Endpoints.Insights
 
             Assert.That(result.Result, Is.InstanceOf<Ok<TotalNutritionResponse>>());
             var response = ((Ok<TotalNutritionResponse>)result.Result).Value;
-            Assert.That(response.TotalCalories, Is.EqualTo(200));
-            Assert.That(response.TotalCarbs, Is.EqualTo(40));
-            Assert.That(response.TotalProtein, Is.EqualTo(20));
-            Assert.That(response.TotalFat, Is.EqualTo(10));
+            Assert.That(response.TotalCalories, Is.EqualTo(600));
+            Assert.That(response.TotalCarbs, Is.EqualTo(120));
+            Assert.That(response.TotalProtein, Is.EqualTo(60));
+            Assert.That(response.TotalFat, Is.EqualTo(30));
         }
 
         [Test]
