@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using System;
-
-namespace GlucoPilot.Api.Endpoints.Insights.TotalNutrition
+﻿namespace GlucoPilot.Api.Endpoints.Insights.TotalNutrition
 {
     public sealed class TotalNutritionResponse
     {
