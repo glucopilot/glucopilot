@@ -4,7 +4,6 @@ using GlucoPilot.Api.Endpoints.Insights.TotalNutrition;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
-using GlucoPilot.Data.Migrators.MSSQL.Migrations;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -13,7 +12,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
