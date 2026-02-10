@@ -36,7 +36,7 @@ public static class Startup
         {
             case DatabaseOptions.DatabaseProviderKeys.SqlServer:
                 return builder.UseSqlServer(connectionString,
-                    e => e.MigrationsAssembly("GlucoPilot.Data.Migrators.MSSQL"));
+                    e => e.MigrationsAssembly("GlucoPilot.Data.Migrators.MSSQL").UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             default:
                 throw new InvalidOperationException($"DB provider '{dbProvider}' is not supported.");
         }

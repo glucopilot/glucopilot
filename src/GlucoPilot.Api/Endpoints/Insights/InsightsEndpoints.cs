@@ -50,6 +50,12 @@ internal static class InsightsEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
+        group.MapGet("/total-nutrition", TotalNutrition.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .WithName("TotalNutritionInsight")
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization();
+
         return endpoints;
     }
 }
