@@ -9,17 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="EFCore.BulkExtensions.SqlServer" Version="9.0.1" />
+      <PackageReference Include="EFCore.BulkExtensions.SqlServer" Version="10.0.0" />
       <PackageReference Include="MessagePack" Version="3.1.4" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.9" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.3" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
