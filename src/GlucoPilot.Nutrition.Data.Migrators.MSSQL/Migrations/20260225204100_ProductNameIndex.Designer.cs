@@ -3,6 +3,7 @@ using GlucoPilot.Nutrition.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GlucoPilot.Nutrition.Data.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(GlucoPilotNutritionDbContext))]
-    partial class GlucoPilotNutritionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260225204100_ProductNameIndex")]
+    partial class ProductNameIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
