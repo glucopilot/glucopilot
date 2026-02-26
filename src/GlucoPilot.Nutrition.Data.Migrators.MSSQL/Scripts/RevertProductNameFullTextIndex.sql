@@ -1,2 +1,0 @@
-DROP FULLTEXT INDEX on dbo.Products;
-DROP FULLTEXT CATALOG FTCProducts;
