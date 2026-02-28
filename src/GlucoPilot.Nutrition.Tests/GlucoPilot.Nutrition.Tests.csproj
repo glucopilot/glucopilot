@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GlucoPilot.Data.Tests\GlucoPilot.Data.Tests.csproj" />
     <ProjectReference Include="..\GlucoPilot.Nutrition.Data\GlucoPilot.Nutrition.Data.csproj" />
     <ProjectReference Include="..\GlucoPilot.Nutrition\GlucoPilot.Nutrition.csproj" />
   </ItemGroup>

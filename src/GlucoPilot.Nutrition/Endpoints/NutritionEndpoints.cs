@@ -19,6 +19,12 @@ internal static class NutritionEndpoints
             .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ProductResponse>()
             .RequireAuthorization();
+        
+        group.MapGet("/products/search/{term}", SearchProduct.Endpoint.HandleAsync)
+            .HasApiVersion(1.0)
+            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
+            .Produces<ProductResponse>()
+            .RequireAuthorization();
 
         return endpoints;
     }
