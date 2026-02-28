@@ -24,7 +24,7 @@ internal static class Endpoint
         var products =
             await repository
                 .Find(
-                    p => p.ProductName != null && EF.Functions.Contains(p.ProductName, $"\"{searchTerm.Remove('"')}\""),
+                    p => p.ProductName != null && EF.Functions.Contains(p.ProductName, $"\"{searchTerm.Replace("\"", "")}\""),
                     new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true, })
                 .Take(maxResults)
                 .ToArrayAsync(cancellationToken).ConfigureAwait(false);
