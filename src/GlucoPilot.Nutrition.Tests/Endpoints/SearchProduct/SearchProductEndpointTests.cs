@@ -22,9 +22,9 @@ public class SearchProductEndpointTests
         var products = GenerateProducts().ToList();
 
         var expected = products.Take(50).Select(p => new ProductResponse
-            { Id = p.Id, ProductName = p.ProductName, Code = p.Code, Nutriments = new NutrimentsResponse() });
+        { Id = p.Id, ProductName = p.ProductName, Code = p.Code, Nutriments = new NutrimentsResponse() });
 
-    var repoMock = new Mock<IRepository<Product>>();
+        var repoMock = new Mock<IRepository<Product>>();
         repoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Product, bool>>>(),
                 It.IsAny<FindOptions>()))
@@ -37,7 +37,7 @@ public class SearchProductEndpointTests
 
         var actual = okResult!.Value!.ToList();
         Assert.That(actual, Has.Count.EqualTo(50));
-        
+
         Assert.That(actual, Is.EqualTo(expected).AsCollection);
     }
     [Test]
