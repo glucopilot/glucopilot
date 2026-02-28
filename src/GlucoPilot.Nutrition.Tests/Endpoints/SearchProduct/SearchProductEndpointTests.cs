@@ -40,10 +40,13 @@ public class SearchProductEndpointTests
 
         Assert.That(actual, Is.EqualTo(expected).AsCollection);
     }
-    [Test]
-    public async Task HandleAsync_Custom_Limit()
+    
+    [TestCase(10, ExpectedResult = 10)]
+    [TestCase(0, ExpectedResult = 50)]
+    [TestCase(-10, ExpectedResult = 50)]
+    [TestCase(200, ExpectedResult = 100)]
+    public async Task<int> HandleAsync_Custom_Limit(int limit)
     {
-        const int limit = 10;
         var products = GenerateProducts();
         var repoMock = new Mock<IRepository<Product>>();
         repoMock.Setup(r => r.Find(
@@ -57,9 +60,9 @@ public class SearchProductEndpointTests
         var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
 
         var actual = okResult!.Value!.ToList();
-        Assert.That(actual, Has.Count.EqualTo(limit));
+        return actual.Count;
     }
-
+    
     private static IEnumerable<Product> GenerateProducts(int count = 100)
     {
         for (var i = 0; i < count; i++)

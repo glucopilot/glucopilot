@@ -18,7 +18,7 @@ internal static class Endpoint
         [FromServices] IRepository<Product> repository,
         CancellationToken cancellationToken)
     {
-        var maxResults = max ?? DefaultMaxResults;
+        var maxResults = max is null or <= 0 ? DefaultMaxResults :  max.Value;
         var searchTerm = term.ToLowerInvariant();
 
         var products =
