@@ -64,7 +64,7 @@ public class SearchProductEndpointTests
     {
         for (var i = 0; i < count; i++)
         {
-            yield return new Product { Id = $"{count}", ProductName = $"Product {count}", Code = $"{count}", Nutriments = new Nutriments() };
+            yield return new Product { Id = $"{i}", ProductName = $"Product {i}", Code = $"{i}", Nutriments = new Nutriments() };
         }
     }
 }
