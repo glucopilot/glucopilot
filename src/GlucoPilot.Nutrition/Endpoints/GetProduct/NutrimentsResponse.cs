@@ -1,6 +1,6 @@
 namespace GlucoPilot.Nutrition.Endpoints.GetProduct;
 
-public class NutrimentsResponse
+public record NutrimentsResponse
 {
     public string? EnergyUnit { get; set; }
 
