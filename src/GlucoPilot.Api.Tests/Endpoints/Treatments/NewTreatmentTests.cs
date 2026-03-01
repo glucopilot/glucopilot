@@ -242,12 +242,13 @@ public class NewTreatmentTests
         {
             var okResult = result.Result as Ok<NewTreatmentResponse>;
             Assert.That(okResult, Is.InstanceOf<Ok<NewTreatmentResponse>>());
-            Assert.That(okResult!.Value.Meals.FirstOrDefault().Id, Is.EqualTo(request.Meals.FirstOrDefault().Id));
-            Assert.That(okResult!.Value.Ingredients.FirstOrDefault().Id, Is.EqualTo(request.Ingredients.FirstOrDefault().Id));
+            Assert.That(okResult.Value.Meals.FirstOrDefault().Id, Is.EqualTo(request.Meals.FirstOrDefault().Id));
+            Assert.That(okResult.Value.Ingredients.FirstOrDefault().Id, Is.EqualTo(request.Ingredients.FirstOrDefault().Id));
             Assert.That(okResult.Value.ReadingId, Is.EqualTo(request.ReadingId));
             Assert.That(okResult.Value.InsulinName, Is.EqualTo("Fiasp"));
             Assert.That(okResult.Value.InsulinUnits, Is.EqualTo(5));
             Assert.That(okResult.Value.ReadingGlucoseLevel, Is.EqualTo(5.0));
+            Assert.That(okResult.Value.Type, Is.EqualTo(Models.TreatmentType.Meal));
         });
     }
 }

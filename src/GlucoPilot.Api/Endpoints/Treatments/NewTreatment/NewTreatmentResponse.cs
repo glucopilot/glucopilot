@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlucoPilot.Api.Models;
+using System;
 using System.Collections.Generic;
 
 namespace GlucoPilot.Api.Endpoints.Treatments.NewTreatment;
@@ -8,6 +9,7 @@ public record NewTreatmentResponse
     public required Guid Id { get; init; }
     public required DateTimeOffset Created { get; init; }
     public DateTimeOffset? Updated { get; init; }
+    public required TreatmentType Type { get; init; }
     public ICollection<NewTreatmentMealResponse> Meals { get; init; } = [];
     public ICollection<NewTreatmentIngredientResponse> Ingredients { get; init; } = [];
     public Guid? InjectionId { get; init; }
