@@ -109,10 +109,10 @@ internal static class Endpoint
                     )
 
                     SELECT 
-                        AVG(DayCalories) AS Calories,
-                        AVG(DayCarbs) AS Carbs,
-                        AVG(DayProtein) AS Protein,
-                        AVG(DayFat) AS Fat
+                        COALESCE(AVG(DayCalories), 0) AS Calories,
+                        COALESCE(AVG(DayCarbs), 0) AS Carbs,
+                        COALESCE(AVG(DayProtein), 0) AS Protein,
+                        COALESCE(AVG(DayFat), 0) AS Fat
                     FROM 
                         DailyNutrition;
                     """;
