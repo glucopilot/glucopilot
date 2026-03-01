@@ -25,7 +25,6 @@ internal static class Endpoint
 
         var to = request.To ?? DateTimeOffset.UtcNow;
         var from = request.From ?? to.AddDays(-7);
-        var range = request.Range ?? TimeSpan.FromDays(1);
 
         var validationResult = await validator.ValidateAsync(request, cancellationToken).ConfigureAwait(false);
         if (!validationResult.IsValid)
@@ -33,9 +32,6 @@ internal static class Endpoint
             return TypedResults.ValidationProblem(validationResult.ToDictionary());
         }
 
-        // Query currently lacks the ability to treat ranges without any meals in as a zero,
-        // so averages may be a little off... But if this defaults to a 24-hour range and goes back 
-        // the last 7 days, it should suffice for now...
         var query = """
                     WITH MealNutrition AS (
                         SELECT 
@@ -94,50 +90,44 @@ internal static class Endpoint
                         FROM CombinedNutrition
                         GROUP BY TreatmentId
                     ),
-                    Intervals AS (
+                    DailyNutrition AS (
                         SELECT 
-                            DATEADD(HOUR, DATEDIFF(HOUR, 0, [Created]), 0) AS hour_start,
-                            [Id],
-                            [UserId],
-                            [Created]
+                            CAST(t.[Created] AS DATE) AS day_date,
+                            SUM(TN.TotalCalories) AS DayCalories,
+                            SUM(TN.TotalCarbs) AS DayCarbs,
+                            SUM(TN.TotalProtein) AS DayProtein,
+                            SUM(TN.TotalFat) AS DayFat
                         FROM 
-                            [treatments]
+                            [treatments] t
+                        JOIN
+                            TreatmentNutrition TN ON t.Id = TN.TreatmentId
                         WHERE 
-                            [Created] BETWEEN {1} AND {2}
-                            AND [UserId] = {3}
-                            AND ([Id] IN (SELECT DISTINCT TreatmentId FROM treatment_meal) 
-                                 OR [Id] IN (SELECT DISTINCT TreatmentId FROM treatment_ingredient))
+                            t.[Created] BETWEEN {0} AND {1}
+                            AND t.[UserId] = {2}
+                        GROUP BY 
+                            CAST(t.[Created] AS DATE)
                     )
 
                     SELECT 
-                        I.hour_start AS Time,
-                        SUM(TN.TotalCalories) AS Calories,
-                        SUM(TN.TotalCarbs) AS Carbs,
-                        SUM(TN.TotalProtein) AS Protein,
-                        SUM(TN.TotalFat) AS Fat
+                        AVG(DayCalories) AS Calories,
+                        AVG(DayCarbs) AS Carbs,
+                        AVG(DayProtein) AS Protein,
+                        AVG(DayFat) AS Fat
                     FROM 
-                        Intervals I
-                    JOIN
-                        TreatmentNutrition TN ON I.Id = TN.TreatmentId
-                    GROUP BY 
-                        I.hour_start
-                    ORDER BY 
-                        I.hour_start;
+                        DailyNutrition;
                     """;
 
         var nutrition = repository.FromSqlRaw<AverageNutrition>
-            (query, new FindOptions { IsAsNoTracking = true }, range.Hours, from, to,
-                userId)
+            (query, new FindOptions { IsAsNoTracking = true }, from, to, userId)
             .AsEnumerable()
-            .DefaultIfEmpty()
-            .ToList();
+            .FirstOrDefault();
 
         return TypedResults.Ok(new AverageNutritionResponse
         {
-            Calories = nutrition.Average(n => n?.Calories ?? 0),
-            Carbs = nutrition.Average(n => n?.Carbs ?? 0),
-            Protein = nutrition.Average(n => n?.Protein ?? 0),
-            Fat = nutrition.Average(n => n?.Fat ?? 0)
+            Calories = nutrition?.Calories ?? 0,
+            Carbs = nutrition?.Carbs ?? 0,
+            Protein = nutrition?.Protein ?? 0,
+            Fat = nutrition?.Fat ?? 0
         });
     }
 
@@ -147,6 +137,5 @@ internal static class Endpoint
         public decimal Carbs { get; init; }
         public decimal Protein { get; init; }
         public decimal Fat { get; init; }
-        public DateTime Time { get; init; }
     }
 }
