@@ -252,6 +252,7 @@ public class UpdateTreatmentTests
             Assert.That(okResult.Value, Is.Not.Null);
             Assert.That(okResult.Value.Id, Is.EqualTo(id));
             Assert.That(okResult.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
+            Assert.That(okResult.Value.Type, Is.EqualTo((Models.TreatmentType)treatment.Type));
 
             Assert.That(okResult.Value.Meals, Is.Not.Null.And.Not.Empty);
             var mealResponse = okResult.Value.Meals.First();

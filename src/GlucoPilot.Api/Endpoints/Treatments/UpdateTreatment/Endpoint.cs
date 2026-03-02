@@ -114,6 +114,8 @@ internal static class Endpoint
             Id = treatment.Id,
             ReadingId = treatment.ReadingId,
             ReadingGlucoseLevel = reading?.GlucoseLevel,
+            Type = (Models.TreatmentType)treatment.Type,
+
             Meals = treatment.Meals.Select(m => new UpdateTreatmentMealResponse
             {
                 Id = m.MealId,

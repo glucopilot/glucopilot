@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using GlucoPilot.Api.Models;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Repository;
@@ -123,6 +124,7 @@ internal static class Endpoint
             Id = treatment.Id,
             Created = treatment.Created,
             Updated = treatment.Updated,
+            Type = (TreatmentType)treatment.Type,
             Meals = treatment.Meals.Select(tm => new NewTreatmentMealResponse
             {
                 Id = tm.MealId,
