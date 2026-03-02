@@ -64,29 +64,38 @@ internal static class Endpoint
                 DATEDIFF(minute, startTime, endTime) AS Duration
             FROM TimeRanges
             WHERE endTime IS NOT NULL
+        ),
+        AllRanges AS (
+            SELECT 0 AS RangeID
+            UNION ALL SELECT 1
+            UNION ALL SELECT 2
+            UNION ALL SELECT 3
+        ),
+        TotalDuration AS (
+            SELECT COALESCE(SUM(Duration), 0) AS Total FROM TimeInRange
         )
         SELECT 
-            RangeID,
-            SUM(Duration) AS TotalMinutes,
-            (SUM(Duration) * 100.0 / (SELECT SUM(Duration) FROM TimeInRange)) AS Percentage,
-            MIN(CASE 
-                WHEN RangeID = 0 THEN 0
-                WHEN RangeID = 1 THEN LowSugarThreshold
-                WHEN RangeID = 2 THEN HighSugarThreshold
-                WHEN RangeID = 3 THEN HighSugarThreshold + {3}
-                ELSE NULL
-            END) AS RangeMin,
-            MAX(CASE 
-                WHEN RangeID = 0 THEN LowSugarThreshold
-                WHEN RangeID = 1 THEN HighSugarThreshold
-                WHEN RangeID = 2 THEN HighSugarThreshold + {3}
-                WHEN RangeID = 3 THEN {4}
-                ELSE NULL
-            END) AS RangeMax
-        FROM TimeInRange
-        CROSS JOIN (SELECT LowSugarThreshold, HighSugarThreshold FROM UserTargets) ut
-        GROUP BY RangeID, LowSugarThreshold, HighSugarThreshold
-        ORDER BY RangeID;";
+            ar.RangeID,
+            COALESCE(SUM(tir.Duration), 0) AS TotalMinutes,
+            CASE WHEN td.Total > 0 THEN (COALESCE(SUM(tir.Duration), 0) * 100.0 / td.Total) ELSE 0 END AS Percentage,
+            CASE 
+                WHEN ar.RangeID = 0 THEN 0
+                WHEN ar.RangeID = 1 THEN ut.LowSugarThreshold
+                WHEN ar.RangeID = 2 THEN ut.HighSugarThreshold
+                WHEN ar.RangeID = 3 THEN ut.HighSugarThreshold + {3}
+            END AS RangeMin,
+            CASE 
+                WHEN ar.RangeID = 0 THEN ut.LowSugarThreshold
+                WHEN ar.RangeID = 1 THEN ut.HighSugarThreshold
+                WHEN ar.RangeID = 2 THEN ut.HighSugarThreshold + {3}
+                WHEN ar.RangeID = 3 THEN {4}
+            END AS RangeMax
+        FROM AllRanges ar
+        CROSS JOIN UserTargets ut
+        CROSS JOIN TotalDuration td
+        LEFT JOIN TimeInRange tir ON ar.RangeID = tir.RangeID
+        GROUP BY ar.RangeID, ut.LowSugarThreshold, ut.HighSugarThreshold, td.Total
+        ORDER BY ar.RangeID;";
 
         var results = rangeRepository.FromSqlRaw<GlucoseRange>(sqlQuery, new FindOptions { IsAsNoTracking = true }, userId, from, to, HighGlucoseThresholdOffset, MaxGlucoseLevel)
             .AsEnumerable()
