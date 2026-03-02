@@ -36,15 +36,8 @@ internal sealed class AverageNutritionTests
         _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid());
         var nutritionData = new[]
         {
-            new { Calories = 200m, Carbs = 50m, Protein = 20m, Fat = 10m },
-            new { Calories = 300m, Carbs = 70m, Protein = 30m, Fat = 15m }
-        }.Select(n => new Endpoint.AverageNutrition
-        {
-            Calories = n.Calories,
-            Carbs = n.Carbs,
-            Protein = n.Protein,
-            Fat = n.Fat
-        }).AsQueryable();
+            new Endpoint.AverageNutrition { Calories = 250m, Carbs = 60m, Protein = 25m, Fat = 12.5m }
+        }.AsQueryable();
 
         _repositoryMock.Setup(repo => repo.FromSqlRaw<Endpoint.AverageNutrition>(
             It.IsAny<string>(),
@@ -147,14 +140,8 @@ internal sealed class AverageNutritionTests
         _currentUserMock.Setup(cu => cu.GetUserId()).Returns(Guid.NewGuid());
         var nutritionData = new[]
         {
-            new { Calories = 150m, Carbs = 40m, Protein = 15m, Fat = 8m }
-        }.Select(n => new Endpoint.AverageNutrition
-        {
-            Calories = n.Calories,
-            Carbs = n.Carbs,
-            Protein = n.Protein,
-            Fat = n.Fat
-        }).AsQueryable();
+            new Endpoint.AverageNutrition { Calories = 150m, Carbs = 40m, Protein = 15m, Fat = 8m }
+        }.AsQueryable();
 
         _repositoryMock.Setup(repo => repo.FromSqlRaw<Endpoint.AverageNutrition>(
             It.IsAny<string>(),
