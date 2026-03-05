@@ -8,7 +8,6 @@ public enum GlucoseUnitOfMeasurement
 
 public sealed class UserSettingsPatchRequest
 {
-    public string? Email { get; init; }
     public GlucoseUnitOfMeasurement? GlucoseUnitOfMeasurement { get; init; }
     public double? LowSugarThreshold { get; init; }
     public double? HighSugarThreshold { get; init; }

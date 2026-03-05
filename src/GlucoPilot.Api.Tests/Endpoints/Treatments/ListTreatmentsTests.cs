@@ -132,6 +132,51 @@ public class ListTreatmentsTests
             Assert.That(okResult, Is.TypeOf<Ok<ListTreatmentsResponse>>());
             Assert.That(okResult?.Value.Treatments.Count, Is.EqualTo(1));
             Assert.That(okResult?.Value.NumberOfPages, Is.EqualTo(1));
+            Assert.That(okResult?.Value.Treatments.First().Type, Is.EqualTo(Models.TreatmentType.Correction));
+        });
+    }
+
+    [Test]
+    public async Task HandleAsync_Returns_Ok_With_TreatmentType_Treatment_When_No_Meals_Ingredients()
+    {
+        var userId = Guid.NewGuid();
+        var request = new ListTreatmentsRequest { Page = 0, PageSize = 10 };
+        var mealId = Guid.NewGuid();
+        var ingredientId = Guid.NewGuid();
+        var treatments = new List<Treatment>
+            {
+                new Treatment
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    Created = DateTimeOffset.UtcNow,
+                    InjectionId = null,
+                    Meals = [],
+                }
+            };
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, default))
+            .ReturnsAsync(new ValidationResult());
+        _currentUserMock
+            .Setup(c => c.GetUserId())
+            .Returns(userId);
+        _treatmentRepositoryMock
+            .Setup(r => r.GetAll(It.IsAny<FindOptions>()))
+            .Returns(treatments.AsQueryable());
+        _treatmentRepositoryMock
+            .Setup(r => r.CountAsync(It.IsAny<Expression<Func<Treatment, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(treatments.Count);
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _treatmentRepositoryMock.Object, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            var okResult = result.Result as Ok<ListTreatmentsResponse>;
+            Assert.That(okResult, Is.TypeOf<Ok<ListTreatmentsResponse>>());
+            Assert.That(okResult?.Value.Treatments.Count, Is.EqualTo(1));
+            Assert.That(okResult?.Value.NumberOfPages, Is.EqualTo(1));
+            Assert.That(okResult?.Value.Treatments.First().Type, Is.EqualTo(Models.TreatmentType.Treatment));
         });
     }
 }
