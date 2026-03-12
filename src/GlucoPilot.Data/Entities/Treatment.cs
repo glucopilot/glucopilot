@@ -67,7 +67,7 @@ public class Treatment
                 return TreatmentType.Injection;
             }
 
-            throw new InvalidOperationException("Invalid treatment type");
+            return TreatmentType.Treatment;
         }
     }
 
