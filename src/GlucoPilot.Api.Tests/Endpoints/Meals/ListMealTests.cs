@@ -179,6 +179,9 @@ public class ListMealTests
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalCarbs, Is.EqualTo(40));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalProtein, Is.EqualTo(20));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalFat, Is.EqualTo(8));
+            Assert.That(okResult.Value.Meals.ElementAt(0).MealIngredients.Count, Is.EqualTo(2));
+            Assert.That(okResult.Value.Meals.ElementAt(0).MealIngredients.ElementAt(0).Ingredient.Name, Is.EqualTo("Ingredient1"));
+            Assert.That(okResult.Value.Meals.ElementAt(0).MealIngredients.ElementAt(0).Ingredient.Created, Is.EqualTo(ingredient1.Created));
 
             Assert.That(okResult.Value.Meals.ElementAt(1).Name, Is.EqualTo("Meal2"));
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalCalories, Is.EqualTo(100));
