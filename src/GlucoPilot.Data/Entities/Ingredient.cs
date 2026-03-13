@@ -67,6 +67,11 @@ public class Ingredient
     public decimal Calories { get; set; } = 0;
 
     /// <summary>
+    /// The barcode of the ingredient that is generated from the nutrition data provider. This can be used to link the ingredient to a product in the nutrition data provider's database.
+    /// </summary>
+    public string? Barcode { get; set; } = null;
+
+    /// <summary>
     /// The unit of measurement of the ingredient that the nutritional values are based on.
     /// </summary>
     public required UnitOfMeasurement Uom { get; set; }
