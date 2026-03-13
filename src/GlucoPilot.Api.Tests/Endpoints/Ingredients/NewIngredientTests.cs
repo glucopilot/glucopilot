@@ -80,7 +80,7 @@ public class NewIngredientTests
     [Test]
     public async Task HandleAsync_Returns_Ok_With_Response_With_Barcode()
     {
-        var request = new NewIngredientRequest { Name = "Test", Barcode="123456789", Carbs = 10, Protein = 5, Fat = 2, Calories = 100, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Grams };
+        var request = new NewIngredientRequest { Name = "Test", Barcode = "123456789", Carbs = 10, Protein = 5, Fat = 2, Calories = 100, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Grams };
         var validationResult = new FluentValidation.Results.ValidationResult();
         var userId = Guid.NewGuid();
 
