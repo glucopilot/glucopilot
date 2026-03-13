@@ -38,7 +38,10 @@ internal static class Endpoint
             throw new NotFoundException("INGREDIENT_NOT_FOUND");
         }
 
-        ingredient.Barcode = request.Barcode;
+        if (request.Barcode is not null)
+        {
+            ingredient.Barcode = request.Barcode;
+        }
         ingredient.Name = request.Name;
         ingredient.Carbs = request.Carbs;
         ingredient.Protein = request.Protein;
