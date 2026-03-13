@@ -84,7 +84,7 @@ public sealed class UpdateIngredientTests
         var userId = Guid.NewGuid();
         var ingredientId = Guid.NewGuid();
         var request = new UpdateIngredientRequest { Name = "Ingredient", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Unit };
-        var ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, UserId = userId, Name = "Old Ingredient", Barcode="123456789", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = UnitOfMeasurement.Unit };
+        var ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, UserId = userId, Name = "Old Ingredient", Barcode = "123456789", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = UnitOfMeasurement.Unit };
         _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _repositoryMock.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
