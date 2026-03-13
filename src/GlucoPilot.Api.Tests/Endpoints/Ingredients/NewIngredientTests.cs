@@ -73,6 +73,35 @@ public class NewIngredientTests
             Assert.That(okResult.Value.Fat, Is.EqualTo(request.Fat));
             Assert.That(okResult.Value.Calories, Is.EqualTo(request.Calories));
             Assert.That(okResult.Value.Uom, Is.EqualTo(request.Uom));
+            Assert.That(okResult.Value.Barcode, Is.EqualTo(null));
+        });
+    }
+
+    [Test]
+    public async Task HandleAsync_Returns_Ok_With_Response_With_Barcode()
+    {
+        var request = new NewIngredientRequest { Name = "Test", Barcode="123456789", Carbs = 10, Protein = 5, Fat = 2, Calories = 100, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Grams };
+        var validationResult = new FluentValidation.Results.ValidationResult();
+        var userId = Guid.NewGuid();
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(validationResult);
+
+        _currentUserMock
+            .Setup(c => c.GetUserId())
+            .Returns(userId);
+
+        _ingredientRepositoryMock.Setup(r => r.Add(It.IsAny<Ingredient>()));
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None);
+
+        Assert.That(result.Result, Is.TypeOf<Ok<NewIngredientResponse>>());
+        var okResult = result.Result as Ok<NewIngredientResponse>;
+        Assert.Multiple(() =>
+        {
+            Assert.That(okResult!.Value.Name, Is.EqualTo(request.Name));
+            Assert.That(okResult.Value.Barcode, Is.EqualTo("123456789"));
         });
     }
 }

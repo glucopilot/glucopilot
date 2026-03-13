@@ -35,6 +35,7 @@ public record ListTreatmentMealResponse
 public record ListTreatmentIngredientResponse
 {
     public required Guid Id { get; init; }
+    public string? Barcode { get; init; }
     public required string Name { get; init; }
     public required decimal Quantity { get; init; }
     public required UnitOfMeasurement Uom { get; init; }

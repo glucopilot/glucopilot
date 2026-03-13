@@ -5,6 +5,7 @@ namespace GlucoPilot.Api.Endpoints.Ingredients.UpdateIngredient;
 
 public sealed record UpdateIngredientRequest
 {
+    public string? Barcode { get; set; }
     public required string Name { get; set; }
     public required decimal Carbs { get; set; }
     public required decimal Protein { get; set; }

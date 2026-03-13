@@ -31,6 +31,7 @@ internal static class Endpoint
 
         var ingredient = new Ingredient
         {
+            Barcode = request.Barcode,
             Name = request.Name,
             Created = DateTimeOffset.UtcNow,
             Carbs = request.Carbs,
@@ -46,6 +47,7 @@ internal static class Endpoint
         var response = new NewIngredientResponse
         {
             Id = ingredient.Id,
+            Barcode = ingredient.Barcode,
             Created = ingredient.Created,
             Name = ingredient.Name,
             Carbs = ingredient.Carbs,

@@ -47,6 +47,7 @@ internal static class Endpoint
             .Select(i => new GetIngredientResponse
             {
                 Id = i.Id,
+                Barcode = i.Barcode,
                 Created = i.Created,
                 Name = i.Name,
                 Carbs = i.Carbs,
