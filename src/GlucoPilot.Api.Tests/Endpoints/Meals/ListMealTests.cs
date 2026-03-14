@@ -189,7 +189,8 @@ public class ListMealTests
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalCarbs, Is.EqualTo(10));
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalProtein, Is.EqualTo(5));
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalFat, Is.EqualTo(2));
-        };
+        }
+        ;
     }
 
     [Test]
