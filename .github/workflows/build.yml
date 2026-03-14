@@ -56,7 +56,7 @@ jobs:
             /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
             /d:sonar.coverage.exclusions="**/Program.cs" \
             /d:sonar.exclusions="**/Templates/*.cshtml" \
-            /d:sonar.cpd.exclusions="**/GlucoPilot.Nutrition.Data/Entities/*.cs,**/GlucoPilot.Data/Entities/*.cs,**/GlucoPilot.Api/Endpoints/**/*Request.cs,**/GlucoPilot.Api/Endpoints/**/*Response.cs"
+            /d:sonar.cpd.exclusions="**/GlucoPilot**.Data/Entities/*.cs,**/GlucoPilot.Api/Endpoints/**/*Request.cs,**/GlucoPilot.Api/Endpoints/**/*Response.cs"
 
       - name: Restore dependencies
         run: dotnet restore src/gluco-pilot.sln
