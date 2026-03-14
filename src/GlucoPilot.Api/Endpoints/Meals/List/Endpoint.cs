@@ -60,7 +60,9 @@ internal static class Endpoint
                         Protein = mi.Ingredient.Protein,
                         Fat = mi.Ingredient.Fat,
                         Calories = mi.Ingredient.Calories,
-                        Uom = (UnitOfMeasurement)mi.Ingredient.Uom
+                        Uom = (UnitOfMeasurement)mi.Ingredient.Uom,
+                        Created = mi.Ingredient.Created,
+                        Updated = mi.Ingredient.Updated
                     } : null,
                     Quantity = mi.Quantity
                 }).ToList(),
