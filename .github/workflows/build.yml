@@ -4,6 +4,7 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
   DOTNET_VERSION: 10.0.x
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 on:
   push:
@@ -50,7 +51,12 @@ jobs:
         run: >
           dotnet tool install --global dotnet-sonarscanner
 
-          dotnet sonarscanner begin /k:"glucopilot_GlucoPilot" /o:"glucopilot" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/Program.cs" /d:sonar.exclusions="**/Templates/*.cshtml"
+          dotnet sonarscanner begin /k:"glucopilot_GlucoPilot" /o:"glucopilot" \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+            /d:sonar.coverage.exclusions="**/Program.cs" \
+            /d:sonar.exclusions="**/Templates/*.cshtml" \
+            /d:sonar.cpd.exclusions="**/GlucoPilot**.Data/Entities/*.cs,**/GlucoPilot.Api/Endpoints/**/*Request.cs,**/GlucoPilot.Api/Endpoints/**/*Response.cs"
 
       - name: Restore dependencies
         run: dotnet restore src/gluco-pilot.sln
@@ -59,4 +65,4 @@ jobs:
       - name: Test
         run: dotnet test src/gluco-pilot.sln -c Release --no-build --logger "trx;LogFilePrefix=UnitTestResults" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
       - name: Upload sonar results
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
