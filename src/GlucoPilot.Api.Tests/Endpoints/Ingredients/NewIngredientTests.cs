@@ -95,7 +95,7 @@ public class NewIngredientTests
         _ingredientRepositoryMock.Setup(r => r.Add(It.IsAny<Ingredient>()));
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None);
- 
+
         Assert.Multiple(() =>
         {
             Assert.That(result.Result, Is.TypeOf<Ok<NewIngredientResponse>>());
