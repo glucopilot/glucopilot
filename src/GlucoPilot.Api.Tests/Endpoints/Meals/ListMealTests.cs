@@ -170,16 +170,17 @@ public class ListMealTests
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
         var okResult = result.Result as Ok<ListMealsResponse>;
-        Assert.That(okResult, Is.Not.Null);
-        Assert.Multiple(() =>
+
+        using (Assert.EnterMultipleScope())
         {
+            Assert.That(okResult, Is.Not.Null);
             Assert.That(okResult.Value.Meals, Has.Count.EqualTo(2));
             Assert.That(okResult.Value.Meals.ElementAt(0).Name, Is.EqualTo("Meal1"));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalCalories, Is.EqualTo(400));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalCarbs, Is.EqualTo(40));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalProtein, Is.EqualTo(20));
             Assert.That(okResult.Value.Meals.ElementAt(0).TotalFat, Is.EqualTo(8));
-            Assert.That(okResult.Value.Meals.ElementAt(0).MealIngredients.Count, Is.EqualTo(2));
+            Assert.That(okResult.Value.Meals.ElementAt(0).MealIngredients, Has.Count.EqualTo(2));
             Assert.That(okResult.Value.Meals.ElementAt(0).MealIngredients.ElementAt(0).Ingredient.Name, Is.EqualTo("Ingredient1"));
             Assert.That(okResult.Value.Meals.ElementAt(0).MealIngredients.ElementAt(0).Ingredient.Created, Is.EqualTo(ingredient1.Created));
 
@@ -188,7 +189,7 @@ public class ListMealTests
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalCarbs, Is.EqualTo(10));
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalProtein, Is.EqualTo(5));
             Assert.That(okResult.Value.Meals.ElementAt(1).TotalFat, Is.EqualTo(2));
-        });
+        };
     }
 
     [Test]
