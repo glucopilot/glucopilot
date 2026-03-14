@@ -136,11 +136,14 @@ public class ListIngredientsTests
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
 
-        Assert.That(result.Result, Is.InstanceOf<Ok<ListIngredientsResponse>>());
-        var okResult = result.Result as Ok<ListIngredientsResponse>;
-        Assert.That(okResult?.Value.Ingredients.Count, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Result, Is.InstanceOf<Ok<ListIngredientsResponse>>());
+            var okResult = result.Result as Ok<ListIngredientsResponse>;
+            Assert.That(okResult?.Value.Ingredients.Count, Is.EqualTo(2));
 
-        Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.First().Id).Barcode, Is.EqualTo("123456789"));
-        Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.Last().Id).Barcode, Is.Null);
+            Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.First().Id).Barcode, Is.EqualTo("123456789"));
+            Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.Last().Id).Barcode, Is.Null);
+        }
     }
 }

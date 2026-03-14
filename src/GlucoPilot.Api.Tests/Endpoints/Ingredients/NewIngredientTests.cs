@@ -73,7 +73,7 @@ public class NewIngredientTests
             Assert.That(okResult.Value.Fat, Is.EqualTo(request.Fat));
             Assert.That(okResult.Value.Calories, Is.EqualTo(request.Calories));
             Assert.That(okResult.Value.Uom, Is.EqualTo(request.Uom));
-            Assert.That(okResult.Value.Barcode, Is.EqualTo(null));
+            Assert.That(okResult.Value.Barcode, Is.Null);
         });
     }
 
@@ -95,11 +95,11 @@ public class NewIngredientTests
         _ingredientRepositoryMock.Setup(r => r.Add(It.IsAny<Ingredient>()));
 
         var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _ingredientRepositoryMock.Object, CancellationToken.None);
-
-        Assert.That(result.Result, Is.TypeOf<Ok<NewIngredientResponse>>());
-        var okResult = result.Result as Ok<NewIngredientResponse>;
+ 
         Assert.Multiple(() =>
         {
+            Assert.That(result.Result, Is.TypeOf<Ok<NewIngredientResponse>>());
+            var okResult = result.Result as Ok<NewIngredientResponse>;
             Assert.That(okResult!.Value.Name, Is.EqualTo(request.Name));
             Assert.That(okResult.Value.Barcode, Is.EqualTo("123456789"));
         });
