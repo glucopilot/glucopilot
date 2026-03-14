@@ -144,6 +144,6 @@ public class ListIngredientsTests
 
             Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.First().Id).Barcode, Is.EqualTo("123456789"));
             Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.Last().Id).Barcode, Is.Null);
-        }
+        });
     }
 }
