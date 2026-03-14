@@ -111,4 +111,39 @@ public class ListIngredientsTests
         Assert.That(response.Ingredients.Count, Is.EqualTo(2));
         Assert.That(response.Ingredients.All(i => i.Name.Contains("apple", StringComparison.OrdinalIgnoreCase)), Is.True);
     }
+
+    [Test]
+    public async Task HandleAsync_ReturnsIngredientWithBarcode()
+    {
+        var userId = Guid.NewGuid();
+        var request = new ListIngredientsRequest { Page = 0, PageSize = 2 };
+        var ingredients = new List<Ingredient>
+        {
+            new Ingredient { Id = Guid.NewGuid(), UserId = userId, Name = "Ingredient1", Barcode="123456789", Created = DateTimeOffset.UtcNow, Uom = UnitOfMeasurement.Grams },
+            new Ingredient { Id = Guid.NewGuid(), UserId = userId, Name = "Ingredient2", Created = DateTimeOffset.UtcNow, Uom = UnitOfMeasurement.Grams }
+        };
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, default))
+            .ReturnsAsync(new ValidationResult());
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+        _repositoryMock
+            .Setup(r => r.Find(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(new TestAsyncEnumerable<Ingredient>(ingredients));
+        _repositoryMock
+            .Setup(r => r.CountAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ingredients.Count);
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Result, Is.InstanceOf<Ok<ListIngredientsResponse>>());
+            var okResult = result.Result as Ok<ListIngredientsResponse>;
+            Assert.That(okResult?.Value.Ingredients.Count, Is.EqualTo(2));
+
+            Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.First().Id).Barcode, Is.EqualTo("123456789"));
+            Assert.That(okResult?.Value.Ingredients.First(i => i.Id == ingredients.Last().Id).Barcode, Is.Null);
+        });
+    }
 }

@@ -12,6 +12,7 @@ public sealed record ListIngredientsResponse : PagedResponse
 public sealed record GetIngredientResponse
 {
     public required Guid Id { get; set; }
+    public string? Barcode { get; set; }
     public required string Name { get; set; }
     public required decimal Carbs { get; set; }
     public required decimal Protein { get; set; }

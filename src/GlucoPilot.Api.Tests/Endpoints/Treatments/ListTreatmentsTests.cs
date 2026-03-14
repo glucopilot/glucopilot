@@ -105,7 +105,7 @@ public class ListTreatmentsTests
                         Id = Guid.NewGuid(),
                         IngredientId = ingredientId,
                         TreatmentId = Guid.NewGuid(),
-                        Ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Grams, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
+                        Ingredient = new Ingredient { Id = ingredientId, Barcode="123456789", Created = DateTimeOffset.UtcNow, Name = "Sugar", Uom = UnitOfMeasurement.Grams, Calories = 100, Carbs = 20, Protein = 10, Fat = 5 },
                         Quantity = 1
                     }],
                 }
@@ -133,6 +133,7 @@ public class ListTreatmentsTests
             Assert.That(okResult?.Value.Treatments.Count, Is.EqualTo(1));
             Assert.That(okResult?.Value.NumberOfPages, Is.EqualTo(1));
             Assert.That(okResult?.Value.Treatments.First().Type, Is.EqualTo(Models.TreatmentType.Correction));
+            Assert.That(okResult?.Value.Treatments.First().Ingredients.First().Barcode, Is.EqualTo("123456789"));
         });
     }
 

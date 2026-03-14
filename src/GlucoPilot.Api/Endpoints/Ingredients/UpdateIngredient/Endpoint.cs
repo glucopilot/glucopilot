@@ -38,6 +38,10 @@ internal static class Endpoint
             throw new NotFoundException("INGREDIENT_NOT_FOUND");
         }
 
+        if (request.Barcode is not null)
+        {
+            ingredient.Barcode = request.Barcode;
+        }
         ingredient.Name = request.Name;
         ingredient.Carbs = request.Carbs;
         ingredient.Protein = request.Protein;
@@ -51,6 +55,7 @@ internal static class Endpoint
         var response = new UpdateIngredientResponse
         {
             Id = ingredient.Id,
+            Barcode = ingredient.Barcode,
             Name = ingredient.Name,
             Carbs = ingredient.Carbs,
             Protein = ingredient.Protein,

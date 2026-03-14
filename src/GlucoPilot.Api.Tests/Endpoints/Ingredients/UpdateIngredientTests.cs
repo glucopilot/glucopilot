@@ -83,8 +83,8 @@ public sealed class UpdateIngredientTests
     {
         var userId = Guid.NewGuid();
         var ingredientId = Guid.NewGuid();
-        var request = new UpdateIngredientRequest { Name = "Ingredient", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Unit };
-        var ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, UserId = userId, Name = "Old Ingredient", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = UnitOfMeasurement.Unit };
+        var request = new UpdateIngredientRequest { Name = "Ingredient", Barcode = "987654321", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Unit };
+        var ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, UserId = userId, Name = "Old Ingredient", Barcode = "123456789", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = UnitOfMeasurement.Unit };
         _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
         _repositoryMock.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
@@ -103,7 +103,36 @@ public sealed class UpdateIngredientTests
             Assert.That(okResult.Value.Calories, Is.EqualTo(request.Calories));
             Assert.That(okResult.Value.Uom, Is.EqualTo(request.Uom));
             Assert.That(okResult.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
+            Assert.That(okResult.Value.Barcode, Is.EqualTo("987654321"));
         });
+    }
 
+    [Test]
+    public async Task HandleAsync_Returns_Does_Not_Null_Barcode_When_Update_Sends_Null_Barcode()
+    {
+        var userId = Guid.NewGuid();
+        var ingredientId = Guid.NewGuid();
+        var request = new UpdateIngredientRequest { Name = "Ingredient", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = (Models.UnitOfMeasurement)UnitOfMeasurement.Unit };
+        var ingredient = new Ingredient { Id = ingredientId, Created = DateTimeOffset.UtcNow, UserId = userId, Name = "Old Ingredient", Barcode = "123456789", Carbs = 0, Protein = 0, Fat = 0, Calories = 0, Uom = UnitOfMeasurement.Unit };
+        _validatorMock.Setup(v => v.ValidateAsync(request, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+        _repositoryMock.Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<FindOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ingredient);
+        var result = await Endpoint.HandleAsync(ingredientId, request, _validatorMock.Object, _currentUserMock.Object, _repositoryMock.Object, CancellationToken.None);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.Result, Is.InstanceOf<Ok<UpdateIngredientResponse>>());
+            var okResult = (Ok<UpdateIngredientResponse>)result.Result;
+            Assert.That(okResult.Value.Id, Is.EqualTo(ingredientId));
+            Assert.That(okResult.Value.Name, Is.EqualTo(request.Name));
+            Assert.That(okResult.Value.Carbs, Is.EqualTo(request.Carbs));
+            Assert.That(okResult.Value.Protein, Is.EqualTo(request.Protein));
+            Assert.That(okResult.Value.Fat, Is.EqualTo(request.Fat));
+            Assert.That(okResult.Value.Calories, Is.EqualTo(request.Calories));
+            Assert.That(okResult.Value.Uom, Is.EqualTo(request.Uom));
+            Assert.That(okResult.Value.Updated, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromMinutes(1)));
+            Assert.That(okResult.Value.Barcode, Is.EqualTo("123456789"));
+        }
     }
 }

@@ -84,6 +84,7 @@ internal static class Endpoint
                 Ingredients = t.Ingredients.Select(i => new ListTreatmentIngredientResponse
                 {
                     Id = i.Ingredient.Id,
+                    Barcode = i.Ingredient.Barcode,
                     Name = i.Ingredient.Name,
                     Quantity = i.Quantity,
                     Uom = (UnitOfMeasurement)i.Ingredient.Uom,
