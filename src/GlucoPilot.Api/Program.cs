@@ -52,6 +52,10 @@ builder.Services.AddSwaggerGen(opt =>
         In = ParameterLocation.Header,
         Scheme = "bearer"
     });
+    opt.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
     opt.OperationFilter<SecurityRequirementsOperationFilter>();
     opt.SchemaFilter<XEnumNamesSchemaFilter>();
 });
