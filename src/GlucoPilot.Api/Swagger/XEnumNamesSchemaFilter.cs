@@ -22,7 +22,7 @@ public sealed class XEnumNamesSchemaFilter : ISchemaFilter
             {
                 return;
             }
-            
+
             var names = Enum.GetNames(context.Type);
             var arr = new JsonArray();
             foreach (var name in names)
