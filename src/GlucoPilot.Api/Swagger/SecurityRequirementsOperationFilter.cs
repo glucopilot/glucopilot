@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using GlucoPilot.AspNetCore.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.Extensions.Options;
@@ -19,40 +21,31 @@ public class SecurityRequirementsOperationFilter : IOperationFilter
         // Beware: This might only part of the truth. If someone exchanges the IAuthorizationPolicyProvider and that loads
         // policies and requirements from another source than the configured options, we might not get all requirements
         // from here. But then we would have to make asynchronous calls from this synchronous interface.
-        _authorizationOptions = authorizationOptions?.Value ?? throw new ArgumentNullException(nameof(authorizationOptions));
+        _authorizationOptions =
+            authorizationOptions?.Value ?? throw new ArgumentNullException(nameof(authorizationOptions));
     }
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var requiredPolicies = context.MethodInfo
-            .GetCustomAttributes(true)
-            .Concat(context.MethodInfo.DeclaringType.GetCustomAttributes(true))
-            .OfType<AuthorizeAttribute>()
-            .Select(attr => attr.Policy)
-            .Where(p => p != null)
-            .Distinct();
+        var isAuthed = context.ApiDescription.ActionDescriptor.EndpointMetadata.OfType<AuthorizeAttribute>().Any() ||
+                       context.MethodInfo.GetCustomAttributes(true)
+                           .Concat(context.MethodInfo.DeclaringType.GetCustomAttributes(true))
+                           .OfType<AuthorizeAttribute>().Any();
 
-        var requiredScopes = requiredPolicies.Select(_authorizationOptions.GetPolicy)
-            .SelectMany(r => r.Requirements.OfType<ClaimsAuthorizationRequirement>())
-            .Where(cr => cr.ClaimType == "scope")
-            .SelectMany(r => r.AllowedValues)
-            .Distinct()
-            .ToList();
-
-        if (requiredScopes.Count != 0)
+        if (isAuthed)
         {
-            operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
-            operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
-
-            var scheme = new OpenApiSecuritySchemeReference("oauth2", context.Document);
-
             operation.Security =
-            [
-                new OpenApiSecurityRequirement
+                [new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("bearer")] = [] }];
+            _ = operation.Responses.TryAdd("401", new OpenApiResponse
+            {
+                Description = "Unauthorized", Content = new ConcurrentDictionary<string, OpenApiMediaType>
                 {
-                    [scheme] = requiredScopes
+                    ["appliaction/json"] = new OpenApiMediaType
+                    {
+                        Schema = context.SchemaGenerator.GenerateSchema(typeof(ErrorResult), context.SchemaRepository)
+                    }
                 }
-            ];
+            });
         }
     }
 }
