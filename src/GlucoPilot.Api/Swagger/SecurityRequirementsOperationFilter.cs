@@ -34,7 +34,8 @@ public class SecurityRequirementsOperationFilter : IOperationFilter
         if (isAuthed)
         {
             operation.Security =
-                [new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("bearer")] = [] }];
+                [new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("bearer", context.Document)] = [] }];
+            
             _ = operation.Responses.TryAdd("401", new OpenApiResponse
             {
                 Description = "Unauthorized",
