@@ -24,7 +24,7 @@ public class SecurityRequirementsOperationFilter : IOperationFilter
         {
             operation.Security =
                 [new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("bearer", context.Document)] = [] }];
-            
+
             _ = operation.Responses.TryAdd("401", new OpenApiResponse
             {
                 Description = "Unauthorized",
