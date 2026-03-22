@@ -38,7 +38,8 @@ public class SecurityRequirementsOperationFilter : IOperationFilter
                 [new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("bearer")] = [] }];
             _ = operation.Responses.TryAdd("401", new OpenApiResponse
             {
-                Description = "Unauthorized", Content = new ConcurrentDictionary<string, OpenApiMediaType>
+                Description = "Unauthorized",
+                Content = new ConcurrentDictionary<string, OpenApiMediaType>
                 {
                     ["appliaction/json"] = new OpenApiMediaType
                     {
