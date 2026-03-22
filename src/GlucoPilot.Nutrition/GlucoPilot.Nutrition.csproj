@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GlucoPilot.AspNetCore\GlucoPilot.AspNetCore.csproj" />
+      <ProjectReference Include="..\GlucoPilot.Data\GlucoPilot.Data.csproj" />
       <ProjectReference Include="..\GlucoPilot.Identity\GlucoPilot.Identity.csproj" />
       <ProjectReference Include="..\GlucoPilot.Nutrition.Data\GlucoPilot.Nutrition.Data.csproj" />
     </ItemGroup>
