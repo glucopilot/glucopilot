@@ -26,7 +26,7 @@ internal static class Endpoint
     {
         var maxResults = max is null or <= 0 ? DefaultMaxResults : max.Value;
         var searchTerm = term.ToLowerInvariant();
-        
+
         var userId = currentUser.GetUserId();
 
         var products =

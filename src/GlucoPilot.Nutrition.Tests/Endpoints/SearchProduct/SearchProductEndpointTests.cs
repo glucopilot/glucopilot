@@ -24,17 +24,17 @@ public class SearchProductEndpointTests
     private Mock<IRepository<Product>> _repoMock;
     private Mock<GPRepository.IRepository<Ingredient>> _gpRepoMock;
     private Mock<ICurrentUser> _currentUserMock;
-    
+
     [SetUp]
     public void SetUp()
     {
         _repoMock = new Mock<IRepository<Product>>();
         _gpRepoMock = new Mock<GPRepository.IRepository<Ingredient>>();
         _currentUserMock = new Mock<ICurrentUser>();
-        
+
         _currentUserMock.Setup(c => c.GetUserId()).Returns(_userId);
     }
-    
+
     [Test]
     public async Task HandleAsync_Returns_Ok_With_Results()
     {
@@ -42,12 +42,12 @@ public class SearchProductEndpointTests
 
         var expected = products.Take(50).Select(p => new ProductResponse
         { Id = p.Id, ProductName = p.ProductName, Code = p.Code, Nutriments = new NutrimentsResponse() });
-        
+
         _repoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Product, bool>>>(),
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
-        
+
         var ingredients = GenerateIngredients(0);
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
@@ -76,7 +76,7 @@ public class SearchProductEndpointTests
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Product, bool>>>(),
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
-        
+
         var ingredients = GenerateIngredients(0);
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
@@ -100,15 +100,15 @@ public class SearchProductEndpointTests
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Product, bool>>>(),
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
-        
+
         var ingredients = GenerateIngredients(10);
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
                 It.IsAny<GPRepository.FindOptions>()))
             .Returns(new TestAsyncEnumerable<Ingredient>(ingredients));
-        
+
         var result = await Endpoint.HandleAsync("search", null, _repoMock.Object, _gpRepoMock.Object, _currentUserMock.Object, CancellationToken.None);
-        
+
         Assert.That(result.Result, Is.TypeOf<Ok<IEnumerable<ProductResponse>>>());
         var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
         var actual = okResult!.Value!.ToList();
