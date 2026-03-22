@@ -205,7 +205,8 @@ public class SearchProductEndpointTests
             Assert.That(n.Energy, Is.EqualTo(product.Nutriments.Energy));
             Assert.That(n.Fat, Is.EqualTo(product.Nutriments.Fat));
             Assert.That(n.FatValue, Is.EqualTo(product.Nutriments.FatValue));
-        };
+        }
+        ;
     }
 
     [Test]
@@ -257,7 +258,8 @@ public class SearchProductEndpointTests
             Assert.That(actual.Nutriments.Energy, Is.Null);
             Assert.That(actual.Nutriments.Fat, Is.Null);
             Assert.That(actual.Nutriments.FatValue, Is.Null);
-        };
+        }
+        ;
     }
 
     private static IEnumerable<Product> GenerateProducts(int count = 100)
