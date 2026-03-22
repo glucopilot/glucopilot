@@ -44,7 +44,7 @@ public class SearchProductEndpointTests
         Assert.That(() => Endpoint.HandleAsync("search", null, _repoMock.Object, _gpRepoMock.Object, _currentUserMock.Object, CancellationToken.None),
             Throws.InstanceOf<UnauthorizedException>().With.Message.EqualTo("USER_NOT_LOGGED_IN"));
     }
-    
+
     [Test]
     public async Task HandleAsync_Returns_Ok_With_Results()
     {
@@ -169,9 +169,9 @@ public class SearchProductEndpointTests
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
                 It.IsAny<GPRepository.FindOptions>()))
             .Returns(new TestAsyncEnumerable<Ingredient>(GenerateIngredients(_userId, 0)));
-        
+
         var result = await Endpoint.HandleAsync("Test Product", 1, _repoMock.Object, _gpRepoMock.Object, _currentUserMock.Object, CancellationToken.None);
-        
+
         Assert.That(result.Result, Is.TypeOf<Ok<IEnumerable<ProductResponse>>>());
         var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
         var actual = okResult!.Value!.Single();
