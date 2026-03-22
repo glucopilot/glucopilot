@@ -58,7 +58,7 @@ public class SearchProductEndpointTests
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
 
-        var ingredients = GenerateIngredients(0);
+        var ingredients = GenerateIngredients(_userId, 0);
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
                 It.IsAny<GPRepository.FindOptions>()))
@@ -87,7 +87,7 @@ public class SearchProductEndpointTests
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
 
-        var ingredients = GenerateIngredients(0);
+        var ingredients = GenerateIngredients(_userId, 0);
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
                 It.IsAny<GPRepository.FindOptions>()))
@@ -111,7 +111,7 @@ public class SearchProductEndpointTests
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
 
-        var ingredients = GenerateIngredients(10);
+        var ingredients = GenerateIngredients(_userId, 10);
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
                 It.IsAny<GPRepository.FindOptions>()))
@@ -168,7 +168,7 @@ public class SearchProductEndpointTests
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
                 It.IsAny<GPRepository.FindOptions>()))
-            .Returns(new TestAsyncEnumerable<Ingredient>(GenerateIngredients(0)));
+            .Returns(new TestAsyncEnumerable<Ingredient>(GenerateIngredients(_userId, 0)));
         
         var result = await Endpoint.HandleAsync("Test Product", 1, _repoMock.Object, _gpRepoMock.Object, _currentUserMock.Object, CancellationToken.None);
         
@@ -216,11 +216,11 @@ public class SearchProductEndpointTests
         }
     }
 
-    private static IEnumerable<Ingredient> GenerateIngredients(int count = 10)
+    private static IEnumerable<Ingredient> GenerateIngredients(Guid userId, int count = 10)
     {
         for (var i = 0; i < count; i++)
         {
-            yield return new Ingredient { Id = Guid.NewGuid(), Barcode = $"{i}", Created = DateTime.Now, Name = $"Ingredient {i}", Uom = GlucoPilot.Data.Enums.UnitOfMeasurement.Grams };
+            yield return new Ingredient { Id = Guid.NewGuid(), UserId = userId, Barcode = $"{i}", Created = DateTimeOffset.Now, Name = $"Ingredient {i}", Uom = GlucoPilot.Data.Enums.UnitOfMeasurement.Grams };
         }
     }
 }

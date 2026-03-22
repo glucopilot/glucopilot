@@ -43,7 +43,7 @@ internal static class Endpoint
             .ToArray();
 
         var existingBarcodes = await ingredientRepository
-            .Find(i => i.UserId == userId && !string.IsNullOrEmpty(i.Barcode) && productCodes.AsEnumerable().Contains(i.Barcode),
+            .Find(i => i.UserId == userId && !string.IsNullOrEmpty(i.Barcode) && productCodes.Contains(i.Barcode),
                   new GPRepository.FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true })
             .Select(i => i.Barcode)
             .ToListAsync(cancellationToken)
