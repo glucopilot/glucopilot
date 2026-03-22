@@ -208,6 +208,58 @@ public class SearchProductEndpointTests
         });
     }
 
+    [Test]
+    public async Task HandleAsync_Maps_Null_Nutriments_To_Null_Fields()
+    {
+        var product = new Product
+        {
+            Id = "p2",
+            ProductType = null,
+            Quantity = null,
+            ProductQuantityUnit = null,
+            ProductName = "No Nutriments",
+            ProductQuantity = null,
+            NutritionDataPer = null,
+            NutritionDataPreparedPer = null,
+            Code = "CODE2",
+            ServingQuantity = null,
+            Nutriments = null
+        };
+        _repoMock.Setup(r => r.Find(
+                It.IsAny<System.Linq.Expressions.Expression<System.Func<Product, bool>>>(),
+                It.IsAny<FindOptions>()))
+            .Returns(new TestAsyncEnumerable<Product>(new[] { product }));
+        _gpRepoMock.Setup(r => r.Find(
+                It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
+                It.IsAny<GPRepository.FindOptions>()))
+            .Returns(new TestAsyncEnumerable<Ingredient>(new Ingredient[0]));
+
+        var result = await Endpoint.HandleAsync("No Nutriments", 1, _repoMock.Object, _gpRepoMock.Object, _currentUserMock.Object, CancellationToken.None);
+        Assert.That(result.Result, Is.TypeOf<Ok<IEnumerable<ProductResponse>>>());
+        var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
+        var actual = okResult!.Value!.Single();
+        Assert.That(actual.Nutriments, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual.Nutriments!.EnergyUnit, Is.Null);
+            Assert.That(actual.Nutriments.FatUnit, Is.Null);
+            Assert.That(actual.Nutriments.CarbohydratesUnit, Is.Null);
+            Assert.That(actual.Nutriments.EnergyKcalUnit, Is.Null);
+            Assert.That(actual.Nutriments.EnergyKcalValue, Is.Null);
+            Assert.That(actual.Nutriments.EnergyValue, Is.Null);
+            Assert.That(actual.Nutriments.CarbohydratesValue, Is.Null);
+            Assert.That(actual.Nutriments.Proteins, Is.Null);
+            Assert.That(actual.Nutriments.EnergyKcalValueComputed, Is.Null);
+            Assert.That(actual.Nutriments.ProteinsValue, Is.Null);
+            Assert.That(actual.Nutriments.EnergyKcal, Is.Null);
+            Assert.That(actual.Nutriments.ProteinsUnit, Is.Null);
+            Assert.That(actual.Nutriments.Carbohydrates, Is.Null);
+            Assert.That(actual.Nutriments.Energy, Is.Null);
+            Assert.That(actual.Nutriments.Fat, Is.Null);
+            Assert.That(actual.Nutriments.FatValue, Is.Null);
+        });
+    }
+
     private static IEnumerable<Product> GenerateProducts(int count = 100)
     {
         for (var i = 0; i < count; i++)
