@@ -1,4 +1,5 @@
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Identity.Authentication;
 using GlucoPilot.Nutrition.Data.Entities;
 using GlucoPilot.Nutrition.Data.Repository;
 using GlucoPilot.Nutrition.Endpoints.GetProduct;
@@ -20,15 +21,18 @@ internal static class Endpoint
         [FromQuery] int? max,
         [FromServices] IRepository<Product> repository,
         [FromServices] GPRepository.IRepository<Ingredient> ingredientRepository,
+        [FromServices] ICurrentUser currentUser,
         CancellationToken cancellationToken)
     {
         var maxResults = max is null or <= 0 ? DefaultMaxResults : max.Value;
         var searchTerm = term.ToLowerInvariant();
+        
+        var userId = currentUser.GetUserId();
 
         var products =
             await repository
                 .Find(
-                    p => p.ProductName != null && EF.Functions.Contains(p.ProductName, $"\"{searchTerm.Replace("\"", "")}\""),
+                    p => p.ProductName != null && !string.IsNullOrEmpty(p.Code) && EF.Functions.Contains(p.ProductName, $"\"{searchTerm.Replace("\"", "")}\""),
                     new FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true, })
                 .Take(maxResults)
                 .ToArrayAsync(cancellationToken).ConfigureAwait(false);
@@ -39,7 +43,7 @@ internal static class Endpoint
             .ToArray();
 
         var existingBarcodes = await ingredientRepository
-            .Find(i => i.Barcode != null && productCodes.Contains(i.Barcode),
+            .Find(i => i.UserId == userId && !string.IsNullOrEmpty(i.Barcode) && productCodes.AsEnumerable().Contains(i.Barcode),
                   new GPRepository.FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true })
             .Select(i => i.Barcode)
             .ToListAsync(cancellationToken)
