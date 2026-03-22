@@ -175,7 +175,7 @@ public class SearchProductEndpointTests
         Assert.That(result.Result, Is.TypeOf<Ok<IEnumerable<ProductResponse>>>());
         var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
         var actual = okResult!.Value!.Single();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actual.Id, Is.EqualTo(product.Id));
             Assert.That(actual.ProductType, Is.EqualTo(product.ProductType));
@@ -205,7 +205,7 @@ public class SearchProductEndpointTests
             Assert.That(n.Energy, Is.EqualTo(product.Nutriments.Energy));
             Assert.That(n.Fat, Is.EqualTo(product.Nutriments.Fat));
             Assert.That(n.FatValue, Is.EqualTo(product.Nutriments.FatValue));
-        });
+        };
     }
 
     [Test]
@@ -232,14 +232,14 @@ public class SearchProductEndpointTests
         _gpRepoMock.Setup(r => r.Find(
                 It.IsAny<System.Linq.Expressions.Expression<System.Func<Ingredient, bool>>>(),
                 It.IsAny<GPRepository.FindOptions>()))
-            .Returns(new TestAsyncEnumerable<Ingredient>(new Ingredient[0]));
+            .Returns(new TestAsyncEnumerable<Ingredient>(GenerateIngredients(_userId, 0)));
 
         var result = await Endpoint.HandleAsync("No Nutriments", 1, _repoMock.Object, _gpRepoMock.Object, _currentUserMock.Object, CancellationToken.None);
         Assert.That(result.Result, Is.TypeOf<Ok<IEnumerable<ProductResponse>>>());
         var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
         var actual = okResult!.Value!.Single();
         Assert.That(actual.Nutriments, Is.Not.Null);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actual.Nutriments!.EnergyUnit, Is.Null);
             Assert.That(actual.Nutriments.FatUnit, Is.Null);
@@ -257,7 +257,7 @@ public class SearchProductEndpointTests
             Assert.That(actual.Nutriments.Energy, Is.Null);
             Assert.That(actual.Nutriments.Fat, Is.Null);
             Assert.That(actual.Nutriments.FatValue, Is.Null);
-        });
+        };
     }
 
     private static IEnumerable<Product> GenerateProducts(int count = 100)
