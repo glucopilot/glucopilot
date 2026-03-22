@@ -1,3 +1,4 @@
+using GlucoPilot.Data.Entities;
 using GlucoPilot.Nutrition.Data.Entities;
 using GlucoPilot.Nutrition.Data.Repository;
 using GlucoPilot.Nutrition.Endpoints.GetProduct;
@@ -5,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+using GPRepository = GlucoPilot.Data.Repository;
 
 namespace GlucoPilot.Nutrition.Endpoints.SearchProduct;
 
@@ -16,6 +19,7 @@ internal static class Endpoint
         [FromRoute] string term,
         [FromQuery] int? max,
         [FromServices] IRepository<Product> repository,
+        [FromServices] GPRepository.IRepository<Ingredient> ingredientRepository,
         CancellationToken cancellationToken)
     {
         var maxResults = max is null or <= 0 ? DefaultMaxResults : max.Value;
@@ -29,7 +33,23 @@ internal static class Endpoint
                 .Take(maxResults)
                 .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-        var response = products.Select(product => new ProductResponse()
+        var productCodes = products
+            .Where(p => !string.IsNullOrEmpty(p.Code))
+            .Select(p => p.Code)
+            .ToArray();
+
+        var existingBarcodes = await ingredientRepository
+            .Find(i => i.Barcode != null && productCodes.Contains(i.Barcode),
+                  new GPRepository.FindOptions { IsAsNoTracking = true, IsIgnoreAutoIncludes = true })
+            .Select(i => i.Barcode)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var filteredProducts = products
+            .Where(p => !existingBarcodes.Contains(p.Code))
+            .ToArray();
+
+        var response = filteredProducts.Select(product => new ProductResponse()
         {
             Id = product.Id,
             ProductType = product.ProductType,

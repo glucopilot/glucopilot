@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Tests;
 using GlucoPilot.Nutrition.Data.Entities;
 using GlucoPilot.Nutrition.Data.Repository;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using NUnit.Framework.Legacy;
 using Endpoint = GlucoPilot.Nutrition.Endpoints.SearchProduct.Endpoint;
+using GPRepository = GlucoPilot.Data.Repository;
 
 namespace GlucoPilot.Nutrition.Tests.Endpoints.SearchProduct;
 
@@ -30,7 +33,9 @@ public class SearchProductEndpointTests
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
 
-        var result = await Endpoint.HandleAsync("search", null, repoMock.Object, CancellationToken.None);
+        var gpRepoMock = new Mock<GPRepository.IRepository<Ingredient>>();
+
+        var result = await Endpoint.HandleAsync("search", null, repoMock.Object, gpRepoMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.TypeOf<Ok<IEnumerable<ProductResponse>>>());
         var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
@@ -54,7 +59,9 @@ public class SearchProductEndpointTests
                 It.IsAny<FindOptions>()))
             .Returns(new TestAsyncEnumerable<Product>(products));
 
-        var result = await Endpoint.HandleAsync("search", limit, repoMock.Object, CancellationToken.None);
+        var gpRepoMock = new Mock<GPRepository.IRepository<Ingredient>>();
+
+        var result = await Endpoint.HandleAsync("search", limit, repoMock.Object, gpRepoMock.Object, CancellationToken.None);
 
         Assert.That(result.Result, Is.TypeOf<Ok<IEnumerable<ProductResponse>>>());
         var okResult = result.Result as Ok<IEnumerable<ProductResponse>>;
@@ -63,11 +70,25 @@ public class SearchProductEndpointTests
         return actual.Count;
     }
 
+    public async Task HandleAsync_Filters_Products_Where_Ingredient_Has_The_Same_Barcode()
+    {
+        var products = GenerateProducts(20);
+        var ingredients = GenerateIngredients(10);
+    }
+
     private static IEnumerable<Product> GenerateProducts(int count = 100)
     {
         for (var i = 0; i < count; i++)
         {
             yield return new Product { Id = $"{i}", ProductName = $"Product {i}", Code = $"{i}", Nutriments = new Nutriments() };
+        }
+    }
+
+    private static IEnumerable<Ingredient> GenerateIngredients(int count = 10)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            yield return new Ingredient { Id = Guid.NewGuid(), Barcode = $"{i}", Created = DateTime.Now, Name = $"Ingredient {i}", Uom = GlucoPilot.Data.Enums.UnitOfMeasurement.Grams };
         }
     }
 }
