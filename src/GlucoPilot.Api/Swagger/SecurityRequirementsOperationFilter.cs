@@ -41,7 +41,7 @@ public class SecurityRequirementsOperationFilter : IOperationFilter
                 Description = "Unauthorized",
                 Content = new ConcurrentDictionary<string, OpenApiMediaType>
                 {
-                    ["appliaction/json"] = new OpenApiMediaType
+                    ["application/json"] = new OpenApiMediaType
                     {
                         Schema = context.SchemaGenerator.GenerateSchema(typeof(ErrorResult), context.SchemaRepository)
                     }
