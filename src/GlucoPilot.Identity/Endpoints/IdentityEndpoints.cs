@@ -23,7 +23,6 @@ internal static class IdentityEndpoints
             .AllowAnonymous();
         group.MapGet("/verify-email", VerifyEmail.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
-            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .Produces<ContentResult>()
             .AllowAnonymous();
         group.MapPost("/send-verification", SendVerification.Endpoint.HandleAsync)
@@ -31,11 +30,9 @@ internal static class IdentityEndpoints
             .AllowAnonymous();
         group.MapPost("/refresh-token", RefreshToken.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
-            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .AllowAnonymous();
         group.MapPost("/revoke-token", RevokeToken.Endpoint.HandleAsync)
             .HasApiVersion(1.0)
-            .Produces<ErrorResult>(StatusCodes.Status401Unauthorized)
             .RequireAuthorization();
 
         return endpoints;
