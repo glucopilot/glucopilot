@@ -254,7 +254,9 @@ public class ConnectionsTests
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
             {
-                Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id"
+                Token = "valid-token",
+                Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                PatientId = "patient_id"
             },
             Region = region
         };
