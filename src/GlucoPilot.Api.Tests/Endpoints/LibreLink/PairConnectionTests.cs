@@ -275,4 +275,44 @@ public class PairConnectionTests
             await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
                 _libreLinkClientFactoryMock.Object, CancellationToken.None));
     }
+
+    [Test]
+    public async Task HandleAsync_Should_Use_Correct_Regioned_Client([Values] Region region)
+    {
+        var userId = Guid.NewGuid();
+        var patientId = Guid.NewGuid();
+        var patient = new Patient
+        {
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "passwordhash",
+            AuthTicket = new AuthTicket
+            {
+                Token = "libreToken",
+                Duration = 1000,
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
+            },
+            Region = region
+        };
+        var request = new PairConnectionRequest { PatientId = patientId };
+
+        _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
+        _libreLinkClientMock.Setup(x => x.LoginAsync(It.IsAny<GlucoPilot.LibreLinkClient.Models.AuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync([
+                new ConnectionData { PatientId = patientId, FirstName = "Firstname", LastName = "LastName" }
+            ]);
+
+        await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
+            _libreLinkClientFactoryMock.Object, CancellationToken.None);
+
+        _libreLinkClientFactoryMock.Verify(f =>
+            f.CreateLibreLinkClient(Enum.Parse<LibreRegion>(region.ToString())), Times.Once);
+    }
 }

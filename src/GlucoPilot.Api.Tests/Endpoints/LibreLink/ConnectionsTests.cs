@@ -240,4 +240,40 @@ public class ConnectionsTests
         Assert.That(okResult, Is.Not.Null);
         Assert.That(okResult, Is.Empty);
     }
+
+    [Test]
+    public async Task HandleAsync_Should_Use_Correct_Regioned_Client([Values] Region region)
+    {
+        var userId = Guid.NewGuid();
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+
+        var patient = new Patient
+        {
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "hashed-password",
+            AuthTicket = new AuthTicket
+            {
+                Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id"
+            },
+            Region = region
+        };
+        _patientRepositoryMock.Setup(r =>
+                r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
+        _libreLinkClientMock.Setup(c => c.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _libreLinkClientMock.Setup(c => c.GetConnectionsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
+        await Endpoint.HandleAsync(
+            _currentUserMock.Object,
+            _libreLinkClientFactoryMock.Object,
+            _patientRepositoryMock.Object,
+            CancellationToken.None);
+
+        _libreLinkClientFactoryMock.Verify(f =>
+            f.CreateLibreLinkClient(Enum.Parse<LibreRegion>(region.ToString())), Times.Once);
+    }
 }

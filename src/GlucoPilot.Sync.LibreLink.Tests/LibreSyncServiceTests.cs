@@ -579,4 +579,35 @@ public class LibreSyncServiceTests
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
+
+    [Test]
+    public async Task DoWorkAsync_Uses_The_Correct_Regioned_Client([Values] Region region)
+    {
+        var mockPatients = new List<Patient>
+        {
+            new Patient
+            {
+                Id = Guid.NewGuid(),
+                PatientId = Guid.NewGuid().ToString(),
+                GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com",
+                PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = region
+            }
+        };
+
+        _patientRepository
+            .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns((Expression<Func<Patient, bool>> _, FindOptions? _) => mockPatients.AsQueryable());
+
+        _libreLinkClient.Setup(x => x.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GraphInformation?)null);
+
+        await _sut.DoWorkAsync(CancellationToken.None);
+
+        _libreLinkClientFactory.Verify(f => f.CreateLibreLinkClient(Enum.Parse<LibreRegion>(region.ToString())), Times.Once);
+    }
 }

@@ -262,4 +262,36 @@ public class LoginTests
             Assert.That(okResult.Value.Expires, Is.EqualTo(authTicket.Expires));
         });
     }
+
+    [Test]
+    public async Task HandleAsync_Should_Use_Correct_Regioned_Client([Values] Region region)
+    {
+        var request = new LoginRequest { Username = "test", Password = "password" };
+        var userId = Guid.NewGuid();
+        var patient = new Patient
+        {
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "passwordhash",
+            Region = region
+        };
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
+        _libreLinkClientMock
+            .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LibreAuthTicket { Token = "token", Expires = 1, Duration = 1 });
+
+        await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object,
+            _libreLinkClientFactoryMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+
+        _libreLinkClientFactoryMock.Verify(f =>
+            f.CreateLibreLinkClient(Enum.Parse<LibreRegion>(region.ToString())), Times.Once);
+    }
 }
