@@ -18,7 +18,7 @@ public sealed class LibreLinkClientFactory : ILibreLinkClientFactory
     public ILibreLinkClient CreateLibreLinkClient(LibreRegion region)
     {
         var httpClient = _httpClientFactory.CreateClient();
-        httpClient.BaseAddress = new Uri(_options.Value.ApiUri(region));
+        httpClient.BaseAddress = new Uri(LibreLinkOptions.ApiUri(region));
         httpClient.DefaultRequestHeaders.Clear();
         httpClient.DefaultRequestHeaders.Add("User-Agent", _options.Value.UserAgent);
         httpClient.DefaultRequestHeaders.Add("version", _options.Value.Version);

@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
                 var options = new LibreLinkOptions();
                 configure?.Invoke(options);
 
-                client.BaseAddress = new Uri(options.ApiUri(region));
+                client.BaseAddress = new Uri(LibreLinkOptions.ApiUri(region));
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
                 client.DefaultRequestHeaders.Add("version", options.Version);
@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
                 var options = new LibreLinkOptions();
                 configure?.Invoke(options);
 
-                client.BaseAddress = new Uri(options.ApiUri(region));
+                client.BaseAddress = new Uri(LibreLinkOptions.ApiUri(region));
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
                 client.DefaultRequestHeaders.Add("version", options.Version);
