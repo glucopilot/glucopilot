@@ -14,7 +14,7 @@ public sealed class LibreLinkClientFactory : ILibreLinkClientFactory
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _options = options;
     }
-    
+
     public ILibreLinkClient CreateLibreLinkClient(LibreRegion region)
     {
         var httpClient = _httpClientFactory.CreateClient();
@@ -23,7 +23,7 @@ public sealed class LibreLinkClientFactory : ILibreLinkClientFactory
         httpClient.DefaultRequestHeaders.Add("User-Agent", _options.Value.UserAgent);
         httpClient.DefaultRequestHeaders.Add("version", _options.Value.Version);
         httpClient.DefaultRequestHeaders.Add("product", _options.Value.Product);
-        
+
         var authenticator = new LibreLinkAuthenticator(httpClient);
         return new LibreLinkClient(httpClient, authenticator);
     }

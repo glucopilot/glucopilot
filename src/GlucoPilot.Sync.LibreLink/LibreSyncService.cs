@@ -87,7 +87,7 @@ public partial class LibreSyncService : IHostedService, IDisposable
                         PatientPatientIdHasNoRegion(patient.Id);
                         continue;
                     }
-                    
+
                     var patientId = Guid.Parse(patient.PatientId!);
                     var libreLinkClient = scope.ServiceProvider.GetRequiredService<ILibreLinkClientFactory>().CreateLibreLinkClient(patient.Region.Value.ToLibreRegion());
                     var authTicket = new AuthTicket
@@ -214,7 +214,7 @@ public partial class LibreSyncService : IHostedService, IDisposable
 
     [LoggerMessage(LogLevel.Information, "No current sensor for patient {PatientId}.")]
     private partial void LibreLinkNoCurrentSensor(Guid patientId);
-    
+
     [LoggerMessage(LogLevel.Warning, "Patient {PatientId} has no region")]
     private partial void PatientPatientIdHasNoRegion(Guid patientId);
 }

@@ -67,7 +67,9 @@ public class ConnectionsTests
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
             {
-                Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id"
+                Token = "valid-token",
+                Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                PatientId = "patient_id"
             },
             Region = Region.Eu
         };
@@ -100,7 +102,9 @@ public class ConnectionsTests
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
             {
-                Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id"
+                Token = "valid-token",
+                Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                PatientId = "patient_id"
             },
             Region = Region.Eu,
         };
@@ -133,7 +137,9 @@ public class ConnectionsTests
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
             {
-                Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id"
+                Token = "valid-token",
+                Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                PatientId = "patient_id"
             },
         };
         _patientRepositoryMock.Setup(r =>
@@ -162,7 +168,9 @@ public class ConnectionsTests
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
             {
-                Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id"
+                Token = "valid-token",
+                Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                PatientId = "patient_id"
             },
             Region = Region.Eu,
         };
@@ -208,7 +216,9 @@ public class ConnectionsTests
             PasswordHash = "hashed-password",
             AuthTicket = new AuthTicket
             {
-                Token = "valid-token", Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), PatientId = "patient_id"
+                Token = "valid-token",
+                Expires = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                PatientId = "patient_id"
             },
             Region = Region.Eu,
         };

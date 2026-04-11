@@ -62,7 +62,7 @@ public class LoginTests
         var userId = Guid.NewGuid();
         var authTicket = new LibreAuthTicket { Token = "token", Expires = 1234567890, Duration = 3600 };
         var patient = new Patient
-            { Id = userId, AuthTicket = null, Email = "test@test.com", PasswordHash = "passwordhash", Region = Region.Eu };
+        { Id = userId, AuthTicket = null, Email = "test@test.com", PasswordHash = "passwordhash", Region = Region.Eu };
 
         _validatorMock
             .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
@@ -184,13 +184,13 @@ public class LoginTests
                 _libreLinkClientFactoryMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
             Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
     }
-    
+
     [Test]
     public void HandleAsync_Should_Throw_Unauthorized_Exception_When_Patient_Region_Is_Null()
     {
         var request = new LoginRequest { Username = "test", Password = "password" };
         var userId = Guid.NewGuid();
-        
+
         var authTicket = new AuthTicket
         {
             Token = "valid-token",

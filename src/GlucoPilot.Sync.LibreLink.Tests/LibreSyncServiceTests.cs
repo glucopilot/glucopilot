@@ -386,7 +386,7 @@ public class LibreSyncServiceTests
                 exception,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
-        
+
         _logger.Verify(
             x => x.Log(
                 LogLevel.Information,
@@ -566,7 +566,7 @@ public class LibreSyncServiceTests
                 mockPatients.AsQueryable());
 
         await _sut.DoWorkAsync(CancellationToken.None);
-        
+
         _libreLinkClientFactory.Verify(f => f.CreateLibreLinkClient(It.IsAny<LibreRegion>()), Times.Never);
 
         _logger.Verify(

@@ -40,7 +40,7 @@ public static class ServiceCollectionExtensions
                 client.DefaultRequestHeaders.Add("product", options.Product);
             });
     }
-    
+
     public static IServiceCollection AddLibreLinkClientFactory(
         this IServiceCollection services)
     {

@@ -150,7 +150,7 @@ public class PairConnectionTests
             await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
                 _libreLinkClientFactoryMock.Object, CancellationToken.None));
     }
-    
+
     [Test]
     public void HandleAsync_Should_Throw_UnauthorizedException_When_Region_Is_Null()
     {
