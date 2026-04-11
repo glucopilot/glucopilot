@@ -26,6 +26,11 @@ public class Patient : User
     public GlucoseProvider GlucoseProvider { get; set; } = GlucoseProvider.None;
 
     /// <summary>
+    /// The region the user is connected to their Glucose Provider with
+    /// </summary>
+    public Region? Region { get; set; }
+
+    /// <summary>
     /// The target low blood glucose level for the patient.
     /// </summary>
     public int TargetLow { get; set; } = 4;
