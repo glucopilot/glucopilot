@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using GlucoPilot.AspNetCore.Exceptions;
-using GlucoPilot.Data.Entities;
 using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
@@ -13,6 +12,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using GlucoPilot.Api.Extensions;
+using GlucoPilot.Data.Entities;
+using AuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
 namespace GlucoPilot.Api.Endpoints.LibreLink.Login;
 
@@ -39,7 +40,7 @@ internal static class Endpoint
             var patient = await patientRepository
                 .FindOneAsync(p => p.Id == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken)
                 .ConfigureAwait(false);
-            if (patient is null || patient.Region is null)
+            if (patient is null)
             {
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");
             }
@@ -55,18 +56,35 @@ internal static class Endpoint
                 });
             }
 
+            if (!patient.Region.HasValue)
+            {
+                patient.Region = Region.Eu;
+            }
+
             var libreLinkClient = libreLinkClientFactory.CreateLibreLinkClient(patient.Region.Value.ToLibreRegion());
-            var authTicket = await libreLinkClient.LoginAsync(request.Username, request.Password, cancellationToken)
-                .ConfigureAwait(false);
+
+            AuthTicket? authTicket;
+            try
+            {
+                authTicket = await libreLinkClient.LoginAsync(request.Username, request.Password, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (LibreLinkRegionRedirectException ex)
+            {
+                patient.Region = ex.Region.ToRegion();
+                libreLinkClient = libreLinkClientFactory.CreateLibreLinkClient(ex.Region);
+                authTicket = await libreLinkClient.LoginAsync(request.Username, request.Password, cancellationToken)
+                    .ConfigureAwait(false);
+            }
 
             if (patient.AuthTicket is null || patient.AuthTicket.Token != authTicket.Token)
             {
-                patient.AuthTicket = new AuthTicket
+                patient.AuthTicket = new Data.Entities.AuthTicket
                 {
                     Token = authTicket.Token,
                     Expires = authTicket.Expires,
                     Duration = authTicket.Duration,
-                    PatientId = authTicket.PatientId,
+                    PatientId = authTicket.PatientId ?? string.Empty,
                 };
                 patient.GlucoseProvider = GlucoseProvider.LibreLink;
                 await patientRepository.UpdateAsync(patient, cancellationToken).ConfigureAwait(false);

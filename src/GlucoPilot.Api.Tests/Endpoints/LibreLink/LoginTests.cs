@@ -186,42 +186,6 @@ public class LoginTests
     }
 
     [Test]
-    public void HandleAsync_Should_Throw_Unauthorized_Exception_When_Patient_Region_Is_Null()
-    {
-        var request = new LoginRequest { Username = "test", Password = "password" };
-        var userId = Guid.NewGuid();
-
-        var authTicket = new AuthTicket
-        {
-            Token = "valid-token",
-            Expires = DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds(),
-            Duration = 3600,
-            PatientId = "patient_id"
-        };
-        var patient = new Patient
-        {
-            Id = userId,
-            AuthTicket = authTicket,
-            Email = "test@test.com",
-            PasswordHash = "passwordhash",
-        };
-
-        _validatorMock
-            .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
-        _patientRepositoryMock
-            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(patient);
-
-        Assert.That(
-            async () => await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object,
-                _libreLinkClientFactoryMock.Object, _patientRepositoryMock.Object, CancellationToken.None),
-            Throws.TypeOf<UnauthorizedException>().With.Message.EqualTo("PATIENT_NOT_FOUND"));
-    }
-
-    [Test]
     public async Task HandleAsync_Should_Return_Ok_When_Patient_Has_Valid_AuthTicket()
     {
         var request = new LoginRequest { Username = "test", Password = "password" };
@@ -293,5 +257,86 @@ public class LoginTests
 
         _libreLinkClientFactoryMock.Verify(f =>
             f.CreateLibreLinkClient(Enum.Parse<LibreRegion>(region.ToString())), Times.Once);
+    }
+
+    [Test]
+    public async Task HandleAsync_Should_Retry_Login_When_RegionRedirectException_Is_Thrown()
+    {
+        var request = new LoginRequest { Username = "test", Password = "password" };
+        var userId = Guid.NewGuid();
+        var patient = new Patient
+        {
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "passwordhash",
+            Region = Region.Eu
+        };
+        var authTicket = new LibreAuthTicket { Token = "token", Expires = 1234567890, Duration = 3600 };
+        var redirectedClientMock = new Mock<ILibreLinkClient>();
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
+        _libreLinkClientMock
+            .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new LibreLinkRegionRedirectException(LibreRegion.Us));
+        _libreLinkClientFactoryMock
+            .Setup(f => f.CreateLibreLinkClient(LibreRegion.Us))
+            .Returns(redirectedClientMock.Object);
+        redirectedClientMock
+            .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(authTicket);
+        _patientRepositoryMock
+            .Setup(r => r.UpdateAsync(It.IsAny<Patient>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object,
+            _libreLinkClientFactoryMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+
+        Assert.That(result.Result, Is.TypeOf<Ok<LoginResponse>>());
+        var okResult = result.Result as Ok<LoginResponse>;
+        Assert.That(okResult!.Value.Token, Is.EqualTo(authTicket.Token));
+        _libreLinkClientFactoryMock.Verify(f => f.CreateLibreLinkClient(LibreRegion.Eu), Times.Once);
+        _libreLinkClientFactoryMock.Verify(f => f.CreateLibreLinkClient(LibreRegion.Us), Times.Once);
+        _patientRepositoryMock.Verify(r => r.UpdateAsync(It.Is<Patient>(p => p.Region == Region.Us), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task HandleAsync_Should_Default_To_Eu_When_Patient_Region_Is_Null()
+    {
+        var request = new LoginRequest { Username = "test", Password = "password" };
+        var userId = Guid.NewGuid();
+        var patient = new Patient
+        {
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "passwordhash",
+            Region = null
+        };
+
+        _validatorMock
+            .Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        _currentUserMock.Setup(c => c.GetUserId()).Returns(userId);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
+        _patientRepositoryMock
+            .Setup(r => r.UpdateAsync(It.IsAny<Patient>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _libreLinkClientMock
+            .Setup(c => c.LoginAsync(request.Username, request.Password, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LibreAuthTicket { Token = "token", Expires = 1, Duration = 1 });
+
+        await Endpoint.HandleAsync(request, _validatorMock.Object, _currentUserMock.Object,
+            _libreLinkClientFactoryMock.Object, _patientRepositoryMock.Object, CancellationToken.None);
+
+        _libreLinkClientFactoryMock.Verify(f => f.CreateLibreLinkClient(LibreRegion.Eu), Times.Once);
     }
 }

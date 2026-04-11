@@ -52,6 +52,15 @@ internal sealed class LibreLinkAuthenticator : ILibreLinkAuthenticator
                 .ReadAsStreamAsync(cancellationToken)
                 .ConfigureAwait(false), cancellationToken: cancellationToken).ConfigureAwait(false);
 
+        if (result?.Data?.Redirect == true)
+        {
+            if (!result.Data.Region.HasValue)
+            {
+                throw new LibreLinkAuthenticationFailedException();
+            }
+            throw new LibreLinkRegionRedirectException(result.Data.Region.Value!);
+        }
+
         if (string.IsNullOrEmpty(result?.Data?.AuthTicket?.Token))
         {
             throw new LibreLinkAuthenticationFailedException();

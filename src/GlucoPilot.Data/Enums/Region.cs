@@ -8,7 +8,8 @@ public enum Region
     Ca = 3,
     De = 4,
     Eu = 5,
-    Fr = 6,
-    Jp = 7,
-    Us = 8,
+    Eu2 = 6,
+    Fr = 7,
+    Jp = 8,
+    Us = 9,
 }

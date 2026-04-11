@@ -12,5 +12,5 @@ public sealed record LoginRedirect
     public string? RegionCode { get; init; }
 
     [JsonIgnore]
-    public LibreRegion? Region => Enum.TryParse<LibreRegion>(RegionCode, out var region) ? region : null;
+    public LibreRegion? Region => Enum.TryParse<LibreRegion>(RegionCode, ignoreCase: true, out var region) ? region : null;
 }
