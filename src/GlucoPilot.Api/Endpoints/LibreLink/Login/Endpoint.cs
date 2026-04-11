@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Api.Extensions;
 
 namespace GlucoPilot.Api.Endpoints.LibreLink.Login;
 
@@ -21,7 +22,7 @@ internal static class Endpoint
         [FromBody] LoginRequest request,
         [FromServices] IValidator<LoginRequest> validator,
         [FromServices] ICurrentUser currentUser,
-        [FromServices] ILibreLinkClient libreLinkClient,
+        [FromServices] ILibreLinkClientFactory libreLinkClientFactory,
         [FromServices] IRepository<Patient> patientRepository,
         CancellationToken cancellationToken)
     {
@@ -38,7 +39,7 @@ internal static class Endpoint
             var patient = await patientRepository
                 .FindOneAsync(p => p.Id == userId, new FindOptions { IsAsNoTracking = false }, cancellationToken)
                 .ConfigureAwait(false);
-            if (patient is null)
+            if (patient is null || patient.Region is null)
             {
                 throw new UnauthorizedException("PATIENT_NOT_FOUND");
             }
@@ -54,6 +55,7 @@ internal static class Endpoint
                 });
             }
 
+            var libreLinkClient = libreLinkClientFactory.CreateLibreLinkClient(patient.Region.Value.ToLibreRegion());
             var authTicket = await libreLinkClient.LoginAsync(request.Username, request.Password, cancellationToken)
                 .ConfigureAwait(false);
 
