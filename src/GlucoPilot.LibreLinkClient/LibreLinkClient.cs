@@ -44,7 +44,7 @@ internal sealed class LibreLinkClient : ILibreLinkClient
     public async Task<AuthTicket> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
     {
         var result = await _libreLinkAuthenticator.LoginAsync(username, password, cancellationToken)
-            .ConfigureAwait(false);        
+            .ConfigureAwait(false);
 
         if (!string.IsNullOrWhiteSpace(result.AuthTicket.Token))
         {
