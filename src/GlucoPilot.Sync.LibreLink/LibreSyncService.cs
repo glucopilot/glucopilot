@@ -84,7 +84,7 @@ public partial class LibreSyncService : IHostedService, IDisposable
                 {
                     if (patient.Region is null)
                     {
-                        PatientPatientIdHasNoRegion(patient.Id);
+                        PatientHasNoRegion(patient.Id);
                         continue;
                     }
 
@@ -216,5 +216,5 @@ public partial class LibreSyncService : IHostedService, IDisposable
     private partial void LibreLinkNoCurrentSensor(Guid patientId);
 
     [LoggerMessage(LogLevel.Warning, "Patient {PatientId} has no region")]
-    private partial void PatientPatientIdHasNoRegion(Guid patientId);
+    private partial void PatientHasNoRegion(Guid patientId);
 }
