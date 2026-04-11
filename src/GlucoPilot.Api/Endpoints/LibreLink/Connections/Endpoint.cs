@@ -40,7 +40,6 @@ internal static class Endpoint
         try
         {
             var libreLinkClient = libreLinkClientFactory.CreateLibreLinkClient(patient.Region.Value.ToLibreRegion());
-            
             await libreLinkClient.LoginAsync(authTicket, cancellationToken).ConfigureAwait(false);
 
             var connections = await libreLinkClient.GetConnectionsAsync(cancellationToken).ConfigureAwait(false);
