@@ -100,4 +100,54 @@ public sealed class LibreLinkAuthenticatorTests
 
         Assert.That(isAuthenticated, Is.False);
     }
+
+    [Test]
+    public void LoginAsync_Redirect_With_Valid_Region_Throws_RegionRedirectException()
+    {
+        var loginResponse = new LibreLinkResponse<LoginResponse>
+        {
+            Data = new LoginResponse
+            {
+                Redirect = true,
+                RegionCode = "us"
+            }
+        };
+        var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(loginResponse))
+        };
+
+        _httpMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(responseMessage);
+
+        Assert.That(() => _sut.LoginAsync("username", "password"),
+            Throws.InstanceOf<LibreLinkRegionRedirectException>());
+    }
+
+    [Test]
+    public void LoginAsync_Redirect_With_Null_Region_Throws_AuthenticationFailedException()
+    {
+        var loginResponse = new LibreLinkResponse<LoginResponse>
+        {
+            Data = new LoginResponse
+            {
+                Redirect = true,
+                RegionCode = null
+            }
+        };
+        var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(loginResponse))
+        };
+
+        _httpMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(responseMessage);
+
+        Assert.That(() => _sut.LoginAsync("username", "password"),
+            Throws.InstanceOf<LibreLinkAuthenticationFailedException>());
+    }
 }

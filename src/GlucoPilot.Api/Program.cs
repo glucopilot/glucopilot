@@ -71,7 +71,9 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-builder.Services.AddLibreLinkClient(builder.Configuration.GetSection("LibreLink").Bind);
+builder.Services.Configure<LibreLinkOptions>(builder.Configuration.GetSection("LibreLink"));
+
+builder.Services.AddLibreLinkClientFactory();
 
 builder.Services.AddMail(builder.Configuration.GetSection("Mail").Bind);
 

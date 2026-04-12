@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GlucoPilot.Api.Endpoints.LibreLink.PairConnection;
 using GlucoPilot.AspNetCore.Exceptions;
 using GlucoPilot.Data.Entities;
+using GlucoPilot.Data.Enums;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.Identity.Authentication;
 using GlucoPilot.LibreLinkClient;
@@ -23,6 +24,7 @@ public class PairConnectionTests
     private Mock<ICurrentUser> _currentUserMock;
     private Mock<IRepository<Patient>> _patientRepositoryMock;
     private Mock<ILibreLinkClient> _libreLinkClientMock;
+    private Mock<ILibreLinkClientFactory> _libreLinkClientFactoryMock;
 
     [SetUp]
     public void SetUp()
@@ -30,6 +32,9 @@ public class PairConnectionTests
         _currentUserMock = new Mock<ICurrentUser>();
         _patientRepositoryMock = new Mock<IRepository<Patient>>();
         _libreLinkClientMock = new Mock<ILibreLinkClient>();
+        _libreLinkClientFactoryMock = new Mock<ILibreLinkClientFactory>();
+        _libreLinkClientFactoryMock.Setup(f => f.CreateLibreLinkClient(It.IsAny<LibreRegion>()))
+            .Returns(_libreLinkClientMock.Object);
     }
 
     [Test]
@@ -48,7 +53,8 @@ public class PairConnectionTests
                 Duration = 1000,
                 Expires = long.MaxValue,
                 PatientId = "patient_id"
-            }
+            },
+            Region = Region.Eu
         };
         var request = new PairConnectionRequest { PatientId = patientId };
 
@@ -63,7 +69,7 @@ public class PairConnectionTests
             ]);
 
         var result = await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-            _libreLinkClientMock.Object, CancellationToken.None);
+            _libreLinkClientFactoryMock.Object, CancellationToken.None);
 
         var okResult = result.Result as Ok<PairConnectionResponse>;
         Assert.Multiple(() =>
@@ -79,7 +85,7 @@ public class PairConnectionTests
     {
         var userId = Guid.NewGuid();
         var patientId = Guid.NewGuid();
-        var patient = new Patient { Id = userId, Email = "test@test.com", PasswordHash = "passwordhash" };
+        var patient = new Patient { Id = userId, Email = "test@test.com", PasswordHash = "passwordhash", Region = Region.Eu };
         var request = new PairConnectionRequest { PatientId = patientId };
 
         _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
@@ -93,7 +99,7 @@ public class PairConnectionTests
 
         Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-                _libreLinkClientMock.Object, CancellationToken.None));
+                _libreLinkClientFactoryMock.Object, CancellationToken.None));
     }
 
     [Test]
@@ -109,7 +115,7 @@ public class PairConnectionTests
 
         Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-                _libreLinkClientMock.Object, CancellationToken.None));
+                _libreLinkClientFactoryMock.Object, CancellationToken.None));
     }
 
     [Test]
@@ -127,7 +133,8 @@ public class PairConnectionTests
                 Duration = 1000,
                 Expires = long.MaxValue,
                 PatientId = "patient_id"
-            }
+            },
+            Region = Region.Eu
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
@@ -141,7 +148,36 @@ public class PairConnectionTests
 
         Assert.ThrowsAsync<NotFoundException>(async () =>
             await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-                _libreLinkClientMock.Object, CancellationToken.None));
+                _libreLinkClientFactoryMock.Object, CancellationToken.None));
+    }
+
+    [Test]
+    public void HandleAsync_Should_Throw_UnauthorizedException_When_Region_Is_Null()
+    {
+        var userId = Guid.NewGuid();
+        var patient = new Patient
+        {
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "passwordhash",
+            AuthTicket = new AuthTicket
+            {
+                Token = "libreToken",
+                Duration = 1000,
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
+            }
+        };
+        var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
+
+        _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
+        _patientRepositoryMock.Setup(x =>
+                x.FindOne(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns(patient);
+
+        Assert.ThrowsAsync<UnauthorizedException>(async () =>
+            await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
+                _libreLinkClientFactoryMock.Object, CancellationToken.None));
     }
 
     [Test]
@@ -159,7 +195,8 @@ public class PairConnectionTests
                 Duration = 1000,
                 Expires = long.MaxValue,
                 PatientId = "patient_id"
-            }
+            },
+            Region = Region.Eu
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
@@ -173,7 +210,7 @@ public class PairConnectionTests
 
         Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-                _libreLinkClientMock.Object, CancellationToken.None));
+                _libreLinkClientFactoryMock.Object, CancellationToken.None));
     }
 
     [Test]
@@ -191,7 +228,8 @@ public class PairConnectionTests
                 Duration = 1000,
                 Expires = long.MaxValue,
                 PatientId = "patient_id"
-            }
+            },
+            Region = Region.Eu
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
@@ -203,7 +241,7 @@ public class PairConnectionTests
             .ThrowsAsync(new LibreLinkAuthenticationExpiredException());
 
         Assert.That(() => Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-            _libreLinkClientMock.Object, CancellationToken.None), Throws.TypeOf<UnauthorizedException>());
+            _libreLinkClientFactoryMock.Object, CancellationToken.None), Throws.TypeOf<UnauthorizedException>());
     }
 
     [Test]
@@ -221,7 +259,8 @@ public class PairConnectionTests
                 Duration = 1000,
                 Expires = long.MaxValue,
                 PatientId = "patient_id"
-            }
+            },
+            Region = Region.Eu
         };
         var request = new PairConnectionRequest { PatientId = Guid.NewGuid() };
 
@@ -234,6 +273,46 @@ public class PairConnectionTests
 
         Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
-                _libreLinkClientMock.Object, CancellationToken.None));
+                _libreLinkClientFactoryMock.Object, CancellationToken.None));
+    }
+
+    [Test]
+    public async Task HandleAsync_Should_Use_Correct_Regioned_Client([Values] Region region)
+    {
+        var userId = Guid.NewGuid();
+        var patientId = Guid.NewGuid();
+        var patient = new Patient
+        {
+            Id = userId,
+            Email = "test@test.com",
+            PasswordHash = "passwordhash",
+            AuthTicket = new AuthTicket
+            {
+                Token = "libreToken",
+                Duration = 1000,
+                Expires = long.MaxValue,
+                PatientId = "patient_id"
+            },
+            Region = region
+        };
+        var request = new PairConnectionRequest { PatientId = patientId };
+
+        _currentUserMock.Setup(x => x.GetUserId()).Returns(userId);
+        _patientRepositoryMock
+            .Setup(r => r.FindOneAsync(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patient);
+        _libreLinkClientMock.Setup(x => x.LoginAsync(It.IsAny<GlucoPilot.LibreLinkClient.Models.AuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _libreLinkClientMock.Setup(x => x.GetConnectionsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync([
+                new ConnectionData { PatientId = patientId, FirstName = "Firstname", LastName = "LastName" }
+            ]);
+
+        await Endpoint.HandleAsync(request, _currentUserMock.Object, _patientRepositoryMock.Object,
+            _libreLinkClientFactoryMock.Object, CancellationToken.None);
+
+        _libreLinkClientFactoryMock.Verify(f =>
+            f.CreateLibreLinkClient(Enum.Parse<LibreRegion>(region.ToString())), Times.Once);
     }
 }

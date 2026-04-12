@@ -45,6 +45,7 @@ internal sealed class LibreLinkClient : ILibreLinkClient
     {
         var result = await _libreLinkAuthenticator.LoginAsync(username, password, cancellationToken)
             .ConfigureAwait(false);
+
         if (!string.IsNullOrWhiteSpace(result.AuthTicket.Token))
         {
             _httpClient.DefaultRequestHeaders.Authorization =

@@ -8,6 +8,7 @@ using AuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 using System.Globalization;
 using GlucoPilot.Data.Repository;
 using GlucoPilot.LibreLinkClient.Models;
+using GlucoPilot.Sync.LibreLink.Extensions;
 
 namespace GlucoPilot.Sync.LibreLink;
 
@@ -81,8 +82,14 @@ public partial class LibreSyncService : IHostedService, IDisposable
             {
                 try
                 {
+                    if (patient.Region is null)
+                    {
+                        PatientHasNoRegion(patient.Id);
+                        continue;
+                    }
+
                     var patientId = Guid.Parse(patient.PatientId!);
-                    var libreLinkClient = scope.ServiceProvider.GetRequiredService<ILibreLinkClient>();
+                    var libreLinkClient = scope.ServiceProvider.GetRequiredService<ILibreLinkClientFactory>().CreateLibreLinkClient(patient.Region.Value.ToLibreRegion());
                     var authTicket = new AuthTicket
                     {
                         Token = patient.AuthTicket!.Token,
@@ -207,4 +214,7 @@ public partial class LibreSyncService : IHostedService, IDisposable
 
     [LoggerMessage(LogLevel.Information, "No current sensor for patient {PatientId}.")]
     private partial void LibreLinkNoCurrentSensor(Guid patientId);
+
+    [LoggerMessage(LogLevel.Warning, "Patient {PatientId} has no region")]
+    private partial void PatientHasNoRegion(Guid patientId);
 }

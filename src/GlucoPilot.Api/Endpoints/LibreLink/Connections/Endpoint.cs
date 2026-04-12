@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GlucoPilot.Api.Extensions;
 using LibreAuthTicket = GlucoPilot.LibreLinkClient.Models.AuthTicket;
 
 namespace GlucoPilot.Api.Endpoints.LibreLink.Connections;
@@ -19,13 +20,13 @@ internal static class Endpoint
 {
     internal static async Task<Ok<List<ConnectionResponse>>> HandleAsync(
         [FromServices] ICurrentUser currentUser,
-        [FromServices] ILibreLinkClient libreLinkClient,
+        [FromServices] ILibreLinkClientFactory libreLinkClientFactory,
         [FromServices] IRepository<Patient> patientRepository,
         CancellationToken cancellationToken)
     {
         var patient = await patientRepository.FindOneAsync(p => p.Id == currentUser.GetUserId(),
             new FindOptions { IsAsNoTracking = true }, cancellationToken).ConfigureAwait(false);
-        if (patient is null || patient.AuthTicket is null)
+        if (patient is null || patient.AuthTicket is null || patient.Region is null)
         {
             throw new UnauthorizedException("PATIENT_NOT_FOUND");
         }
@@ -38,6 +39,7 @@ internal static class Endpoint
         };
         try
         {
+            var libreLinkClient = libreLinkClientFactory.CreateLibreLinkClient(patient.Region.Value.ToLibreRegion());
             await libreLinkClient.LoginAsync(authTicket, cancellationToken).ConfigureAwait(false);
 
             var connections = await libreLinkClient.GetConnectionsAsync(cancellationToken).ConfigureAwait(false);

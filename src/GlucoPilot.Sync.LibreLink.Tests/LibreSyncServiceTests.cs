@@ -21,6 +21,7 @@ public class LibreSyncServiceTests
     private Mock<IRepository<Sensor>> _sensorRepository;
     private Mock<IServiceScopeFactory> _scopeFactory;
     private Mock<ILibreLinkClient> _libreLinkClient;
+    private Mock<ILibreLinkClientFactory> _libreLinkClientFactory;
     private Mock<ILogger<LibreSyncService>> _logger;
 
     [SetUp]
@@ -36,16 +37,22 @@ public class LibreSyncServiceTests
             {
                 var scope = new Mock<IServiceScope>();
                 var serviceProvider = new Mock<IServiceProvider>();
-                serviceProvider.Setup(x => x.GetService(typeof(IRepository<Patient>))).Returns(_patientRepository.Object);
-                serviceProvider.Setup(x => x.GetService(typeof(IRepository<Reading>))).Returns(_readingRepository.Object);
+                serviceProvider.Setup(x => x.GetService(typeof(IRepository<Patient>)))
+                    .Returns(_patientRepository.Object);
+                serviceProvider.Setup(x => x.GetService(typeof(IRepository<Reading>)))
+                    .Returns(_readingRepository.Object);
                 serviceProvider.Setup(x => x.GetService(typeof(IRepository<Sensor>))).Returns(_sensorRepository.Object);
-                serviceProvider.Setup(x => x.GetService(typeof(ILibreLinkClient))).Returns(_libreLinkClient.Object);
+                serviceProvider.Setup(x => x.GetService(typeof(ILibreLinkClientFactory)))
+                    .Returns(_libreLinkClientFactory.Object);
                 scope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
                 return scope.Object;
             });
         _logger = new Mock<ILogger<LibreSyncService>>();
         _logger.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _libreLinkClient = new Mock<ILibreLinkClient>();
+        _libreLinkClientFactory = new Mock<ILibreLinkClientFactory>();
+        _libreLinkClientFactory.Setup(f => f.CreateLibreLinkClient(It.IsAny<LibreRegion>()))
+            .Returns(_libreLinkClient.Object);
         _sut = new LibreSyncService(_scopeFactory.Object, _logger.Object);
     }
 
@@ -103,13 +110,13 @@ public class LibreSyncServiceTests
             ?.Invoke(_sut, [invalidState]));
 
         _logger.Verify(
-        x => x.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, _) => v.ToString() == "Libre link sync failed."),
-            It.IsAny<ArgumentException>(),
-            It.Is<Func<It.IsAnyType, Exception?, string>>((_, _) => true)),
-        Times.Once);
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString() == "Libre link sync failed."),
+                It.IsAny<ArgumentException>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((_, _) => true)),
+            Times.Once);
     }
 
     [Test]
@@ -131,7 +138,13 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
         };
 
         _patientRepository
@@ -142,14 +155,17 @@ public class LibreSyncServiceTests
         _libreLinkClient.Setup(x => x.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((GraphInformation)null!);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GraphInformation)null!);
 
         await _sut.DoWorkAsync(CancellationToken.None);
         _logger.Verify(
             x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString() == $"Could not retrieve libre link graph data for patient {mockPatients[0].PatientId}"),
+                It.Is<It.IsAnyType>((v, _) =>
+                    v.ToString() ==
+                    $"Could not retrieve libre link graph data for patient {mockPatients[0].PatientId}"),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
@@ -160,7 +176,13 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
         };
 
         _patientRepository
@@ -183,14 +205,16 @@ public class LibreSyncServiceTests
                 }
             }
         };
-        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(graphInformation);
 
         await _sut.DoWorkAsync(CancellationToken.None);
         _logger.Verify(
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString() == $"No current reading for patient {mockPatients[0].PatientId}"),
+                It.Is<It.IsAnyType>((v, _) =>
+                    v.ToString() == $"No current reading for patient {mockPatients[0].PatientId}"),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
@@ -201,8 +225,20 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } }
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test2@test.com", PasswordHash = "12345",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            }
         };
 
         _patientRepository
@@ -231,9 +267,12 @@ public class LibreSyncServiceTests
                 }
             }
         };
-        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(graphInformation);
 
-        _readingRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _readingRepository
+            .Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
 
         await _sut.DoWorkAsync(CancellationToken.None);
@@ -246,8 +285,20 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } }
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test2@test.com", PasswordHash = "12345",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            }
         };
 
         _patientRepository
@@ -276,8 +327,11 @@ public class LibreSyncServiceTests
                 }
             }
         };
-        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
-        _readingRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(graphInformation);
+        _readingRepository
+            .Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Reading, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
 
         await _sut.DoWorkAsync(CancellationToken.None);
 
@@ -296,8 +350,20 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test2@test.com", PasswordHash = "12345", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } }
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test2@test.com", PasswordHash = "12345",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            }
         };
 
         _patientRepository
@@ -315,8 +381,18 @@ public class LibreSyncServiceTests
             x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString() == $"Failed to sync reading for patient {mockPatients[0].PatientId}"),
+                It.Is<It.IsAnyType>((v, _) =>
+                    v.ToString() == $"Failed to sync reading for patient {mockPatients[0].PatientId}"),
                 exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        _logger.Verify(
+            x => x.Log(
+                LogLevel.Information,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString() == "Libre link sync completed."),
+                null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
@@ -326,7 +402,13 @@ public class LibreSyncServiceTests
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
         };
 
         _patientRepository
@@ -351,25 +433,34 @@ public class LibreSyncServiceTests
                 Sensor = null,
             }
         };
-        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(graphInformation);
 
         await _sut.DoWorkAsync(CancellationToken.None);
         _logger.Verify(
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString() == $"No current sensor for patient {mockPatients[0].PatientId}."),
+                It.Is<It.IsAnyType>((v, _) =>
+                    v.ToString() == $"No current sensor for patient {mockPatients[0].PatientId}."),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
 
     [Test]
-    public async Task DoWorkAsync_Adds_New_Senser()
+    public async Task DoWorkAsync_Adds_New_Sensor()
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },        };
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
+        };
 
         _patientRepository
             .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
@@ -397,7 +488,8 @@ public class LibreSyncServiceTests
                 }
             }
         };
-        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(graphInformation);
 
         await _sut.DoWorkAsync(CancellationToken.None);
 
@@ -405,11 +497,18 @@ public class LibreSyncServiceTests
     }
 
     [Test]
-    public async Task DoWorkAsync_Does_Not_Add_New_Senser_If_Exists()
+    public async Task DoWorkAsync_Does_Not_Add_New_Sensor_If_Exists()
     {
         var mockPatients = new List<Patient>
         {
-            new Patient { Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink, Email = "test@test.com", PasswordHash = "1234", AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" } },        };
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = Region.Eu
+            },
+        };
 
         _patientRepository
             .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
@@ -437,11 +536,78 @@ public class LibreSyncServiceTests
                 }
             }
         };
-        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(graphInformation);
-        _sensorRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Sensor, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(graphInformation);
+        _sensorRepository
+            .Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Sensor, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
         await _sut.DoWorkAsync(CancellationToken.None);
 
         _sensorRepository.Verify(x => x.AddAsync(It.IsAny<Sensor>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test]
+    public async Task DoWorkAsync_Skips_Patients_With_Null_Region()
+    {
+        var mockPatients = new List<Patient>
+        {
+            new Patient
+            {
+                Id = Guid.NewGuid(), PatientId = Guid.NewGuid().ToString(), GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com", PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+            }
+        };
+
+        _patientRepository
+            .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns((Expression<Func<Patient, bool>> predicate, FindOptions? _) =>
+                mockPatients.AsQueryable());
+
+        await _sut.DoWorkAsync(CancellationToken.None);
+
+        _libreLinkClientFactory.Verify(f => f.CreateLibreLinkClient(It.IsAny<LibreRegion>()), Times.Never);
+
+        _logger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) =>
+                    v.ToString() == $"Patient {mockPatients[0].Id} has no region"),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task DoWorkAsync_Uses_The_Correct_Regioned_Client([Values] Region region)
+    {
+        var mockPatients = new List<Patient>
+        {
+            new Patient
+            {
+                Id = Guid.NewGuid(),
+                PatientId = Guid.NewGuid().ToString(),
+                GlucoseProvider = GlucoseProvider.LibreLink,
+                Email = "test@test.com",
+                PasswordHash = "1234",
+                AuthTicket = new AuthTicket { Token = "123", Expires = 1, PatientId = "patient_id" },
+                Region = region
+            }
+        };
+
+        _patientRepository
+            .Setup(x => x.Find(It.IsAny<Expression<Func<Patient, bool>>>(), It.IsAny<FindOptions>()))
+            .Returns((Expression<Func<Patient, bool>> _, FindOptions? _) => mockPatients.AsQueryable());
+
+        _libreLinkClient.Setup(x => x.LoginAsync(It.IsAny<LibreAuthTicket>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _libreLinkClient.Setup(x => x.GraphAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GraphInformation?)null);
+
+        await _sut.DoWorkAsync(CancellationToken.None);
+
+        _libreLinkClientFactory.Verify(f => f.CreateLibreLinkClient(Enum.Parse<LibreRegion>(region.ToString())), Times.Once);
     }
 }
