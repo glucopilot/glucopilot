@@ -85,7 +85,7 @@ public sealed class UserService : IUserService
                 UserId = user.Id,
                 Email = user.Email,
                 IsVerified = user.IsVerified,
-                GlucoseProvider = (GlucoseProvider)patient.GlucoseProvider,
+                GlucoseProvider = (GlucoseProvider?)patient.GlucoseProvider,
                 TargetLow = patient.TargetLow,
                 TargetHigh = patient.TargetHigh,
                 AlarmRules = alarmRules is not null

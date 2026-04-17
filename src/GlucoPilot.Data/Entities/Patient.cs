@@ -23,7 +23,7 @@ public class Patient : User
     /// <summary>
     /// The diabetes sensor system that the patient is using.
     /// </summary>
-    public GlucoseProvider GlucoseProvider { get; set; } = GlucoseProvider.None;
+    public GlucoseProvider? GlucoseProvider { get; set; }
 
     /// <summary>
     /// The region the user is connected to their Glucose Provider with
