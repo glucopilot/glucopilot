@@ -54,6 +54,7 @@ internal static class Endpoint
                             [Direction],
                             ROW_NUMBER() OVER (
                                 PARTITION BY 
+                                    CAST([Created] AS DATE),
                                     DATEADD(MINUTE, (DATEPART(MINUTE, [Created]) / {0}) * {0}, 
                                     DATEADD(HOUR, DATEPART(HOUR, [Created]), 0)) 
                                 ORDER BY [Created] DESC
@@ -61,7 +62,6 @@ internal static class Endpoint
                         FROM 
                             [readings]
                     )
-
                     SELECT 
                         [Id],
                         [UserId],
