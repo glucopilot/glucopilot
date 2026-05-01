@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -31,6 +32,7 @@ public class TreatmentMeal
     /// <summary>
     /// The meal the meal treatment is associated with.
     /// </summary>
+    [DeleteBehavior(DeleteBehavior.NoAction)]
     public virtual Meal? Meal { get; set; }
 
     /// <summary>
