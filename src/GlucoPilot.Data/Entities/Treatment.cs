@@ -119,13 +119,13 @@ public class Treatment
     /// <summary>
     /// The meals associated with this treatment.
     /// </summary>
-    [DeleteBehavior(DeleteBehavior.NoAction)]
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<TreatmentMeal> Meals { get; set; } = [];
 
     /// <summary>
     /// The ingredients associated with this treatment.
     /// </summary>
-    [DeleteBehavior(DeleteBehavior.NoAction)]
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<TreatmentIngredient> Ingredients { get; set; } = [];
 
     /// <summary>
