@@ -56,7 +56,6 @@ public class UpdateMealRequestValidatorTests
             {
                 new NewMealIngredientRequest
                 {
-                    Id = Guid.NewGuid(),
                     IngredientId = Guid.Empty,
                     Quantity = 1
                 }
@@ -78,7 +77,6 @@ public class UpdateMealRequestValidatorTests
             {
                 new NewMealIngredientRequest
                 {
-                    Id = Guid.NewGuid(),
                     IngredientId = Guid.NewGuid(),
                     Quantity = 1
                 }
@@ -87,5 +85,26 @@ public class UpdateMealRequestValidatorTests
 
         var result = _validator.TestValidate(request);
         result.ShouldNotHaveValidationErrorFor(x => x.MealIngredients);
+    }
+
+    [Test]
+    public void Should_Not_Have_Error_When_MealIngredient_Id_Is_Omitted_For_New_Item()
+    {
+        var request = new UpdateMealRequest
+        {
+            Id = Guid.NewGuid(),
+            Name = "Valid Meal Name",
+            MealIngredients = new List<NewMealIngredientRequest>
+            {
+                new NewMealIngredientRequest
+                {
+                    IngredientId = Guid.NewGuid(),
+                    Quantity = 1
+                }
+            }
+        };
+
+        var result = _validator.TestValidate(request);
+        result.ShouldNotHaveValidationErrorFor("MealIngredients[0].Id");
     }
 }
