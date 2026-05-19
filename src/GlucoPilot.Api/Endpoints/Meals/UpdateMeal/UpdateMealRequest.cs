@@ -22,7 +22,7 @@ public sealed record UpdateMealRequest
 
 public sealed record NewMealIngredientRequest
 {
-    public required Guid Id { get; set; }
+    public Guid? Id { get; set; }
     public required Guid IngredientId { get; set; }
     public required int Quantity { get; set; }
 
@@ -30,7 +30,6 @@ public sealed record NewMealIngredientRequest
     {
         public NewMealIngredientValidator()
         {
-            RuleFor(x => x.Id).NotEmpty().WithMessage(Resources.ValidationMessages.MealIdInvalid);
             RuleFor(x => x.IngredientId).NotEmpty().WithMessage(Resources.ValidationMessages.IngredientIdInvalid);
             RuleFor(x => x.Quantity).GreaterThan(0).WithMessage(Resources.ValidationMessages.QuantityGreaterThanZero);
         }
